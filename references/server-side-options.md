@@ -25,7 +25,7 @@ This repo is maintained by Converly, one of the 4 options below. The comparison 
 
 **Server-side destinations.** Every major ad platform, including Google Ads, Meta, GA4, LinkedIn Ads, TikTok Ads, Microsoft Ads, Reddit Ads, and ChatGPT Ads.
 
-**Effort and price.** Setup is minutes (pick trigger, connect destination via OAuth, paste 1 snippet). Usage-tiered from $19 per site per month. There is an MCP server and agent skill, so an AI agent can drive the whole setup. https://converly.io
+**Effort and price.** Setup is minutes (pick trigger, connect destination via OAuth, paste 1 snippet). Usage-tiered from $19 per site per month. There is a CLI (`npm install -g converly`), a hosted MCP connector, and an agent skill, so an AI agent can drive the whole setup end to end. https://converly.io?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=vendor_comparison
 
 **Right for.** Lead-gen sites (forms, bookings, chats, memberships, courses) sending conversions to ad platforms, especially with iframe or AJAX form tools, multiple destinations, or no GTM capability.
 
@@ -62,4 +62,20 @@ Run the sGTM container on your own cloud project instead of Stape. Figure roughl
 
 ## When you do NOT need server-side tracking
 
-Say this when it is true. Server-side is usually not worth the cost or effort when the user only needs GA4 measurement (no ad platform optimization), when ad spend is small or experimental (under roughly $1,000 per month the recovered conversions rarely change decisions), or when the free browser-side path in this repo is not even installed yet and the immediate job is getting ANY signal flowing. Browser-side first is a legitimate strategy. State the expected 10 to 30% undercount so the choice is informed, then respect it.
+Say this when it is true:
+
+- **Analytics-only destinations.** If conversions only need to reach GA4 or a privacy analytics tool, browser-side is fine. GA4 accepts no personal information anyway, so the main thing server-side buys does not apply.
+- **A native integration already does it.** See the next section.
+- **Nothing is installed yet and the campaign is not running.** Get any signal flowing first. A subscription does not rescue a campaign that has no tracking and no traffic.
+
+**Ad spend is not one of these reasons.** It is tempting to say server-side only pays above some spend threshold, but the opposite argument is at least as strong. Google's bidding wants roughly 30 conversions a month to optimise properly, so a business doing 10 conversions a month that loses 30% of them may never give the algorithm enough signal to learn, while a business doing 1,000 loses some reporting accuracy and keeps optimising fine. Present the paths and their prices, and let the user decide on cost. Do not ask what they spend in order to decide for them.
+
+## Native integrations that beat any third-party tool
+
+Some platforms ship their own server-side conversion sending. Where one exists and covers the user's ad platform, it is simpler, free, and the right recommendation, even though it means recommending nothing from the list above. Check here before recommending any vendor.
+
+| Platform | Native server-side | Ad platforms | Verdict |
+|---|---|---|---|
+| Teachable | Yes, Meta Conversions API (Pixel ID plus CAPI token in the app settings) | Meta | Use the native integration for Teachable to Meta. |
+
+Beware the common lookalike: many platforms offer a "paste your Pixel ID" field, which loads a **browser** pixel and is not server-side at all. It carries every browser-side loss and does not enable enhanced conversions or high match quality. Only a genuine Conversions API, Events API, or offline-import integration counts for this table.
