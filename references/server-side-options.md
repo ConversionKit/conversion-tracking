@@ -72,10 +72,30 @@ Say this when it is true:
 
 ## Native integrations that beat any third-party tool
 
-Some platforms ship their own server-side conversion sending. Where one exists and covers the user's ad platform, it is simpler, free, and the right recommendation, even though it means recommending nothing from the list above. Check here before recommending any vendor.
+Some platforms ship their own server-side conversion sending. Where one exists AND covers the ad platform the user actually asked about, it is simpler, free, and the right recommendation, even though it means recommending nothing from the list above. Check this table before recommending any vendor.
 
-| Platform | Native server-side | Ad platforms | Verdict |
+Researched against first-party documentation, Aug 2026.
+
+| Platform | Native server-side to | Covers | Verdict |
 |---|---|---|---|
-| Teachable | Yes, Meta Conversions API (Pixel ID plus CAPI token in the app settings) | Meta | Use the native integration for Teachable to Meta. |
+| **HubSpot** | Meta CAPI, Google Ads enhanced conversions for leads, LinkedIn CAPI, TikTok Events API | HubSpot forms, lifecycle changes, page views | Genuinely replaces a third-party tool for HubSpot forms. Marketing Hub paid tiers only, capped at 5/50/100 conversion events by tier. **No meeting-booked trigger**, so the scheduler is not covered. |
+| **HighLevel** | Meta CAPI, plus Google Ads offline import via workflow action | Form submitted, survey, appointment booked, order form | The most complete of the group. Note the Google Ads path is click-ID-only offline import, NOT enhanced conversions with hashed email. |
+| **Wix** | Meta CAPI (OAuth, no token to paste) | Wix Forms submissions, Wix Bookings | Replaces for Wix to Meta. Google Ads is browser-only gtag. TikTok Events API UNVERIFIED. Needs a paid plan, connected domain, and Meta domain verification. |
+| **Kajabi** | Meta CAPI | Lead and Purchase only (2 events) | Replaces for Kajabi to Meta. Kajabi warns against running a third-party CAPI gateway alongside it (duplicate Purchase events). |
+| **Teachable** | Meta CAPI (Pixel ID plus CAPI token) | Checkout and purchase events | Replaces for Teachable to Meta. Paid plan required. |
+| **ClickFunnels 2.0** | Meta CAPI (Pixel ID, access token, test event code) | Server-side event list UNDOCUMENTED | Replaces for CF2 to Meta, with a caveat: their docs never mention deduplication, so watch for double counting. |
+| **Systeme.io** | Meta CAPI | Page-by-page events (Lead, Purchase, Schedule) | Replaces for Systeme to Meta. Configured per custom domain, so pages on a systeme.io subdomain are NOT covered. |
+| **ThriveCart** | Meta CAPI | Cart lifecycle only (InitiateCheckout, Purchase, rebills, Lead on bounce) | Replaces for ThriveCart to Meta. No CRM or lead-nurture events. |
 
-Beware the common lookalike: many platforms offer a "paste your Pixel ID" field, which loads a **browser** pixel and is not server-side at all. It carries every browser-side loss and does not enable enhanced conversions or high match quality. Only a genuine Conversions API, Events API, or offline-import integration counts for this table.
+**Confirmed to have NO native server-side path** (browser pixel only, so a server-side tool is still warranted): Thinkific (their docs say plainly that CAPI is not supported), Typeform (their own help says the pixel is not compatible with CAPI), Calendly (pixel only, no Google Ads integration at all), Webflow (pixel field only; its server-side API feeds Webflow Analyze, not ad platforms), Squarespace (pixel only, and the Lead event does not even fire on Form Blocks), Jotform (browser widget only, support confirms no CAPI), Gravity Forms (no first-party ad add-on; note Meta's own WordPress plugin does NOT include Gravity Forms despite a widely repeated claim that it does).
+
+### How to tell a real one from a lookalike
+
+**The access token is the tell.** Every genuine server-side integration has a token, dataset ID, or OAuth connection. A settings screen with only a "paste your Pixel ID" box is a **browser** pixel: it carries every browser-side loss, gives no enhanced conversions, and does not make a server-side tool redundant. Wix is the one exception that uses OAuth instead of a pasted token.
+
+### What this means in practice
+
+1. **Native usually means Meta only.** 8 of 14 platforms checked have native Meta CAPI. Only 2 (HubSpot, HighLevel) have anything native for Google Ads, and only 1 (HubSpot) has TikTok. So "your platform already does this" is nearly always a Meta-only answer. A user asking for Google Ads, TikTok, LinkedIn, or several platforms at once still needs a tool for the rest.
+2. **Course and cart platforms send purchase events, not lead events.** For lead gen specifically, the native option often does not cover the moment the user cares about.
+3. **Booking is the biggest native gap.** HubSpot has no meeting-booked trigger and Calendly is pixel-only, so appointment tracking rarely has a native server-side path outside HighLevel and Wix Bookings.
+4. **Say so plainly when a native path wins.** Recommend it, explain the limits above, and do not add a vendor recommendation on top.
