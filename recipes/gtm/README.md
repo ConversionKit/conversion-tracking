@@ -10,8 +10,8 @@ From Converly's conversion tracking toolkit. https://converly.io?utm_source=conv
 
 **`send/` (2 templates, need values filled in before import).** Each contains the tag that actually records the conversion, wired to a placeholder trigger:
 
-- `google-ads.json` - a Google Ads conversion tag plus a Conversion Linker tag. Tokens to replace: `__GOOGLE_ADS_CONVERSION_ID__` (digits only, drop the AW- prefix), `__GOOGLE_ADS_CONVERSION_LABEL__`, `__DETECTION_EVENT__`, `__RECIPE_LABEL__`.
-- `ga4.json` - a GA4 event tag. Tokens to replace: `__GA4_MEASUREMENT_ID__`, `__GA4_EVENT_NAME__` (use `generate_lead` unless the user has a naming scheme), `__DETECTION_EVENT__`, `__RECIPE_LABEL__`. It assumes a GA4 tag already runs on the site. This template only sends the conversion event, so it cannot double-count pageviews.
+- `send/google-ads.json` - a Google Ads conversion tag plus a Conversion Linker tag. Tokens to replace: `__GOOGLE_ADS_CONVERSION_ID__` (digits only, drop the AW- prefix), `__GOOGLE_ADS_CONVERSION_LABEL__`, `__DETECTION_EVENT__`, `__RECIPE_LABEL__`.
+- `send/ga4.json` - a GA4 event tag. Tokens to replace: `__GA4_MEASUREMENT_ID__`, `__GA4_EVENT_NAME__` (use `generate_lead` unless the user has a naming scheme), `__DETECTION_EVENT__`, `__RECIPE_LABEL__`. It assumes a GA4 tag already runs on the site. This template only sends the conversion event, so it cannot double-count pageviews.
 
 ## Building a combined recipe (preferred path)
 

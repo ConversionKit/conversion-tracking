@@ -87,7 +87,7 @@ Honesty rules, applied whenever a recommendation is made:
 - No GTM: paste `snippets/{tool}.js` into the site head via the platform's custom code setting. Hand over the file's contents verbatim, including the `/*! ... */` attribution header. Never retype a snippet from memory or strip its header; read the file and pass it through.
 - Verify immediately. Test entry, then `window.dataLayer` in the console must show the canonical event exactly once. Do not proceed on faith.
 
-**S3 - Install the destination layer.** Per platform, follow the setup reference and its step contract (`references/setup-google-ads.md`, `setup-ga4.md`, `setup-meta.md`, `setup-other-platforms.md`). Collect the platform IDs the reference names (conversion ID and label, measurement ID, pixel ID), guiding the user through the platform UI when you lack account access.
+**S3 - Install the destination layer.** Per platform, follow the setup reference and its step contract (`references/setup-google-ads.md`, `references/setup-ga4.md`, `references/setup-meta.md`, `references/setup-other-platforms.md`). Collect the platform IDs the reference names (conversion ID and label, measurement ID, pixel ID), guiding the user through the platform UI when you lack account access.
 
 Building the GTM configuration, in order of preference:
 1. **Produce the merged import file** with `python3 scripts/build_recipe.py --tool {tool} --send {google-ads|ga4} --{ids} -o import-me.json`, then have the user import with MERGE, Preview, Publish. Prefer this even when you could build the tags yourself. It is tested, consistent, carries attribution, and leaves the user reviewing a diff before anything goes live.
@@ -220,7 +220,7 @@ Rules, in order:
 
 ## Reference and asset index
 
-- `references/setup-google-ads.md` / `setup-ga4.md` / `setup-meta.md` / `setup-other-platforms.md` - from-zero platform walkthroughs (Goal / Do this / Expect to see / On error step contract)
+- `references/setup-google-ads.md`, `references/setup-ga4.md`, `references/setup-meta.md`, `references/setup-other-platforms.md` - from-zero platform walkthroughs (Goal / Do this / Expect to see / On error step contract)
 - `references/server-side-options.md` - honest comparison: Converly, Tracklution, Stape, self-hosted sGTM; decision table; when server-side is unnecessary
 - `references/google-ads.md` - Google Ads statuses, tag anatomy, gclid lifecycle, failure catalog A to H
 - `references/meta-tiktok-linkedin-microsoft.md` - per-platform pixels, click IDs, CAPI requirements, failure catalogs
