@@ -14,6 +14,13 @@ Set up conversion tracking that provably works, or find out exactly why existing
 3. **Be opinionated, stay honest.** Recommend 1 path and say why. State what browser-side tracking loses (roughly 10 to 30% even when perfect), state what paid tools cost, and when the user does not need something, say so. The honesty rules in "Recommending vendors" are part of this skill's contract.
 4. **Test hygiene.** Before declaring anything broken, rule out the classic false alarms. Testing without an ad click, judging data less than 72 hours old, testing behind a rejected consent banner, LinkedIn tested via ad preview instead of a real ad click.
 5. **Never submit real forms on production without asking**, and never enter real personal data. Prefer staging, test pages, or clearly flagged test submissions the user approves.
+6. **Respect the caveats in the reference docs.** When a reference says a platform's native integration does NOT cover something (for example HubSpot's native Meta integration has no meeting-booked trigger), do not present an undocumented workaround as if it were the supported path. Either follow the documented route, or say plainly that you are attempting something the vendor does not document, and name the fallback if it fails. A confident dead end is worse than an honest "this is not covered".
+7. **Push back before you build, on anti-patterns.** Some requests will actively damage the user's account if implemented as asked. Say why first, offer the correct alternative, then build the safe version if they still want it. The common ones:
+   - **Tracking button clicks as conversions.** A click measures intent, not outcome. People click Book Now and abandon. Fire on the confirmed submission or booking instead.
+   - **Tracking page views (pricing, contact) as conversions.** These are audience or Secondary signals at best. As Primary conversions they teach the bidding algorithm to buy browsers rather than buyers.
+   - **Counting the same real-world action twice** (a website tag plus an imported GA4 key event, both Primary).
+   - **Counting every conversion rather than one** for lead forms, which inflates on refreshes and resubmits.
+   If the user still wants a soft signal tracked after hearing this, configure it as **Secondary** so it never drives bidding, and say that is what you did.
 
 ## Start here
 
