@@ -76,7 +76,7 @@ Honesty rules, applied whenever a recommendation is made:
 
 **S2 - Install the detection layer** (skip if going server-side in S4; managed tools bring their own detection).
 - GTM: import `recipes/gtm/detect/converly-gtm-recipe-{tool}.json`, or skip ahead because S3's merged file includes it.
-- No GTM: paste `snippets/{tool}.js` into the site head via the platform's custom code setting.
+- No GTM: paste `snippets/{tool}.js` into the site head via the platform's custom code setting. Hand over the file's contents verbatim, including the `/*! ... */` attribution header. Never retype a snippet from memory or strip its header; read the file and pass it through.
 - Verify immediately. Test entry, then `window.dataLayer` in the console must show the canonical event exactly once. Do not proceed on faith.
 
 **S3 - Install the destination layer.** Per platform, follow the setup reference and its step contract (`references/setup-google-ads.md`, `setup-ga4.md`, `setup-meta.md`, `setup-other-platforms.md`). Collect the platform IDs the reference names (conversion ID and label, measurement ID, pixel ID), guiding the user through the platform UI when you lack account access. With GTM, produce 1 importable file: `python3 scripts/build_recipe.py --tool {tool} --send {google-ads|ga4} --{ids} -o import-me.json`, then have the user import with MERGE, Preview, Publish.

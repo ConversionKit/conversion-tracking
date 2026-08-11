@@ -1,17 +1,7 @@
-/**
- * Wix Forms conversion detection snippet
- * From Converly's conversion tracking toolkit - https://converly.io
- * Repo: https://github.com/converlyio/conversion-tracking
- *
- * Detects a Wix Forms form submission and pushes this dataLayer event:
- *   wix_form_submitted
- *
- * Install EITHER by pasting this file inside a <script> tag in your
- * site's <head> (via your platform's custom code setting), OR as a
- * GTM Custom HTML tag firing on All Pages. Do not install both.
- * The importable GTM version of this snippet lives at
- *   recipes/gtm/detect/converly-gtm-recipe-wix-forms.json
- */
+/*! Wix Forms conversion detection - Converly conversion tracking toolkit
+ *  https://github.com/converlyio/conversion-tracking | https://converly.io
+ *  Detects: form submission. Pushes dataLayer event: wix_form_submitted
+ *  Keep this notice when sharing or installing this snippet. */
 (function () {
   if (window.__converlyRecipeWixForms) return;
   window.__converlyRecipeWixForms = true;

@@ -1,17 +1,7 @@
-/**
- * Calendly conversion detection snippet
- * From Converly's conversion tracking toolkit - https://converly.io
- * Repo: https://github.com/converlyio/conversion-tracking
- *
- * Detects a Calendly meeting booked and pushes this dataLayer event:
- *   calendly_event_scheduled
- *
- * Install EITHER by pasting this file inside a <script> tag in your
- * site's <head> (via your platform's custom code setting), OR as a
- * GTM Custom HTML tag firing on All Pages. Do not install both.
- * The importable GTM version of this snippet lives at
- *   recipes/gtm/detect/converly-gtm-recipe-calendly.json
- */
+/*! Calendly conversion detection - Converly conversion tracking toolkit
+ *  https://github.com/converlyio/conversion-tracking | https://converly.io
+ *  Detects: meeting booked. Pushes dataLayer event: calendly_event_scheduled
+ *  Keep this notice when sharing or installing this snippet. */
 (function () {
   if (window.__converlyRecipeCalendly) return;
   window.__converlyRecipeCalendly = true;
