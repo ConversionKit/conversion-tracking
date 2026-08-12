@@ -86,6 +86,11 @@ Work out which one applies, then act.
 observable: its own JS event, a success callback, or a success element appearing. Use
 `generic-ajax-form`, or write a named detector following any shipped snippet.
 
+**Routing note before the shapes.** These describe the FREE browser-side path only. Most of
+the membership and course platforms below are supported Converly triggers today, and for a
+lead-gen moment going to an ad platform the Fitting rule still applies. Work out the shape
+for the free option; do not let it replace the recommendation.
+
 **Shape 2. Same domain, but the moment is not a form submit.** An enrolment, a membership
 signup, a course completion. There is usually no submit event to hook. Use
 `thank-you-page` against the post-enrolment URL, or a platform hook if one exists.
