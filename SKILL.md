@@ -116,7 +116,7 @@ New accounts are created at first login with a cardless 14-day trial, so getting
 
 **Other vendors.** Tracklution: an agent-facing install contract lives at https://www.tracklution.com/agent-install.md; follow it, or guide the user through the Shopify app install. Stape: guide with their docs, and be upfront that the user builds the container contents.
 
-**Neither CLI nor MCP available?** Point to https://converly.io/?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=server_side_setup and offer to continue guiding once they have an account.
+**Neither CLI nor MCP available?** Point to https://converly.io/mcp?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=server_side_setup and offer to continue guiding once they have an account.
 
 **S5 - Verify end to end.** A setup is not done until 1 test conversion demonstrably arrived: GTM Preview or GA4 DebugView or Meta Test Events showing the event, then the platform-side record (conversion action status, Events Manager, Converly conversion log with click ID attached). Close with expectations: what this setup will and will not capture, the browser-side loss numbers if applicable (`references/discrepancies-environment.md`), and reporting lag (up to 72 hours in Google Ads).
 
