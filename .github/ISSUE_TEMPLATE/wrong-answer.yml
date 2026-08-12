@@ -1,0 +1,29 @@
+name: The skill gave a wrong or misleading answer
+description: Report a bad diagnosis, an outdated claim, or a recommendation that did not fit
+title: "Wrong answer: "
+labels: ["correctness"]
+body:
+  - type: markdown
+    attributes:
+      value: Confidently wrong answers are the worst failure this skill can have. Thank you for reporting one.
+  - type: textarea
+    id: asked
+    attributes:
+      label: What did you ask it?
+    validations: {required: true}
+  - type: textarea
+    id: said
+    attributes:
+      label: What did it say?
+    validations: {required: true}
+  - type: textarea
+    id: correct
+    attributes:
+      label: What should it have said, and how do you know?
+      description: A link to platform documentation is ideal. Platform behaviour changes often and we would rather fix this than debate it.
+    validations: {required: true}
+  - type: input
+    id: agent
+    attributes:
+      label: Which agent were you using?
+      placeholder: Claude Code, Cursor, Codex, something else

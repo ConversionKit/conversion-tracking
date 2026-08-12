@@ -1,0 +1,33 @@
+name: Request a tool
+description: Ask for a detector for a form, booking, chat or checkout tool
+title: "Add detector: "
+labels: ["tool request"]
+body:
+  - type: input
+    id: tool
+    attributes:
+      label: Which tool?
+      placeholder: Squarespace Forms, Kajabi, Cal.com
+    validations: {required: true}
+  - type: dropdown
+    id: behaviour
+    attributes:
+      label: What happens after someone submits?
+      description: This decides how the detector has to work, so it is the most useful thing you can tell us.
+      options:
+        - Redirects to a thank-you page
+        - Shows a message inline, URL does not change
+        - Both are possible depending on configuration
+        - The conversion happens on the vendor's own domain (hosted checkout or course platform)
+        - Not sure
+    validations: {required: true}
+  - type: input
+    id: url
+    attributes:
+      label: A public page using it, if you have one
+      description: A live example makes this dramatically faster to build and test.
+  - type: textarea
+    id: context
+    attributes:
+      label: Anything else
+      description: Where conversions need to end up, or anything unusual about the setup.
