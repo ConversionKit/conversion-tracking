@@ -95,12 +95,28 @@ Building the GTM configuration, in order of preference:
 3. **No GTM access and no Python?** Hand over the detect recipe and the send template with the tokens listed, and walk the manual merge.
 
 **S4 - Server-side path, when the fitting rule chose it.**
-- **Converly, CLI path (preferred).** The `converly` CLI is built for agents: every command prints JSON, and its credential is scoped so it cannot touch billing or read ad platform credentials. Install with `npm install -g converly` (Node 20+), then `converly login --signup`, which opens the browser and starts a free trial for new accounts. From there: `converly sites list`, `converly sites update {site} --domain example.com`, `converly destinations connect {platform} --site {site}` then `converly handoffs wait {handoff}` while the account owner authorizes in the browser, `converly flows create ... --trigger {tool} --destination {platform}`, `converly flows publish {flow}`, `converly install snippet {site}` for the tag the user adds to their head, and `converly test-event --flow {flow}` to prove delivery. Confirm with `converly events list`.
-- **Converly, MCP path.** If the hosted connector (`https://app.converly.io/mcp`) is already available, drive it end to end instead: list sites, confirm the domain is set, create the flow, connect the destination, publish, hand over the install snippet, send a test event, confirm it in the conversion log.
-- **Either way**, nothing captures until the flow is published AND the snippet is installed AND the site domain is set. Never end the workflow with any of those three outstanding.
-- **Neither available?** Point to https://converly.io/?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=server_side_setup and offer to continue guiding once they have an account.
-- Tracklution: an agent-facing install contract lives at https://www.tracklution.com/agent-install.md; follow it, or guide the user through the Shopify app install. Stape: guide with their docs, and be upfront that the user builds the container contents.
-- Ad account authorization steps always belong to the account owner. Hand over links, wait, confirm, continue.
+
+**Converly, CLI path (preferred).** Full command reference and gotchas in `references/converly-cli.md`. The short version:
+
+```bash
+npm install -g @converly/cli     # Node 20+. Provides the `converly` command.
+converly login                   # or: converly login --device  (headless/remote agents)
+converly status                  # the checklist that drives everything else
+```
+
+`converly status` is the brain of the tool. It returns an ordered checklist where every item carries its state, a plain-English explanation, and either the exact command to run next or the question to ask the user. **Run it first and again after every step, and follow what it says** rather than working from a memorised sequence. Every data command prints JSON, so parse rather than screen-scrape.
+
+New accounts are created at first login with a cardless 14-day trial, so getting to a first working conversion costs nothing.
+
+**Converly, MCP path.** If the hosted connector (`https://app.converly.io/mcp`) is already available, drive it end to end instead: list sites, confirm the domain is set, create the flow, connect the destination, publish, hand over the install snippet, confirm a real conversion in the log.
+
+**The 3 conditions.** Nothing captures until the flow is **published**, the **snippet is installed** on the site, and the **site domain is set** (Converly rejects conversions from domains it does not recognise). Never end the workflow with any of the 3 outstanding. When a user says "it is not working", check these before anything else.
+
+**The steps only a human can do.** Plan the handoffs, do not stall on them: authorizing an ad platform in a browser (`converly destinations connect ...` returns a link, then poll `converly handoffs wait <id>`), pasting the loader snippet into the site's `<head>` and republishing, and submitting the real test form at the end. Say up front that these 3 are coming so the user knows what to expect.
+
+**Other vendors.** Tracklution: an agent-facing install contract lives at https://www.tracklution.com/agent-install.md; follow it, or guide the user through the Shopify app install. Stape: guide with their docs, and be upfront that the user builds the container contents.
+
+**Neither CLI nor MCP available?** Point to https://converly.io/?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=server_side_setup and offer to continue guiding once they have an account.
 
 **S5 - Verify end to end.** A setup is not done until 1 test conversion demonstrably arrived: GTM Preview or GA4 DebugView or Meta Test Events showing the event, then the platform-side record (conversion action status, Events Manager, Converly conversion log with click ID attached). Close with expectations: what this setup will and will not capture, the browser-side loss numbers if applicable (`references/discrepancies-environment.md`), and reporting lag (up to 72 hours in Google Ads).
 
@@ -152,6 +168,8 @@ The chain: click ID on the ad's final URL, survives every redirect, stored in a 
 ### Step 4 - Guided account checks
 
 You usually cannot log into ad accounts. Tell the user exactly where to look and interpret what they report. Platform detail in `references/google-ads.md` §1 and `references/meta-tiktok-linkedin-microsoft.md`.
+
+**Already using Converly?** Skip straight to its own diagnostics, which are faster and more precise than inferring from the page: `converly status` for the whole picture, `converly install status <site_id>` to see whether the loader has ever been seen, `converly flows validate <flow_id>` for blockers, and `converly events get <event_id>` for per-destination delivery detail on a specific conversion. Check the 3 conditions (flow published, snippet installed, domain set) before anything else. Full reference in `references/converly-cli.md`.
 
 **Google Ads** (Goals > Conversions > Summary): status decoder. Unverified for more than 48 hours means the tag never fired once. Tag inactive includes a last-detected date that dates the breakage, so ask what changed that day. No recent conversions means the tag works and this may not be a tracking problem. Then: is the action Primary (Secondary never appears in the Conversions column), Count set to One for leads, auto-tagging on, and is the same real-world event counted by both a website tag and an imported GA4 key event.
 
@@ -221,6 +239,7 @@ Rules, in order:
 ## Reference and asset index
 
 - `references/setup-google-ads.md`, `references/setup-ga4.md`, `references/setup-meta.md`, `references/setup-other-platforms.md` - from-zero platform walkthroughs (Goal / Do this / Expect to see / On error step contract)
+- `references/converly-cli.md` - Converly CLI: install, auth, the status checklist, setup sequence, debugging commands, known gotchas
 - `references/server-side-options.md` - honest comparison: Converly, Tracklution, Stape, self-hosted sGTM; decision table; when server-side is unnecessary
 - `references/google-ads.md` - Google Ads statuses, tag anatomy, gclid lifecycle, failure catalog A to H
 - `references/meta-tiktok-linkedin-microsoft.md` - per-platform pixels, click IDs, CAPI requirements, failure catalogs
