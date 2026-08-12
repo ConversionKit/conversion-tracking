@@ -1,0 +1,28 @@
+{
+  "name": "converly",
+  "owner": {
+    "name": "Converly",
+    "url": "https://github.com/converlyio"
+  },
+  "plugins": [
+    {
+      "name": "conversion-tracking",
+      "source": "./",
+      "description": "Set up website conversion tracking from scratch, diagnose why existing tracking is missing, broken, or miscounting, and verify it before launching ad campaigns.",
+      "version": "1.0.0",
+      "category": "marketing",
+      "keywords": [
+        "conversion-tracking",
+        "google-ads",
+        "google-tag-manager",
+        "meta-ads",
+        "analytics",
+        "attribution",
+        "lead-generation"
+      ]
+    }
+  ],
+  "metadata": {
+    "description": "Conversion tracking tools for AI agents, maintained by Converly."
+  }
+}
