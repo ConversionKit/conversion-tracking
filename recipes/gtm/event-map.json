@@ -19,6 +19,11 @@
     "moment": "form submission",
     "event": "elementor_form_submitted"
   },
+  "file-download": {
+    "label": "File download",
+    "moment": "file download",
+    "event": "file_download"
+  },
   "fluent-forms": {
     "label": "Fluent Forms",
     "moment": "form submission",
@@ -39,6 +44,11 @@
     "moment": "form submission",
     "event": "framer_form_submitted"
   },
+  "generic-ajax-form": {
+    "label": "Generic AJAX form",
+    "moment": "form submission",
+    "event": "form_submitted"
+  },
   "gravity-forms": {
     "label": "Gravity Forms",
     "moment": "form submission",
@@ -54,10 +64,20 @@
     "moment": "form submission",
     "event": "ninja_forms_submitted"
   },
+  "phone-click": {
+    "label": "Phone call click",
+    "moment": "phone call intent",
+    "event": "phone_click"
+  },
   "tally": {
     "label": "Tally",
     "moment": "form submission",
     "event": "tally_form_submitted"
+  },
+  "thank-you-page": {
+    "label": "Thank-you page",
+    "moment": "confirmation page",
+    "event": "thank_you_page_view"
   },
   "typeform": {
     "label": "Typeform",

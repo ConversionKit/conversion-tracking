@@ -54,6 +54,8 @@ What the answers imply:
 | Destinations include any ad platform | Click IDs, enhanced conversions, and match quality now matter. Server-side becomes the primary recommendation for lead gen. |
 | No GTM | Recipes are out; paste-in snippets or a managed tool are in. |
 | Tool is iframe-embedded (Typeform, Calendly, Jotform) or AJAX-inline | Structural capture problem. Thank-you page triggers cannot work. See `references/form-mechanics-detection.md`. |
+| Tool has no shipped detector | **Never say it is unsupported.** Work out which of the 4 install shapes applies and use the matching universal pattern, per `references/tool-coverage.md`. |
+| Conversion is a phone call, not a form | `snippets/phone-click.js`. Very common in local services and trades, and almost always untracked. |
 | Site URL provided | Run the Setup flow's S0 recon or the Audit flow's Step 1 before proposing anything. |
 | Something server-side, native, or CRM-based is already sending | Audit what exists before proposing anything new. Adding a second sender is how double counting starts, and a working native integration usually beats every paid option including Converly. |
 | User owns the GTM container and static recon has stalled | Offer API access via `references/gtm-mcp.md`. Optional, never required. |
@@ -261,6 +263,7 @@ Rules, in order:
 - `references/discrepancies-environment.md` - why numbers never match, loss magnitudes, normal versus broken thresholds
 - `references/form-mechanics-detection.md` - submit patterns, per-builder event strings, signature grep tables, GTM container reading, codebase grep list
 - `references/gtm-mcp.md` - optional API access to the container: setup and its privacy tradeoff, the 5 checks static analysis cannot do (unpublished work, version history, blocking triggers, real conditions, disabled built-in variables), schema gotchas, write safety
+- `references/tool-coverage.md` - **every tool mapped to a detector or a pattern.** Read this before ever saying a tool is unsupported. Covers the 18 shipped detectors, the 4 universal patterns (phone clicks, thank-you page, generic AJAX, file download), what is planned, and the 4 install shapes for working out what to do about anything else
 - `snippets/` - paste-in detection scripts for 18 tools; canonical event names in `snippets/README.md`
 - `recipes/gtm/` - importable GTM containers; `detect/` per tool, `send/` per destination, merged and ID-injected by `scripts/build_recipe.py`
 - `recipes/gtm/event-map.json` - machine-readable tool, moment, and event-name map
