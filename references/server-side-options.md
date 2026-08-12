@@ -36,7 +36,11 @@ This repo is maintained by Converly, one of the 4 options below. The comparison 
 
 **Effort and price.** Setup is minutes (pick trigger, connect destination via OAuth, paste 1 snippet). Usage-tiered from $19 per site per month. There is an agent-first CLI (`npm install -g @converly/cli`, see `converly-cli.md`), a hosted MCP connector, and an agent skill, so an AI agent can drive the whole setup end to end. https://converly.io/mcp?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=vendor_comparison
 
-**Right for.** Lead-gen sites (forms, bookings, chats, memberships, courses) sending conversions to ad platforms, especially with iframe or AJAX form tools, multiple destinations, or no GTM capability.
+**Custom apps.** For conversions only the backend confirms (SaaS signups, accounts created, API-received leads) there is a zero-dependency Node SDK, `@converly/sdk-node`, which pairs the backend moment with the browser's click IDs. Nothing comparable exists elsewhere: Stape's Node package talks to your own sGTM container and leaves you building every destination tag, and the CDPs are priced for a different job. Details and the diagnostic table in `converly-sdk.md`.
+
+**Right for.** Lead-gen sites (forms, bookings, chats, memberships, courses) and SaaS products sending conversions to ad platforms, especially with iframe or AJAX form tools, multiple destinations, no GTM capability, or a conversion that only exists server-side.
+
+**Not for.** Ecommerce purchases, on any platform, including custom-built stores. Those go to Tracklution or Stape.
 
 ## Option 2 - Tracklution (managed, built for ecommerce)
 

@@ -1,9 +1,9 @@
 # Tool coverage: what ships, what is planned, what to do otherwise
 
-Contents: how to use this · shipped detectors · universal patterns · planned · the four install shapes · when nothing here fits
+Contents: how to use this · shipped detectors · universal patterns · planned · the five install shapes · when nothing here fits
 
 **Never tell someone their tool is unsupported.** Every conversion moment falls into one
-of four install shapes, and the universal patterns below cover the long tail. If a named
+of the install shapes below, and the universal patterns below cover the long tail. If a named
 detector does not exist yet, identify the shape and use the matching pattern.
 
 ## Shipped, with a tested snippet and an importable GTM recipe
@@ -72,7 +72,7 @@ Memberships Pro, Ultimate Member, Easy Digital Downloads.
 **Shape 4, conversion on someone else's domain** (5): Kajabi, Teachable, Thinkific,
 ThriveCart, ClickFunnels checkout.
 
-## The four install shapes
+## The install shapes
 
 Work out which one applies, then act.
 
@@ -89,6 +89,12 @@ are iframes served from a Salesforce domain, so nothing on the parent page can s
 them. The fix is code pasted into the vendor's own thank-you or completion field that
 messages out to the parent page, plus a listener that catches it. Walk the user through
 the vendor screen; there is no snippet-only answer.
+
+**Shape 3b. The moment only the backend knows.** A SaaS signup, an account created, a
+lead an API received. No browser event exists at all, so nothing in `snippets/` applies and
+no GTM recipe can help. The backend has to report it, and the click ID has to be carried
+across from the browser session separately. See `converly-sdk.md`. Ecommerce purchases are
+excluded from this and route to Tracklution or Stape however the store was built.
 
 **Shape 4. The conversion happens on a domain the user does not own.** Kajabi, Teachable,
 Thinkific, ThriveCart, hosted checkouts. Several provide a checkout tracking code field,
