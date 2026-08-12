@@ -81,7 +81,7 @@ The container is a public JS file: fetch `https://www.googletagmanager.com/gtm.j
 - `__gaawe` GA4 event tag; `__gaawc`/`__googtag` config; `__sp` Ads remarketing; `__flc` Floodlight; `__html` Custom HTML (pixel/CAPI glue); `__cvt_` custom templates (Facebook/TikTok/Stape)
 - Triggers: `__fsl` form submit listener; `__cl`/`__lcl` clicks; `__evl` element visibility; `__hl` history change (SPA)
 - Predicates: `"arg1":"gtm.formSubmit"`, custom event names like `"arg1":"typeform_submit"` - exactly which dataLayer event the conversion tag waits for; then verify the page actually pushes it
-- `"paused":true` - configured but never fires
+- **Paused tags are invisible here.** GTM omits a paused tag from the published container rather than flagging it, so grepping for `"paused":true` finds nothing and a paused conversion tag is byte-for-byte indistinguishable from no conversion tag. Verified against two otherwise identical containers. If the user believes a tag exists and you cannot find one, suspect paused before you tell them it is missing, and confirm through the API (`gtm-mcp.md`).
 - Grep whole file for `AW-`, `conversionLabel`, pixel IDs. Nothing matching = container has NO conversion tags regardless of what the page promises.
 
 ### B.3 How existing detectors work
