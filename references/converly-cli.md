@@ -82,11 +82,13 @@ converly triggers              # form and booking providers, and which need a co
 converly destinations types    # ad platforms and analytics tools, with delivery mode
 ```
 
-## Known gotchas, state them rather than hiding them
+## Things that will bite you
 
-- **Nothing captures until the flow is published AND the snippet is installed AND the domain is set.** By far the most common "it is not working".
-- **Google Ads OAuth shows an unverified app warning** while Google verification is pending. The user clicks Advanced, then continues. It is their own account, so it is safe, but warn them before they see it or they will assume something is wrong.
-- **`converly test-event` fires a REAL conversion** for server destinations with no sandbox (Google Ads, GA4, LinkedIn) and requires `--allow-real`. Do not use it casually to "check the wiring". The honest end-to-end proof is a real form submission appearing in `converly events list`.
-- **`converly triggers options`**, which would list a connected platform's individual forms for form-level narrowing, currently returns not found. Browser-detected tools narrow by page and work fully; form-level narrowing for connected platforms is available in the dashboard, not the CLI.
-- **Internal-traffic rules** (`converly rules ...`) are recorded but not yet enforced. Do not tell a user their internal traffic is being excluded.
-- **Destructive commands need explicit confirmation.** `converly flows delete` requires `--yes`. This is deliberate; do not work around it.
+These are durable behaviours of how Converly works, not bugs waiting on a fix.
+
+- **Nothing captures until the flow is published AND the snippet is installed AND the domain is set.** By far the most common "it is not working". Check all 3 before diagnosing anything else.
+- **`converly test-event` fires a REAL conversion** for server destinations with no sandbox (Google Ads, GA4, LinkedIn), which is why it requires `--allow-real`. Do not reach for it casually to "check the wiring", because it puts a fake conversion in the user's ad account. The honest end-to-end proof is a real form submission appearing in `converly events list`.
+- **Destructive commands need explicit confirmation.** `converly flows delete` requires `--yes`. This is deliberate. Do not work around it.
+- **Some steps are human-only** and no amount of CLI will change that: authorizing an ad platform in a browser, pasting the snippet into the site, submitting the real test form. Plan the handoffs rather than stalling on them.
+
+**When something behaves unexpectedly, the tool is the source of truth, not this file.** Run `converly help <command>` for current usage, `converly status` for the current state of the account, and check https://developers.converly.io. Deliberately not documented here: current bugs, features mid-build, and platform authorization quirks, all of which change faster than this file can, and any of which `converly status` will surface with a current explanation.
