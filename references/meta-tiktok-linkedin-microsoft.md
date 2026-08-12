@@ -6,6 +6,18 @@ Compiled August 2026. Frequency: VERY COMMON / COMMON / OCCASIONAL / RARE.
 
 ## 1. META
 
+**Reading the Diagnostics tab.** Meta surfaces problems here that neither Overview nor Test
+Events will show. Two behaviours worth knowing before interpreting what a user reports:
+
+- **Issues age out of view.** If Meta does not re-detect an issue the next day it moves from
+  **Active** to **Previously detected**. So "the diagnostics tab is clean" does not mean the
+  problem is fixed, it may mean it simply was not seen again yet. Ask them to check
+  Previously detected too.
+- **Deduplication fails on formatting, not just on missing IDs.** The browser sending
+  `ord-123` while the server sends `ord_123` is a mismatch, and so is a case difference. The
+  symptom is doubled conversions with both sources apparently configured correctly, which
+  reads as an implementation success right up until the numbers are wrong.
+
 ### Pixel anatomy
 - Script src: `connect.facebook.net/en_US/fbevents.js`
 - Init: `fbq('init', '<15-16 digit id>')`; advanced matching adds `{em:..., ph:...}` second arg

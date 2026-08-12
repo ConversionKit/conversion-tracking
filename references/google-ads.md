@@ -19,6 +19,23 @@ The "Status" column per conversion action is the single highest-value diagnostic
 | **Needs attention** | Active but has errors (commonly enhanced-conversions data problems) | Partially working; open Diagnostics |
 | **Removed** | Conversion action deleted/disabled in the account | Re-enable the action |
 
+**Three more statuses the table above misses.** Harvested from Google's own status
+documentation, and each means something different from the four above:
+
+- **Misconfigured.** Conversions have stopped recording *entirely* because of a setup error
+  or a broken tag. This is the most urgent status there is and it is not the same as
+  Unverified: Unverified means never seen, Misconfigured means it worked and now does not.
+- **Awaiting conversions.** No conversions in 7 days, expected when the action was created
+  under 48 hours ago, the campaigns are paused, or traffic is too low to produce one. Do not
+  diagnose a tag problem from this without first checking whether campaigns are even running.
+- **Removed.** The action was manually deleted or archived. Nothing is broken; someone did
+  this on purpose, possibly a previous agency. Ask before recreating it.
+
+Separately, Tag Diagnostics grades tags **excellent / good / needs attention / urgent**, and
+there are three distinct enhanced-conversions diagnostic reports (web tag, web API, and
+leads). A user saying "diagnostics says there's a problem" could mean any of them, so ask
+which screen they are looking at before interpreting it.
+
 The **last detected date** on Tag inactive dates the breakage - ask "what changed on the site/GTM/plugins on that date?"
 
 ### 1.2 Built-in Troubleshoot flow / Tag Assistant
