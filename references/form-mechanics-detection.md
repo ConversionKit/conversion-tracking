@@ -81,7 +81,9 @@ The container is a public JS file: fetch `https://www.googletagmanager.com/gtm.j
 - `__gaawe` GA4 event tag; `__gaawc`/`__googtag` config; `__sp` Ads remarketing; `__flc` Floodlight; `__html` Custom HTML (pixel/CAPI glue); `__cvt_` custom templates (Facebook/TikTok/Stape)
 - Triggers: `__fsl` form submit listener; `__cl`/`__lcl` clicks; `__evl` element visibility; `__hl` history change (SPA)
 - Predicates: `"arg1":"gtm.formSubmit"`, custom event names like `"arg1":"typeform_submit"` - exactly which dataLayer event the conversion tag waits for; then verify the page actually pushes it
-- **Paused tags are invisible here.** GTM omits a paused tag from the published container rather than flagging it, so grepping for `"paused":true` finds nothing and a paused conversion tag is byte-for-byte indistinguishable from no conversion tag. Verified against two otherwise identical containers. If the user believes a tag exists and you cannot find one, suspect paused before you tell them it is missing, and confirm through the API (`gtm-mcp.md`).
+- **Paused tags are invisible here, and `__paused` is a trap.** GTM omits a paused tag from the published container entirely rather than flagging it. Verified on two otherwise identical containers: the live one carries `__awct`, its conversion ID and its label; the paused one carries none of the three.
+  **Do not read `__paused:1` as evidence.** It appears in every container as part of GTM's internal tag-type registry, next to `__tl`, `__tg` and `__ytl`. It says a tag type exists in GTM, not that this container has a paused tag. An agent under test reached the right answer by misreading exactly this, which is luck rather than diagnosis and will produce a confident wrong answer on the next container.
+  When a user believes a tag exists and you cannot find one, say no tag is **live**, name paused as a likely cause, and confirm through the API (`gtm-mcp.md`). Never present it as something you observed in `gtm.js`.
 - Grep whole file for `AW-`, `conversionLabel`, pixel IDs. Nothing matching = container has NO conversion tags regardless of what the page promises.
 
 ### B.3 How existing detectors work
