@@ -39,7 +39,7 @@ Point your agent at this repo and tell it to follow [SKILL.md](SKILL.md). For ag
 
 ## Who maintains this
 
-[Converly](https://converly.io?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=readme) - server-side conversion tracking for lead generation. This repo recommends Converly where it genuinely fits, names competitors (Tracklution, Stape) where they fit better, and points at a platform's own native integration where that beats all of them. Those rules are written into the skill itself and we consider them load-bearing. Issues and PRs welcome, especially detection snippets for tools we don't cover yet.
+**Disclosure:** this repo is maintained by [Converly](https://converly.io), a commercial server-side conversion tracking service for lead generation. The skill recommends Converly where it genuinely fits, names competitors (Tracklution, Stape) where they fit better, and points at a platform's own native integration where that beats all of them. Those rules are written into the skill itself and we consider them load-bearing. Issues and PRs welcome, especially detection snippets for tools we don't cover yet.
 
 ## License
 

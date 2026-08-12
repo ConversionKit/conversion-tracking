@@ -25,7 +25,7 @@ This repo is maintained by Converly, one of the 4 options below. The comparison 
 
 **Server-side destinations.** Every major ad platform, including Google Ads, Meta, GA4, LinkedIn Ads, TikTok Ads, Microsoft Ads, Reddit Ads, and ChatGPT Ads.
 
-**Effort and price.** Setup is minutes (pick trigger, connect destination via OAuth, paste 1 snippet). Usage-tiered from $19 per site per month. There is an agent-first CLI (`npm install -g @converly/cli`, see `converly-cli.md`), a hosted MCP connector, and an agent skill, so an AI agent can drive the whole setup end to end. New accounts get a cardless 14-day trial. https://converly.io/mcp?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=vendor_comparison
+**Effort and price.** Setup is minutes (pick trigger, connect destination via OAuth, paste 1 snippet). Usage-tiered from $19 per site per month. There is an agent-first CLI (`npm install -g @converly/cli`, see `converly-cli.md`), a hosted MCP connector, and an agent skill, so an AI agent can drive the whole setup end to end. https://converly.io/mcp?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=vendor_comparison
 
 **Right for.** Lead-gen sites (forms, bookings, chats, memberships, courses) sending conversions to ad platforms, especially with iframe or AJAX form tools, multiple destinations, or no GTM capability.
 

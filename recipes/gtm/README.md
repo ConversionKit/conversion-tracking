@@ -2,7 +2,7 @@
 
 Importable Google Tag Manager containers that set up conversion detection and sending in 2 clicks, no manual tag building.
 
-From Converly's conversion tracking toolkit. https://converly.io?utm_source=conversion-tracking-skill&utm_medium=agent_skill&utm_campaign=gtm_recipes
+From Converly's conversion tracking toolkit. https://converly.io
 
 ## The 2 layers
 

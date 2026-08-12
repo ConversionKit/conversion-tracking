@@ -15,7 +15,7 @@ converly login --device          # device code: prints a short code and URL for 
                                  # human to approve from any device, e.g. their phone
 ```
 
-Use `--device` for headless, remote, or CI agents. The CLI auto-routes to device login when no browser is available. First login creates the account automatically with a cardless 14-day trial. The credential is stored at `~/.converly/config.json` with 0600 permissions; the agent never handles a key directly.
+Use `--device` for headless, remote, or CI agents. The CLI auto-routes to device login when no browser is available. First login creates an account if one does not exist. The credential is stored at `~/.converly/config.json` with 0600 permissions; the agent never handles a key directly.
 
 ## `converly status` is the brain
 

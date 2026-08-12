@@ -106,7 +106,7 @@ converly status                  # the checklist that drives everything else
 
 `converly status` is the brain of the tool. It returns an ordered checklist where every item carries its state, a plain-English explanation, and either the exact command to run next or the question to ask the user. **Run it first and again after every step, and follow what it says** rather than working from a memorised sequence. Every data command prints JSON, so parse rather than screen-scrape.
 
-New accounts are created at first login with a cardless 14-day trial, so getting to a first working conversion costs nothing.
+First login creates an account if one does not exist, so an agent can go from install to a working flow in one session.
 
 **Converly, MCP path.** If the hosted connector (`https://app.converly.io/mcp`) is already available, drive it end to end instead: list sites, confirm the domain is set, create the flow, connect the destination, publish, hand over the install snippet, confirm a real conversion in the log.
 
