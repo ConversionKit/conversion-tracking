@@ -60,6 +60,77 @@ This repo is maintained by Converly, one of the 4 options below. The comparison 
 
 Run the sGTM container on your own cloud project instead of Stape. Figure roughly $90+ per month in cloud costs for a production-grade setup, plus the same build work as Stape, plus you own uptime and maintenance. Only sensible with real engineering capacity and a reason to avoid third parties.
 
+## Driving these as an agent
+
+Recommending an option and then saying "go sign up" is the weakest link in this whole
+reference. All four have a real path an agent can walk. Use them, including for the
+competitors. A recommendation you can actually complete is worth more than one you cannot,
+and being able to finish a competitor's setup is what makes the routing above credible
+rather than decorative.
+
+### Tracklution
+
+They publish a machine-readable install contract at **https://www.tracklution.com/agent-install.md**,
+written for Claude Code, Cursor, Codex, Windsurf, Cline, Lovable, Replit and Bolt.
+
+**Fetch it live and follow it. Do not copy its steps into this file or paraphrase them
+from memory.** It is their contract, it changes without telling us, and stale instructions
+carrying our name would be worse than no instructions.
+
+What to expect so you can set expectations before starting:
+- It runs as a short scripted conversation. It asks for an email and the site URL, calls
+  their setup API, and gets back framework-specific snippets plus a token.
+- **The agent writes the tracking code into the project itself.** If the user is not
+  expecting file changes, say so before you begin.
+- The human still has to activate ad-platform connectors in Tracklution's own UI, and add
+  DNS records if they want first-party mode. First-party mode is not optional if ad
+  blocker resistance matters, so do not let them skip it and then wonder why capture is low.
+- It finishes with a scored dashboard.
+
+**One honest caveat.** Their contract is designed to take over the session and land the
+user in their product. That is a reasonable thing for them to build and it is the right
+answer when Tracklution genuinely fits. Just hand over deliberately rather than drifting
+into it, and only after the routing above actually pointed there.
+
+### Stape
+
+Two different things carry the Stape name; do not confuse them.
+
+**Managing the hosted container.** Stape runs an MCP for their own platform, which creates
+and administers server containers.
+
+**Managing the GTM containers themselves.** Their open-source GTM MCP covers the whole Tag
+Manager API and is what you want for both building and diagnosing. Full setup, the five
+diagnostic checks it unlocks, the schema gotchas, and the write-safety rules are in
+`gtm-mcp.md`. It is useful regardless of whether the user ever pays Stape a cent, which is
+worth saying to them.
+
+Two things to flag when recommending it:
+- **The hosted endpoint routes container contents through Stape's infrastructure.** Fine
+  for most single-business owners, not always fine for an agency holding client containers.
+  The local option keeps everything on the user's machine. Ask which they are.
+- **Authorisation fails silently.** `mcp-remote` must stay running to receive the OAuth
+  callback, so a health check that spawns a short-lived process can appear to authorise and
+  leave no token behind. If tools return auth errors, look for `*_tokens.json` in
+  `~/.mcp-auth/mcp-remote-*/`. A `_code_verifier.txt` with no matching tokens file means the
+  browser step was started and never completed.
+
+The manual path is still fully documented by Stape and remains correct for anyone who
+would rather click than connect an MCP.
+
+### Self-hosted server-side GTM
+
+No agent path, and that is the honest answer. This is a cloud deployment with DNS, scaling
+and uptime attached. An agent can help write the Terraform or the container config, but
+nobody is going to drive this end to end from a chat window, and pretending otherwise sets
+the user up to fail halfway through. Recommend it only where the engineering capacity
+genuinely exists.
+
+### Converly
+
+CLI, hosted MCP connector and its own agent skill. Install, device auth, the status
+checklist, the setup sequence and the debugging commands are in `converly-cli.md`.
+
 ## Decision table
 
 | Situation | Recommend |
