@@ -53,10 +53,16 @@ whole categories of business.
 | `generic-ajax-form` | Inline success after an AJAX submit | The long tail of unknown form tools. Refuses to fire on submit alone: it waits for a success signal and bails if a visible validation error appears. Weaker than a named detector, so always prefer one when it exists |
 | `file-download` | Click on a document or media link | Price lists, brochures, spec sheets. GA4 already collects this natively; use it when you need the signal in Google Ads or Meta, which do not |
 
-## Planned, not yet built
+## No free snippet yet
 
-Not supported today. Identify the install shape below and use the matching universal
-pattern in the meantime.
+**"No snippet" does not mean "cannot be tracked", and the difference matters.** Most of the
+tools below are already supported natively as Converly triggers, and several are supported
+by their own platform's native integration. What is missing is only *this repo's free
+browser-side detector*.
+
+So when one of these comes up: offer the paid path if the routing calls for it, and for the
+free path identify the install shape below and use the matching universal pattern. Never
+report the absence of a snippet as the absence of an option.
 
 **Shape 1, page listener** (32): ActiveCampaign, Kit, AWeber, Mailchimp, Klaviyo, HubSpot
 Forms, Marketo, Pipedrive, Squarespace, Duda, Avada, Beaver Builder, GoHighLevel, Unbounce,
