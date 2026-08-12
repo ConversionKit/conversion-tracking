@@ -1,5 +1,5 @@
-/*! Wix Bookings conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Wix Bookings conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: booking made. Pushes dataLayer event: wix_appointment_scheduled
  *  Keep this notice when sharing or installing this snippet. */
 (function () {

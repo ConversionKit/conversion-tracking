@@ -6,7 +6,16 @@ Contents: why server-side exists · disclosure · the 4 options (Converly, Track
 
 Browser-side tracking fires from the visitor's device, and a meaningful share of it never arrives. Ad blockers run for roughly 30% of users (50%+ in B2B and developer audiences), Safari caps JavaScript cookies at 7 days (24 hours when the landing URL carries a click ID), and consent rejection zeroes out tracking for those visitors entirely. A perfectly configured browser-side setup still undercounts by roughly 10 to 30% against the form backend. Magnitudes and sources live in `discrepancies-environment.md`.
 
-Server-side tracking observes the conversion and fires it to the ad platforms from a server instead. That recovers most environment losses, and it unlocks the data quality features browser tags cannot reach on their own:
+Server-side tracking observes the conversion and fires it to the ad platforms from a server instead. Configured properly it recovers most of these losses:
+
+- **Ad blockers stop being a factor.** Blockers work from lists of known third-party tracker domains and URL patterns. `connect.facebook.net` and `googleadservices.com` are on every list. A loader served from the site's own subdomain is not, so it is never recognised as a tracker and the conversion is captured normally. This is exactly what Converly's snippet, Stape's custom loader, and Tracklution's first-party mode exist to do.
+- **Delivery cannot be blocked at all.** Once captured, the send happens server to server, entirely outside the browser. Nothing can strip, race, or block it.
+- **Cookie lifetime improves**, because the click identifier is held server-side rather than in a JavaScript cookie Safari deletes after 7 days, or after 24 hours when the landing URL carried a click ID.
+- **Consent denial is not recovered, and must not be.** A visitor who refuses tracking stays untracked. Server-side changes how data travels, not whether you are allowed to collect it. Any vendor implying otherwise is selling a compliance problem.
+
+**The condition that matters, and it is worth checking.** All of the above depends on the loader being served from a first-party domain. A server-side setup still pulling its script from the vendor's own domain gets the delivery benefit but keeps the capture exposure, because that vendor domain can land on a blocklist like any other. When auditing an existing server-side install, check which domain the loader comes from. If it is not a subdomain of the site, that is a real finding.
+
+Server-side also unlocks the data quality features browser tags cannot reach on their own:
 
 - **Google Ads enhanced conversions** need the lead's email (hashed) attached to the conversion.
 - **Meta Event Match Quality** scores browser-only Lead events around 3 to 5. Sending name, email, and phone via the Conversions API typically lifts EMQ to 8 to 10, which directly improves delivery.

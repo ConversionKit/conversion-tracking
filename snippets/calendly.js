@@ -1,5 +1,5 @@
-/*! Calendly conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Calendly conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: meeting booked. Pushes dataLayer event: calendly_event_scheduled
  *  Keep this notice when sharing or installing this snippet. */
 (function () {

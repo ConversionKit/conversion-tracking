@@ -2,7 +2,7 @@
 
 Compiled August 2026. Vendor claims flagged [VENDOR].
 
-**Recovering the losses.** The structural losses cataloged here (ad blockers, ITP, consent) are what server-side tracking exists for; the honest option comparison lives in `server-side-options.md`.
+**Recovering the losses.** The structural losses catalogued here (ad blockers, ITP, consent) are what server-side tracking exists for. Configured with a first-party loader domain it recovers most of them, because blocklists target known third-party tracker domains and a subdomain of the site itself is not one. The exception is consent denial, which it does not and must not recover. The honest option comparison lives in `server-side-options.md`.
 
 ## 0. Core framing: GA4 and Google Ads NEVER match - that's normal
 

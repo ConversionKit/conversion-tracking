@@ -1,5 +1,5 @@
-/*! Framer Forms conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Framer Forms conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: form submission. Pushes dataLayer event: framer_form_submitted
  *  Keep this notice when sharing or installing this snippet. */
 (function () {
@@ -34,6 +34,16 @@
       if (!formEl || (formEl.tagName || '').toLowerCase() !== 'form') return;
       if (!isFramerForm(formEl)) return;
 
+      // A submission another handler already cancelled never happened.
+      if (event.defaultPrevented) return;
+
+      // Constraint validation gate: an invalid form cannot have submitted.
+      try {
+        if (typeof formEl.checkValidity === 'function' && formEl.checkValidity() === false) return;
+      } catch (e) {
+        // constraint validation unavailable — fall through
+      }
+
       var formName = formEl.getAttribute('data-framer-name') || formEl.id || '';
 
       fireConversion(formName);
@@ -43,6 +53,9 @@
   }
 
   if (typeof document !== 'undefined' && document.addEventListener) {
-    document.addEventListener('submit', handleSubmit, true);
+    // Bubble phase deliberately. A capture-phase listener runs BEFORE the
+    // form's own handlers, so it would count submissions that Framer's
+    // validation goes on to cancel.
+    document.addEventListener('submit', handleSubmit, false);
   }
 })();

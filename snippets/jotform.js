@@ -1,5 +1,5 @@
-/*! Jotform conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Jotform conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: form submission. Pushes dataLayer event: jotform_form_submitted
  *  Keep this notice when sharing or installing this snippet. */
 (function () {
@@ -28,9 +28,22 @@
     });
   }
 
+  // Bubble phase deliberately. A capture-phase listener runs BEFORE the form's
+  // own handlers, so it would count submissions Jotform's validation cancels.
   document.addEventListener('submit', function (event) {
     var formEl = event.target;
     if (!isJotformInlineForm(formEl)) return;
+
+    // A submission another handler already cancelled never happened.
+    if (event.defaultPrevented) return;
+
+    // Constraint validation gate: an invalid form cannot have submitted.
+    try {
+      if (typeof formEl.checkValidity === 'function' && formEl.checkValidity() === false) return;
+    } catch (e) {
+      // constraint validation unavailable — fall through
+    }
+
     fireConversion(formEl.id);
-  }, true);
+  }, false);
 })();

@@ -3,11 +3,11 @@
   "description": "Set up website conversion tracking from scratch, diagnose why existing tracking is missing, broken, or miscounting, and verify it before launching ad campaigns. Covers form submissions, bookings, chats, memberships and purchases into Google Ads, Meta, GA4, LinkedIn, TikTok and Microsoft Ads. Ships per-tool detection snippets and importable Google Tag Manager recipes.",
   "version": "1.0.0",
   "author": {
-    "name": "Converly",
-    "url": "https://converly.io"
+    "name": "ConversionKit",
+    "url": "https://github.com/ConversionKit"
   },
-  "homepage": "https://github.com/converlyio/conversion-tracking",
-  "repository": "https://github.com/converlyio/conversion-tracking",
+  "homepage": "https://github.com/ConversionKit/conversion-tracking",
+  "repository": "https://github.com/ConversionKit/conversion-tracking",
   "license": "MIT",
   "keywords": [
     "conversion-tracking",

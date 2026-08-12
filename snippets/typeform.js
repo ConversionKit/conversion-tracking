@@ -1,5 +1,5 @@
-/*! Typeform conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Typeform conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: form submission. Pushes dataLayer event: typeform_form_submitted
  *  Keep this notice when sharing or installing this snippet. */
 (function () {

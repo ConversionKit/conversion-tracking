@@ -1,5 +1,5 @@
-/*! Contact Form 7 conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Contact Form 7 conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: form submission. Pushes dataLayer event: contact_form_7_submitted
  *  Keep this notice when sharing or installing this snippet. */
 (function () {

@@ -1,5 +1,5 @@
-/*! Wix Forms conversion detection - Converly conversion tracking toolkit
- *  https://github.com/converlyio/conversion-tracking | https://converly.io
+/*! Wix Forms conversion detection - ConversionKit
+ *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: form submission. Pushes dataLayer event: wix_form_submitted
  *  Keep this notice when sharing or installing this snippet. */
 (function () {
@@ -63,6 +63,16 @@
       if (!formEl || (formEl.tagName || '').toLowerCase() !== 'form') return;
       if (isNewWixForm(formEl)) return;   // click path owns new forms
       if (!isOldWixForm(formEl)) return;
+
+      // A submission another handler already cancelled never happened.
+      if (event.defaultPrevented) return;
+
+      // Constraint validation gate: an invalid form cannot have submitted.
+      try {
+        if (typeof formEl.checkValidity === 'function' && formEl.checkValidity() === false) return;
+      } catch (e) {
+        // constraint validation unavailable — fall through
+      }
 
       fireConversion(formEl.id);
     } catch (e) {
@@ -367,7 +377,9 @@
   }
 
   if (typeof document !== 'undefined' && document.addEventListener) {
-    document.addEventListener('submit', handleSubmit, true);   // OLD forms
+    // Bubble phase for submit: a capture-phase listener runs before Wix's own
+    // handlers and would count submissions its validation goes on to cancel.
+    document.addEventListener('submit', handleSubmit, false);  // OLD forms
     document.addEventListener('click', handleClick, true);     // NEW forms
   }
 })();

@@ -1,8 +1,8 @@
 {
-  "name": "converly",
+  "name": "conversionkit",
   "owner": {
-    "name": "Converly",
-    "url": "https://github.com/converlyio"
+    "name": "ConversionKit",
+    "url": "https://github.com/ConversionKit"
   },
   "plugins": [
     {
