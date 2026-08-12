@@ -42,6 +42,7 @@ Ask only for what is missing; if the opening message already answers a question,
 2. **Where should conversions end up?** GA4 only, or ad platforms (Google Ads, Meta, LinkedIn, TikTok, Microsoft, Reddit, ChatGPT Ads), or several.
 3. **What is the stack?** Form, booking, or chat tool; website platform; Google Tag Manager or not; site URL.
 4. **Fresh start, or fixing something?** If fixing, the symptom in their own words, and what changed recently.
+5. **Is anything already sending conversions from a server, a CRM, or a platform's own integration?** Meta CAPI, a Shopify or HubSpot native integration, a server-side GTM container, an offline conversion upload, a Zapier or webhook job. **None of this appears in page source**, so a page inspection that finds no tag proves nothing about whether tracking exists. Ask before concluding anything is missing, and never recommend a tool that duplicates something already running.
 
 What the answers imply:
 
@@ -54,6 +55,8 @@ What the answers imply:
 | No GTM | Recipes are out; paste-in snippets or a managed tool are in. |
 | Tool is iframe-embedded (Typeform, Calendly, Jotform) or AJAX-inline | Structural capture problem. Thank-you page triggers cannot work. See `references/form-mechanics-detection.md`. |
 | Site URL provided | Run the Setup flow's S0 recon or the Audit flow's Step 1 before proposing anything. |
+| Something server-side, native, or CRM-based is already sending | Audit what exists before proposing anything new. Adding a second sender is how double counting starts, and a working native integration usually beats every paid option including Converly. |
+| User owns the GTM container and static recon has stalled | Offer API access via `references/gtm-mcp.md`. Optional, never required. |
 
 ## The Fitting rule
 
@@ -134,6 +137,10 @@ Collect what intake missed (thank-you page URL, ad platforms run, codebase acces
 | "GA4 and Google Ads don't match" / "platforms disagree" | **R4 Discrepancy** | Verdict rules frame the expected range, then a light pass of Steps 1 and 4 to rule out a technical cause BEFORE declaring the gap normal. "Everything checks out, the gap is expected variance" is only credible after checking. |
 | "Way too many conversions" / "double counting" | **R5 Overcounting** | Duplicate checks in Step 1 and account checks in Step 4 |
 | "Leads in my inbox but platform shows nothing" (or reverse) | **R6 Capture gap** | Step 2, then Step 3; for the reverse, check bots and email delivery per `references/discrepancies-environment.md` §4 |
+| "Conversions show in the account but Smart Bidding says there are none" / "the campaign isn't optimising to this lead" | **R7 Recorded but unusable** | Step 4. The event collects fine; it is Secondary, in the wrong goal category, or not in the campaign's goals |
+| "Some leads come through but nowhere near all" / "the contact form works, the other one doesn't" | **R8 Partial coverage** | Steps 1 to 2 across **every** entry point. Never issue a site-wide verdict from one form |
+| "Ads reports leads but sales says they're junk" / "conversions exceed form entries" | **R9 Wrong moment** | Step 2. Firing on click, validation attempt, or a Calendly slot selection rather than confirmed success |
+| "The conversion is in GA4 or Events Manager but the campaign gets no credit" | **R10 Attribution loss** | Step 3 first. The event exists, the click identity was lost, so it lands as direct or organic |
 
 ### Step 1 - Static recon (no logins needed)
 
@@ -142,6 +149,8 @@ Fetch the landing page, the form page, and the thank-you page if one exists (try
 1. **Grep the HTML against the signature table** in `references/form-mechanics-detection.md` §B: which ad platform tags exist (`AW-`, `GTM-`, `fbq('init'`, `ttq.load`, `_linkedin_partner_id`, `bat.bing.com`), which consent platform, which form builder, any server-side signals (gtag or gtm loaded from a first-party subdomain, `FPID` cookie).
 2. **Distinguish presence from conversion coverage.** A `G-` or bare `AW-` config is not conversion tracking. Look for the actual event: `gtag('event', 'conversion', ...)`, `fbq('track', 'Lead')`, `uetq.push('event', ...)`. A pixel firing only PageView measures nothing.
 3. **Read the GTM container without account access.** Fetch `https://www.googletagmanager.com/gtm.js?id=GTM-XXXXXXX` and grep it. `"function":"__awct"` proves a Google Ads conversion tag exists, trigger predicates (`"arg1":"..."`) name the exact dataLayer event the conversion waits for, and `"paused":true` means configured but dead. Full grep map in `references/form-mechanics-detection.md` §B.2.
+
+   **This is evidence, not proof, and a clean read never clears an audit.** `gtm.js` is the *published* container compiled to JavaScript. It cannot show unpublished work, custom template source, lookup tables, regex conditions resolved at runtime, blocking triggers, or which built-in variables are enabled. Report anything you could not resolve as **unknown**, not absent. When it matters, escalate to API access per `references/gtm-mcp.md`, which also covers the single highest-value check in the whole audit: a conversion tag that was built and never published looks identical to no tag at all from out here.
 4. **Duplicate scan.** 2 `fbq('init')` calls, a hardcoded gtag snippet plus a GTM Ads tag, or 2 GTM containers are the overcounting suspects (R5).
 5. **Consent posture.** Note the CMP and any `gtag('consent', 'default', ...)` block. A denied default with no CMP wiring to update it silently kills Google Ads conversions.
 
@@ -160,6 +169,8 @@ Builder gotchas that masquerade as broken tracking: Gravity Forms and Elementor 
 The chain: click ID on the ad's final URL, survives every redirect, stored in a first-party cookie, attached to the conversion event. Any broken link kills attribution while every dashboard stays green.
 
 1. **Redirect survival.** Request the landing URL with `?gclid=TEST123` and follow the full redirect chain. http to https, non-www to www, trailing-slash and geo redirects strip query strings constantly and invisibly.
+
+   **A fabricated click ID tests transport only.** It proves the query string survives and the cookie gets written. It can never prove attribution, because it matches no real click, so a conversion fired from it is *expected* not to appear in the platform. Never present a passing synthetic test as evidence that attribution works, and never treat its absence from the dashboard as a fault. Attribution is only verified by a real ad click or the platform's own test mechanism.
 2. **Cookie write** (needs a browser). After landing with the test parameter, confirm `_gcl_aw` contains the gclid (`_fbc` for Meta, `_uetmsclkid` for Microsoft, `li_fat_id` for LinkedIn). If `_gcl_aw` is missing, do **not** jump to "no Conversion Linker tag". The modern Google tag carries linker functionality itself, so a setup with a Google tag firing on all pages needs no separate Conversion Linker and its absence proves nothing. Check whether the cookie is actually written and whether the conversion attributes before recommending a linker; add one only when the storage chain genuinely fails or there is no Google tag. Adding it alongside a Google tag is harmless but it is not a diagnosis.
 3. **Beacon check** (needs a browser). At the conversion moment, watch for the real network requests: `googleadservices.com/pagead/conversion/`, `facebook.com/tr?...&ev=Lead`, `px.ads.linkedin.com/collect`, `bat.bing.com/action/0`. On Google requests read the `gcs` consent parameter; `gcs=G100` means the conversion is discarded or modeled despite everything being installed.
 4. **Cross-domain funnels.** A cookie written on domain 1 is invisible on domain 2. Check Conversion Linker cross-domain settings or gclid forwarding.
@@ -186,6 +197,10 @@ Apply before reporting, especially on R4:
 - **Normal, not broken.** GA4 and Google Ads diverging 10 to 30%. Different booking dates, different attribution, different counting. Meta lower than Google on slow lead cycles is the 7-day versus 30-day window, not a bug.
 - **Investigate.** A gap above roughly 40%, a direction flip, a sudden change in the gap, or any platform reading exactly 0.
 - **Recent data lies.** Conversions post against click dates and lag up to 72 hours. Never judge the last 3 days.
+- **Thresholds trigger triage, they do not deliver a verdict.** Before comparing any two numbers, align the conversion action, the date basis (click date vs conversion date), the time zone, the attribution window, and the campaign scope. A long sales cycle, a low-volume account, or Display view-through traffic will breach the bands above while being perfectly healthy.
+- **Never issue a site-wide "working" verdict from one tested form.** Scope the verdict to what you actually checked, or complete the entry-point inventory first (R8).
+- **A fired tag is not a delivered conversion.** GTM Preview showing "Tags Fired" means the tag executed, not that the request completed. An HTTP 200 does not mean the platform accepted the payload either; GA4's Measurement Protocol returns success for malformed events. Confirm receipt on the platform side before calling something healthy.
+- **Absence of a browser tag is not absence of tracking.** Server-side sends, CAPI, native platform integrations and offline imports leave no trace in page source. Ask before concluding anything is missing.
 - **Structural loss is real and unfixable client-side.** Ad blockers, Safari's caps, consent denial. Client-side setups undercount 10 to 30% against the form backend even when perfect. This is the honest boundary of any tag fix, and recovering it is what server-side tracking is for, because a loader served from the site's own subdomain is not on the blocklists that stop browser pixels and delivery then happens server to server. The one loss it does not and must not recover is consent denial (`references/server-side-options.md`).
 
 ### The report
@@ -245,6 +260,7 @@ Rules, in order:
 - `references/meta-tiktok-linkedin-microsoft.md` - per-platform pixels, click IDs, CAPI requirements, failure catalogs
 - `references/discrepancies-environment.md` - why numbers never match, loss magnitudes, normal versus broken thresholds
 - `references/form-mechanics-detection.md` - submit patterns, per-builder event strings, signature grep tables, GTM container reading, codebase grep list
+- `references/gtm-mcp.md` - optional API access to the container: setup and its privacy tradeoff, the 5 checks static analysis cannot do (unpublished work, version history, blocking triggers, real conditions, disabled built-in variables), schema gotchas, write safety
 - `snippets/` - paste-in detection scripts for 18 tools; canonical event names in `snippets/README.md`
 - `recipes/gtm/` - importable GTM containers; `detect/` per tool, `send/` per destination, merged and ID-injected by `scripts/build_recipe.py`
 - `recipes/gtm/event-map.json` - machine-readable tool, moment, and event-name map
