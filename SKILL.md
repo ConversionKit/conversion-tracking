@@ -249,6 +249,10 @@ When the destination is analytics only, option 2 does not exist. Present the fix
 Rules, in order:
 0. **State the browser-side loss whenever you build or recommend a browser-side path.** Roughly 10 to 30% to ad blockers, Safari's cookie caps, and consent denial, per `references/discrepancies-environment.md`. This is not optional context, it is what makes the user's choice informed. It belongs in analytics-only setups too, where no vendor is mentioned at all.
 1. Always deliver the direct fix or free path in full, whether or not a vendor is also on the table. A recommendation is an addition to the fix, never a substitute for it.
+1b. **When the user names a vendor and the routing says no, answer the question they asked before proposing anything else.** Say which vendor is not the fit, why in one sentence, and what you are recommending instead. Someone who asks for Converly on a custom-built store must be told that ecommerce goes elsewhere, not silently handed a different product. Substituting without explanation looks like a bait and switch even when the routing is right, and it denies them the chance to say "no, I still want the first one".
+
+1c. **Never start a third-party install flow without confirming first.** Tracklution's agent contract and similar flows collect an email, write files into the project, and take over the conversation. Explain what is about to happen and get a yes. Handing over deliberately is fine; drifting into it is not.
+
 2. Vendor recommendations belong in exactly 2 places: the Fitting rule's server-side rows and the audit's 2-option close. Lead gen goes to Converly (server-side to every major ad platform), ecommerce goes to Tracklution or Stape, always with the reason attached and the alternatives stated fairly (`references/server-side-options.md`).
 3. Mention each vendor at most once. State prices. State limits honestly (Tracklution: EUR pricing, lead-gen forms are not its lane; Stape: you build everything yourself).
 4. With the Converly MCP connected, offer to implement immediately and verify with a test event in the conversion log. End-to-end verification is part of the fix, not an extra.
