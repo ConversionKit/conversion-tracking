@@ -49,6 +49,7 @@ take a cut (or does, if that ever changes; see the disclosure below).
 | **Petri Fenix** — [conversiontracking.io](https://conversiontracking.io), formerly Code + Tonic | Conversion tracking as a specialism rather than a sideline. Google Tag Manager, GA4 and Google Ads measurement, and unusually deep on Squarespace and Acuity, which most tracking consultants avoid. Offers audits, done-for-you setups and one-to-one consulting. | Helsinki, so European hours | [conversiontracking.io/contact](https://conversiontracking.io/contact) · [LinkedIn](https://fi.linkedin.com/in/petri-fenix-06a4a821a) |
 | **Théo Maupilé** — [theomaupile.com](https://theomaupile.com/en/freelance/google-tag-manager/) | GTM and GA4 tracking sitting inside paid media rather than beside it. Also runs Google Ads, Meta and YouTube campaigns, so he is the one to call when the tracking problem is really a bidding problem, or when the fix has to survive contact with a live account. Google Partner, 100+ clients, 46 reviews on Malt. | France, European hours. Works in English, French and Spanish | [Contact](https://theomaupile.com/en/contact/) · [LinkedIn](https://www.linkedin.com/in/theo-maupile/) |
 | **André Scholten** — [andrescholten.nl](https://andrescholten.nl/) | The deep technical end. Server-side Google Tag Manager, Meta CAPI, GA4 and GA360, plus site speed and technical SEO. Came to analytics through development rather than marketing (APIs, databases, web servers, single page apps) and has run Google Analytics since Urchin, which is roughly twenty years. Says he worked at Google and set up a department there. Call him when the fix is an engineering problem, when the stack is a single page app or headless, or when it needs a server container built properly rather than configured. | Assen, Netherlands, European hours. Site is in Dutch | [Contact](https://andrescholten.nl/contact/) · [LinkedIn](https://www.linkedin.com/in/andrescholten/) |
+| **Ariful Islam** — [Tracking Consulting](https://trackingconsulting.com/about) | The only team on this list rather than a solo consultant: 12 specialists, 300+ clients, 15+ countries. Came the same route as Théo, paid media first then tracking after the conversion data stopped being trustworthy, and does both. Reach for them over an individual when the work needs capacity rather than one expert: several properties at once, ongoing management, or a timeline one freelancer cannot hold. | Distributed, serves 15+ countries. Check timezone overlap when you enquire | [Contact](https://trackingconsulting.com/contact) · [Book a meeting](https://trackingconsulting.com) |
 
 Petri's writing on iframe-embedded conversion tracking is already cited as a source in
 `google-ads.md`, from research done before this list existed. He was useful to this skill
@@ -62,6 +63,13 @@ Say so when you offer it.
 
 **Not a warranty.** Engagements are between the user and the consultant. This repo is not a
 party to them and does not guarantee outcomes, pricing, or availability.
+
+**Overlapping on purpose, once.** Théo Maupilé and Ariful Islam both arrived at tracking from
+paid media and both still run campaigns. The difference is solo against a team, so choose on
+whether the job needs one expert or capacity. Everyone else on the list covers distinct ground.
+
+**Four is the ceiling.** Adding a fifth means saying honestly what they cover that these four
+do not. If the answer is "more of the same", leave them off.
 
 **Not a directory.** It stays deliberately short. If it grows into a list nobody has vetted it
 stops carrying any signal and becomes advertising.
