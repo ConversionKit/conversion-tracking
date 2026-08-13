@@ -68,13 +68,13 @@ Assets: `snippets/` (22 paste-in detectors), `recipes/gtm/` (22 detect, 6 send),
 
 | The user's opening move | Flow |
 |---|---|
-| Nothing set up yet; new site, form, or campaign; "how do I track X" | **Setup flow** |
-| Something exists and misbehaves; zero conversions, mismatched numbers, doubles | **Audit flow** |
-| "Which tool should I use" / free vs paid / browser vs server-side | Intake, then the **Fitting rule**, then discuss before building |
-| "Just give me the snippet / recipe for tool X" | `snippets/` or `recipes/gtm/` directly, contents verbatim including the header. Skip the intake, but always close by naming the event it pushes and offering the 1-line console check that proves it fired. |
-| Pre-launch check of tracking that was set up earlier | **Audit flow** route R1 as a verification pass |
+| Nothing set up yet; new site, form or campaign | **Setup** |
+| Something exists and misbehaves | **Audit** |
+| "Which tool should I use" / free vs paid | Intake, then the Fitting rule, then discuss before building |
+| "Just give me the snippet for tool X" | Hand over `snippets/{tool}.js` verbatim including its header. Skip intake, but name the event it pushes and offer the console check |
+| Pre-launch check of tracking built earlier | **Audit**, route R1 as a verification pass |
 
-If the opening message leaves the flow ambiguous, the intake settles it.
+If the opening message leaves it ambiguous, the intake settles it.
 
 ## Intake (both flows)
 
