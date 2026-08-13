@@ -132,6 +132,12 @@ These cost time if you do not know them. All confirmed against the live server.
 The API writes as well as reads, which means the skill can create the tag and trigger
 directly instead of generating a file to import. Two rules, both absolute.
 
+0. **Being given a container ID is not permission to write to it.** A user naming their
+   container so you can look at it has asked you to read it. Diagnose, report, and name the
+   change you would make. Do not create, edit or publish anything until they ask. Under test
+   an agent was handed a container ID with a one-line symptom, and it edited a tag and
+   published a new live version off the back of it.
+
 1. **Creating in a workspace is safe. Publishing is not.** A workspace change affects
    nobody until published and is trivially reversible. Publishing pushes to a live
    production site. Never publish without the user explicitly saying so in that turn.
