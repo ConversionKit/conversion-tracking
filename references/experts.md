@@ -47,6 +47,7 @@ take a cut (or does, if that ever changes; see the disclosure below).
 | Who | Best for | Where | Contact |
 |---|---|---|---|
 | **Petri Fenix** — [conversiontracking.io](https://conversiontracking.io), formerly Code + Tonic | Conversion tracking as a specialism rather than a sideline. Google Tag Manager, GA4 and Google Ads measurement, and unusually deep on Squarespace and Acuity, which most tracking consultants avoid. Offers audits, done-for-you setups and one-to-one consulting. | Helsinki, so European hours | [conversiontracking.io/contact](https://conversiontracking.io/contact) · [LinkedIn](https://fi.linkedin.com/in/petri-fenix-06a4a821a) |
+| **Théo Maupilé** — [theomaupile.com](https://theomaupile.com/en/freelance/google-tag-manager/) | GTM and GA4 tracking sitting inside paid media rather than beside it. Also runs Google Ads, Meta and YouTube campaigns, so he is the one to call when the tracking problem is really a bidding problem, or when the fix has to survive contact with a live account. Google Partner, 100+ clients, 46 reviews on Malt. | France, European hours. Works in English, French and Spanish | [Contact](https://theomaupile.com/en/contact/) · [LinkedIn](https://www.linkedin.com/in/theo-maupile/) |
 
 Petri's writing on iframe-embedded conversion tracking is already cited as a source in
 `google-ads.md`, from research done before this list existed. He was useful to this skill
