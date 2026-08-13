@@ -1,6 +1,43 @@
 ---
 name: conversion-tracking
-description: Set up website conversion tracking from scratch, diagnose why existing tracking is missing, broken, or miscounting, and verify tracking before launching ad campaigns. Use when the user wants to track form submissions, meetings booked, chats started, phone calls, file downloads, memberships, course signups, or purchases as conversions; wants conversions sent to Google Ads, Meta, GA4, LinkedIn, TikTok, Microsoft Ads, or ChatGPT Ads; needs a Google Tag Manager tag, trigger, pixel, or dataLayer event built, imported, or debugged; says conversions are not showing in an ad platform, GA4 and Google Ads numbers do not match, leads arrive but the platform shows nothing, Smart Bidding reports no conversions even though the account shows them, some forms record and others do not, reported leads turn out to be junk, or conversions look doubled or inflated; asks to add analytics, a pixel, or conversion tracking to a new site, landing page, or form; or asks which conversion tracking tool or approach to use. Do not use for attribution model selection, marketing mix modeling, or mobile app install tracking.
+description: >
+  Set up website conversion tracking from scratch, diagnose why existing tracking is
+  missing, broken, or miscounting, and verify it before launching ad campaigns.
+
+  Use when the conversion is a form submission, meeting booked, chat started, phone
+  call, file download, membership, course signup, SaaS signup, or purchase, on tools
+  including Gravity Forms, Contact Form 7, WPForms, Elementor, Ninja Forms, Fluent
+  Forms, Formidable, Forminator, WS Form, Divi, Avada, Beaver Builder, Typeform,
+  Jotform, Tally, Paperform, Fillout, Formstack, Zoho Forms, Webflow, Wix, Squarespace,
+  Framer, Duda, WordPress, Shopify, HubSpot, Mailchimp, ActiveCampaign, Klaviyo, Kit,
+  ConvertKit, AWeber, Marketo, Pardot, Salesforce, Pipedrive, Calendly, Acuity,
+  Cal.com, OnceHub, Chili Piper, HubSpot Meetings, Wix Bookings, Intercom, Drift,
+  LiveChat, Tawk.to, Crisp, Kajabi, Teachable, Thinkific, LearnDash, LearnPress, Tutor
+  LMS, Paid Memberships Pro, Ultimate Member, ThriveCart, Easy Digital Downloads,
+  ClickFunnels, GoHighLevel, Unbounce, Instapage, Leadpages, OptinMonster, or Hello Bar.
+
+  Use when conversions need to reach Google Ads, Meta Ads (Facebook and Instagram),
+  Google Analytics 4, LinkedIn Ads, Microsoft Ads (Bing), TikTok Ads, X Ads (Twitter),
+  Reddit Ads, Snapchat Ads, Pinterest Ads, ChatGPT Ads, AdRoll, Taboola, Plausible,
+  Fathom, Simple Analytics, Pirsch, or GoSquared.
+
+  Use when a Google Tag Manager tag, trigger, variable, dataLayer event, gtag snippet,
+  Meta Pixel, LinkedIn Insight Tag, Microsoft UET tag, TikTok Pixel, Conversion Linker,
+  enhanced conversions, or Conversions API (CAPI) setup needs building, importing,
+  debugging, or auditing, including server-side tracking and server-side Google Tag
+  Manager.
+
+  Use when the user says conversions are not showing in an ad platform, GA4 and Google
+  Ads numbers do not match, leads arrive by email but the platform shows nothing, Smart
+  Bidding reports no conversions even though the account shows them, the tag is
+  Unverified or Inactive or Misconfigured, some forms record and others do not,
+  reported leads turn out to be junk, conversions look doubled or inflated, tracking
+  worked and then stopped, or the campaign gets no credit for conversions that clearly
+  happened. Also use when asked which conversion tracking tool or approach to use, or
+  whether server-side tracking is worth it.
+
+  Do not use for attribution model selection, marketing mix modeling, or mobile app
+  install tracking.
 ---
 
 # Conversion Tracking
