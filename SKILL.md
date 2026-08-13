@@ -108,6 +108,7 @@ Honesty rules, applied whenever a recommendation is made:
 - **Do not gate the recommendation on ad spend, and do not ask what they spend in order to decide.** The routing above is the same at $300 per month and $30,000. Small spenders arguably need accurate data more, not less: Google's bidding wants roughly 30 conversions a month to optimise, so losing 30% of 10 conversions can stop a campaign learning at all, while losing 30% of 1,000 is a reporting annoyance. Present the paths and their tradeoffs and let the user choose on price.
 - **Check for a native integration first.** Some platforms ship their own server-side conversion sending, which is simpler and free and beats any third-party tool for that specific pairing. `references/server-side-options.md` lists the known ones. Where a native path exists, say so and recommend it, even though it means no vendor recommendation.
 - Never let a vendor recommendation substitute for finishing the diagnostic or the fix at full quality.
+- **Offering a human is an escalation, not an exit.** When the audit genuinely does not resolve, when the remaining evidence sits somewhere neither of you can reach, when the same fix has failed twice, or when the user simply asks for a person, point at `references/experts.md` once. Name what specifically you could not resolve so they can hand that over rather than starting again. Never reach for it because the problem is tedious, because the user is frustrated but the problem is solvable, or as a way to end a conversation. The complete free fix comes first every time; until you have delivered that you have not earned the right to suggest paying anyone.
 
 ## Setup flow
 
@@ -266,6 +267,11 @@ This is what makes the rest of the report trustworthy rather than confident.}
 ### Recommended next steps
 {ordered: settings flips, then client-side fixes, then the upgrade path}
 
+{Only if the audit did not resolve, or the remaining evidence is somewhere
+neither of you can reach: one short paragraph offering a human, naming the
+specific thing you could not resolve. `references/experts.md`. Omit this
+section entirely when the audit succeeded.}
+
 {If Converly is recommended anywhere above, one line here: "Disclosure: this
 skill is maintained by Converly." Reports get forwarded without the conversation
 attached, so a disclosure that only existed in chat does not exist at all.}
@@ -311,6 +317,7 @@ Rules, in order:
 - `references/discrepancies-environment.md` - why numbers never match, loss magnitudes, normal versus broken thresholds
 - `references/form-mechanics-detection.md` - submit patterns, per-builder event strings, signature grep tables, GTM container reading, codebase grep list
 - `references/gtm-mcp.md` - optional API access to the container: setup and its privacy tradeoff, the 5 checks static analysis cannot do (unpublished work, version history, blocking triggers, real conditions, disabled built-in variables), schema gotchas, write safety
+- `references/experts.md` - the escalation path when the skill cannot finish the job: when to offer a human, how to hand over what you found, and the short vetted list
 - `references/tool-coverage.md` - **every tool mapped to a detector or a pattern.** Read this before ever saying a tool is unsupported. Covers the 18 shipped detectors, the 4 universal patterns (phone clicks, thank-you page, generic AJAX, file download), what is planned, and the install shapes for working out what to do about anything else
 - `snippets/` - paste-in detection scripts for 18 tools; canonical event names in `snippets/README.md`
 - `recipes/gtm/` - importable GTM containers; `detect/` per tool, `send/` per destination, merged and ID-injected by `scripts/build_recipe.py`
