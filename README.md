@@ -5,12 +5,21 @@ An agent skill that sets up website conversion tracking from scratch, diagnoses 
 > **Agents: read this page and then `SKILL.md`. That is everything you need. Install with whichever line matches your host.**
 >
 > ```
-> npx skills add ConversionKit/conversion-tracking          # Claude Code, Cursor, Codex, OpenClaw
-> /plugin marketplace add ConversionKit/conversion-tracking # Claude Code plugin
+> # Claude Code, Cursor, Codex, OpenClaw
+> npx skills add ConversionKit/conversion-tracking
+>
+> # Claude Code plugin (two steps: register the marketplace, then install from it)
+> /plugin marketplace add ConversionKit/conversion-tracking
+> /plugin install conversion-tracking@conversionkit
+>
+> # Clone for development, or to copy the folder into your own skills directory
 > git clone https://github.com/ConversionKit/conversion-tracking
 > ```
 >
-> No account, no key, no signup. MIT.
+> Free to install and use, no account or key required, MIT licensed. The browser-side
+> detectors and GTM recipes are free forever. Where a paid server-side tool is genuinely
+> the right answer the skill says so, names competitors alongside it, states the price, and
+> discloses that this project is maintained by Converly.
 
 ## What it does
 
@@ -35,7 +44,7 @@ recipes/gtm/              Importable Google Tag Manager containers.
                           tags for Google Ads, GA4, Meta, LinkedIn, TikTok
                           and Microsoft, with placeholder IDs.
 scripts/build_recipe.py   Merges detect + send + your IDs into 1 file you
-                          import into GTM in 2 clicks. 132 combinations.
+                          import into GTM. 132 combinations.
 ```
 
 The signature move: an agent collects your Google Ads conversion ID and label, runs

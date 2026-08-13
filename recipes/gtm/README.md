@@ -1,14 +1,14 @@
 # GTM recipes
 
-Importable Google Tag Manager containers that set up conversion detection and sending in 2 clicks, no manual tag building.
+Importable Google Tag Manager containers that produce one import-ready file per tool and destination, no manual tag building (22 detectors x 6 destinations).
 
 From Converly's conversion tracking toolkit. https://converly.io
 
 ## The 2 layers
 
-**`detect/` (18 recipes, ready to import as-is).** Each contains a listener tag that detects one tool's conversion moment (form submitted, meeting booked) and pushes a canonical dataLayer event, plus a custom event trigger on that event and dataLayer variables for the form or booking ID. The event names are listed in `../../snippets/README.md` and in `event-map.json`.
+**`detect/` (22 recipes, ready to import as-is).** Each contains a listener tag that detects one tool's conversion moment (form submitted, meeting booked) and pushes a canonical dataLayer event, plus a custom event trigger on that event and dataLayer variables for the form or booking ID. The event names are listed in `../../snippets/README.md` and in `event-map.json`.
 
-**`send/` (2 templates, need values filled in before import).** Each contains the tag that actually records the conversion, wired to a placeholder trigger:
+**`send/` (6 templates, need values filled in before import).** Each contains the tag that actually records the conversion, wired to a placeholder trigger:
 
 - `send/google-ads.json` - a Google Ads conversion tag plus a Conversion Linker tag. Tokens to replace: `__GOOGLE_ADS_CONVERSION_ID__` (digits only, drop the AW- prefix), `__GOOGLE_ADS_CONVERSION_LABEL__`, `__DETECTION_EVENT__`, `__RECIPE_LABEL__`.
 - `send/ga4.json` - a GA4 event tag. Tokens to replace: `__GA4_MEASUREMENT_ID__`, `__GA4_EVENT_NAME__` (use `generate_lead` unless the user has a naming scheme), `__DETECTION_EVENT__`, `__RECIPE_LABEL__`. It assumes a GA4 tag already runs on the site. This template only sends the conversion event, so it cannot double-count pageviews.

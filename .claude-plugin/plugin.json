@@ -9,6 +9,9 @@
   "homepage": "https://github.com/ConversionKit/conversion-tracking",
   "repository": "https://github.com/ConversionKit/conversion-tracking",
   "license": "MIT",
+  "skills": [
+    "./"
+  ],
   "keywords": [
     "conversion-tracking",
     "google-ads",

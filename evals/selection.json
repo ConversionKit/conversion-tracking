@@ -1,0 +1,62 @@
+[
+ {
+  "id": "s1",
+  "opener": "Our Google Ads account shows zero conversions but we are definitely getting enquiries by email every week.",
+  "expected": true,
+  "selected": true,
+  "all_skills_opened": [
+   "conversion-tracking"
+  ],
+  "pass": true
+ },
+ {
+  "id": "s2",
+  "opener": "How do I know whether our Gravity Forms submissions are actually being recorded anywhere useful?",
+  "expected": true,
+  "selected": true,
+  "all_skills_opened": [
+   "conversion-tracking"
+  ],
+  "pass": true
+ },
+ {
+  "id": "s3",
+  "opener": "GA4 says 42 and Google Ads says 61 for the same month. Which one is right?",
+  "expected": true,
+  "selected": true,
+  "all_skills_opened": [
+   "conversion-tracking"
+  ],
+  "pass": true
+ },
+ {
+  "id": "s4",
+  "opener": "I need to add a pixel to our Webflow site so we can measure sign ups.",
+  "expected": true,
+  "selected": true,
+  "all_skills_opened": [
+   "conversion-tracking"
+  ],
+  "pass": true
+ },
+ {
+  "id": "s5",
+  "opener": "What attribution model should we use across our media mix this year?",
+  "expected": false,
+  "selected": false,
+  "all_skills_opened": [
+   "marketing-attribution"
+  ],
+  "pass": true
+ },
+ {
+  "id": "s6",
+  "opener": "Our Google Ads CPCs have crept up a lot. How do I bring the cost per click down?",
+  "expected": false,
+  "selected": false,
+  "all_skills_opened": [
+   "google-ads-manager"
+  ],
+  "pass": true
+ }
+]

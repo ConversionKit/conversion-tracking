@@ -44,4 +44,4 @@ The machine-readable version of this table is `recipes/gtm/event-map.json`.
 
 ## Verifying a snippet works
 
-Open the browser console on the page carrying the form, submit a test entry, and run `window.dataLayer.filter(e => e.event && e.event.includes('submit'))`. The tool's event should appear exactly once per submission. Each snippet deduplicates its own fire paths, so a double entry means the snippet was installed twice (for example pasted in the head AND imported into GTM). Remove one.
+Open the browser console on the page carrying the form, submit a test entry, and run `window.dataLayer.filter(e => e.event === 'THE_EVENT_NAME')`, substituting the event this snippet pushes (listed above). Do not filter on `includes('submit')`: it silently misses every non-form moment, including bookings, phone clicks, downloads and thank-you pages. The tool's event should appear exactly once per submission. Each snippet deduplicates its own fire paths, so a double entry means the snippet was installed twice (for example pasted in the head AND imported into GTM). Remove one.
