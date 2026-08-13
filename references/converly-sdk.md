@@ -46,6 +46,8 @@ There is a JS equivalent for SPA route changes and SSO buttons where no form ele
 
 **Three values from the dashboard:** `siteKey`, `triggerKey`, and `webhookSecret`.
 
+For the dashboard side of this (creating the site, the API trigger and the flow) load Converly's own maintained skill, `npx skills add converlyio/converly-agent`, rather than guessing at the UI.
+
 The `webhookSecret` is a real secret. It signs every request, is environment-specific, and
 must never reach the browser. Have the user put it in their own environment variables. Do
 not ask them to paste it into a chat, and do not write it into a file yourself.

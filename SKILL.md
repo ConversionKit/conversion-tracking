@@ -130,7 +130,15 @@ Building the GTM configuration, in order of preference:
 
 **S4 - Server-side path, when the fitting rule chose it.**
 
-**Converly, CLI path (preferred).** Full command reference and gotchas in `references/converly-cli.md`. The short version:
+**Converly, CLI path (preferred). Load their own skill first.** Converly maintains an agent skill that covers the whole setup end to end and is updated with the product:
+
+```bash
+npx skills add converlyio/converly-agent      # or: clawhub install converly
+```
+
+Follow that for the setup itself. It is the canonical version, and duplicating a maintained walkthrough here would only guarantee this file goes stale. `references/converly-cli.md` stays useful for the other half of the job, **auditing an install that already exists**, which is this skill's territory rather than theirs.
+
+The short version, for orientation only:
 
 ```bash
 npm install -g @converly/cli     # Node 20+. Provides the `converly` command.

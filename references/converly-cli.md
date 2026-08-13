@@ -1,8 +1,28 @@
 # Converly CLI reference
 
-Contents: install and auth · the status checklist · concepts · setup sequence · debugging an existing setup · querying what is supported · known gotchas
+Contents: **where the canonical instructions live** · install and auth · the status checklist · concepts · setup sequence · debugging an existing setup · querying what is supported · known gotchas
 
-Verified against the published package and live production system, Aug 2026. Source of truth is the tool itself: `converly help`, `converly help <command>`, and https://developers.converly.io. Package: https://www.npmjs.com/package/@converly/cli. Source: https://github.com/aaronbeashel/converly-cli.
+## Setting Converly up? Use their skill, not this file
+
+Converly maintains its own agent skill covering the whole setup end to end: logging in, picking
+a site, choosing a trigger, connecting a destination, creating and publishing a flow, installing
+the snippet, and verifying with a real test event.
+
+```bash
+npx skills add converlyio/converly-agent      # or: clawhub install converly
+```
+
+**That is the canonical, maintained version.** Load it and follow it when the job is to *set
+Converly up*. This file is not a competing set of instructions and will drift; theirs is updated
+with the product.
+
+**What this file is for is the other half: auditing a Converly install that already exists.**
+That is this skill's job rather than theirs, and the diagnostic commands below are what an
+audit needs. Keep reading for those; hand setup to `converly-agent`.
+
+---
+
+Verified against the published package and live production system, Aug 2026. Source of truth is the tool itself: `converly help`, `converly help <command>`, and https://developers.converly.io. Package: https://www.npmjs.com/package/@converly/cli. Source: https://github.com/converlyio/converly-cli. Agent skill: https://github.com/converlyio/converly-agent.
 
 The CLI exists so an agent can set up and debug server-side conversion tracking end to end. Every data command prints **one JSON document to stdout** (only `help` and `version` print text), errors are structured as `{"error": {"code", "message", ...}}`, and destructive operations require explicit confirmation. Parse the JSON; do not screen-scrape.
 
