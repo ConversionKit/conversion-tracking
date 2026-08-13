@@ -91,6 +91,12 @@ The container is a public JS file: fetch `https://www.googletagmanager.com/gtm.j
     the digits alone)
   - the tag has **no firing trigger** attached
 
+  Verified further by trying and failing to build the opposite: GTM will not publish a
+  conversion tag with an empty currency field, nor a GA4 event tag with an empty measurement
+  ID. These are not faults you will ever find in a published container, because the container
+  cannot contain them. If a user describes a symptom that would require one, the tag is either
+  unpublished, paused, or was never saved.
+
   So `__awct` absent means **no conversion tag is live**. It does not mean no tag exists, and
   it never justifies telling a user who built one that they have none. Every one of these is
   invisible from outside and only the API separates them (`gtm-mcp.md`). This is also why a
