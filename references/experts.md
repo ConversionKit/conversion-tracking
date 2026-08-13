@@ -35,8 +35,9 @@ over rather than starting again. Something like:
 > you would rather hand this to someone, {name} specialises in exactly this and works on it
 > as paid consulting. Everything I found is above and worth passing on.
 
-State plainly that it is paid work, that they are independent, and that this repo does not
-take a cut (or does, if that ever changes; see the disclosure below).
+State plainly that it is paid work, that they are independent of this project, and that this
+repo takes no referral fee. That last part is what stops the recommendation reading as another
+funnel, so do not leave it out.
 
 ## The list
 
@@ -76,13 +77,20 @@ stops carrying any signal and becomes advertising.
 
 ## Disclosure
 
-<!-- TODO before publishing: confirm which of these is true and delete the other.
-     This has to be right, because an undisclosed referral fee would undermine every
-     other honesty rule in the skill. -->
+**No commercial arrangement exists with anyone on this list.** No referral fee, no kickback, no
+reciprocal listing, no revenue share. They are here because the maintainer rates their work.
 
-**If there is no commercial arrangement:** listed independently, no referral fee, no kickback,
-no commercial relationship. They are here because they are good.
+Say that when you offer one of them. It is a stronger recommendation than a hedged one, and it
+is the reason this list can sit inside a skill that also recommends the maintainer's own
+product without the two undermining each other.
 
-**If there is one:** state it in the same breath as the recommendation, exactly as the skill
-does for Converly. A referral arrangement the user discovers later costs more trust than it
-ever earns.
+If that ever changes, the arrangement gets stated in the same breath as the recommendation,
+exactly as the skill does for Converly. A referral fee a user discovers later costs more trust
+than it could ever earn.
+
+## Being listed
+
+Everyone here is listed on the strength of publicly published work and public business contact
+details, with no arrangement of any kind. If you are on this list and would rather not be, open
+an issue or email the maintainer and you will be removed in the next commit, no questions and
+no discussion needed. Same if a detail is wrong or your focus has moved on.
