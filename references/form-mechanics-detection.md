@@ -81,6 +81,13 @@ The container is a public JS file: fetch `https://www.googletagmanager.com/gtm.j
 - `__gaawe` GA4 event tag; `__gaawc`/`__googtag` config; `__sp` Ads remarketing; `__flc` Floodlight; `__html` Custom HTML (pixel/CAPI glue); `__cvt_` custom templates (Facebook/TikTok/Stape)
 - Triggers: `__fsl` form submit listener; `__cl`/`__lcl` clicks; `__evl` element visibility; `__hl` history change (SPA)
 - Predicates: `"arg1":"gtm.formSubmit"`, custom event names like `"arg1":"typeform_submit"` - exactly which dataLayer event the conversion tag waits for; then verify the page actually pushes it
+- **A missing `__awct` has THREE causes, and only one of them is "no tag".** GTM drops a tag
+  from the published container when it is paused, and also when a required field is empty:
+  an Ads conversion tag with a blank conversion label is absent from `gtm.js` entirely
+  rather than present and broken (verified). So the honest reading of no `__awct` is *no
+  conversion tag is live*, which could be no tag, a paused tag, or a tag with an empty
+  required field. Distinguishing them needs the API.
+
 - **Paused tags are invisible here, and `__paused` is a trap.** GTM omits a paused tag from the published container entirely rather than flagging it. Verified on two otherwise identical containers: the live one carries `__awct`, its conversion ID and its label; the paused one carries none of the three.
   **Do not read `__paused:1` as evidence.** It appears in every container as part of GTM's internal tag-type registry, next to `__tl`, `__tg` and `__ytl`. It says a tag type exists in GTM, not that this container has a paused tag. An agent under test reached the right answer by misreading exactly this, which is luck rather than diagnosis and will produce a confident wrong answer on the next container.
   When a user believes a tag exists and you cannot find one, say no tag is **live**, name paused as a likely cause, and confirm through the API (`gtm-mcp.md`). Never present it as something you observed in `gtm.js`.
