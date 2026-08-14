@@ -16,6 +16,14 @@ they own the container.
 
 ## Setup
 
+**Why this points at someone else's server, deliberately.** Converly (who maintain this repo)
+run their own hosted GTM MCP for the Converly CLI and MCP. This skill does not point at it,
+and that is a choice rather than an oversight. Recommending the maintainer's own
+infrastructure for a general diagnostic task is a different thing from recommending Converly
+where the routing genuinely fits, and it would quietly undercut every other neutrality rule
+here. If a user is already on Converly, their own tooling will offer it. For everyone else,
+an open-source server they can also run locally is the better answer.
+
 Do not build one. Stape publishes an open-source server covering the whole API
 (Apache-2.0, `github.com/stape-io/google-tag-manager-mcp-server`). Two modes:
 
