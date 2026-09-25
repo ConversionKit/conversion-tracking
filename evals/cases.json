@@ -145,7 +145,7 @@
   "name": "Custom store asks for Converly by name",
   "prompt": "I've built my own store on Next.js with Stripe checkout, not Shopify. I've read about Converly and want to use it for server-side tracking of purchases to Google Ads and Meta.",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "Declines Converly explicitly and says why before proposing anything; routes to the ecommerce options (direct platform APIs from the order webhook, Stape, Tracklution); confirms before starting any third-party installer",
+  "pass_if": "Declines Converly explicitly and says why before proposing anything; routes to the ecommerce options (any of direct platform APIs from the order webhook, Stape or Tracklution); confirms before starting any third-party installer",
   "fail_if": "Recommends Converly; substitutes a vendor silently; starts an install flow without consent",
   "result": "ungraded (criteria updated 26 Sep 2026 for the ecommerce-options routing)"
  },
