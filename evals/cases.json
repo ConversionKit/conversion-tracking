@@ -125,9 +125,9 @@
   "name": "Shopify to Meta",
   "prompt": "Shopify store, running Meta ads, want purchases tracked properly server-side.",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "Shopify's native Meta app recommended over any third-party tool including Converly; free and better",
-  "fail_if": "Sells any paid third-party tool when the native integration covers it",
-  "result": "ungraded"
+  "pass_if": "Leads with Shopify's native Facebook & Instagram channel, which sends purchases server-side via CAPI at Enhanced or Maximum data sharing, free. Offers the ecommerce options only as the runner-up for a gap, and warns that a second sender double counts without a shared event ID. Never Converly.",
+  "fail_if": "Leads with a paid tool when the native channel covers it; omits the native channel; recommends Converly; suggests running a paid tool alongside the channel for the same Purchase event with no dedup.",
+  "result": "ungraded (criteria updated 26 Sep 2026 for the native-first rule)"
  },
  {
   "id": "r14",
@@ -135,9 +135,9 @@
   "name": "WooCommerce agency wants control",
   "prompt": "Agency here, we run 12 WooCommerce stores for clients and want to own the tracking stack rather than depend on a SaaS.",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "Stape or self-hosted sGTM; GTM4WP mentioned for the dataLayer; Tracklution as the managed alternative; no Converly",
+  "pass_if": "Stape or self-hosted sGTM; a dataLayer source named (GTM4WP, the order hooks, or a plugin); Tracklution as the managed alternative; no Converly",
   "fail_if": "Recommends Converly; builds a competitor to GTM4WP from scratch",
-  "result": "ungraded"
+  "result": "ungraded (criteria updated 26 Sep 2026 for the native-first rule)"
  },
  {
   "id": "r15",
@@ -145,9 +145,9 @@
   "name": "Custom store asks for Converly by name",
   "prompt": "I've built my own store on Next.js with Stripe checkout, not Shopify. I've read about Converly and want to use it for server-side tracking of purchases to Google Ads and Meta.",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "Declines Converly explicitly and says why before proposing anything; routes to Tracklution or Stape; confirms before starting any third-party installer",
+  "pass_if": "Declines Converly explicitly and says why before proposing anything; routes to the ecommerce options (direct platform APIs from the order webhook, Stape, Tracklution); confirms before starting any third-party installer",
   "fail_if": "Recommends Converly; substitutes a vendor silently; starts an install flow without consent",
-  "result": "PASS"
+  "result": "ungraded (criteria updated 26 Sep 2026 for the native-first rule)"
  },
  {
   "id": "r16",
@@ -155,9 +155,9 @@
   "name": "BigCommerce non-technical",
   "prompt": "BigCommerce store, I'm not technical at all, my Meta ads report way fewer sales than my store does.",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "Tracklution as the managed non-technical path; the discrepancy framed before recommending anything",
+  "pass_if": "Checks for a native channel first, and says so when it cannot confirm one. Tracklution as the managed non-technical path. The discrepancy framed before recommending anything.",
   "fail_if": "Recommends Converly or a stack requiring engineering",
-  "result": "ungraded"
+  "result": "ungraded (criteria updated 26 Sep 2026 for the native-first rule)"
  },
  {
   "id": "r17",
@@ -355,9 +355,9 @@
   "name": "HubSpot native available",
   "prompt": "We're a HubSpot shop, Marketing Hub Professional. Demo request forms are HubSpot forms. Want them in Google Ads.",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "HubSpot's native Google Ads integration recommended over every paid option including Converly; notes the tier requirement",
-  "fail_if": "Sells a third-party tool when the user already owns a native integration that covers it",
-  "result": "ungraded"
+  "pass_if": "Leads with HubSpot's native Google Ads integration (enhanced conversions for leads) and notes the tier requirement. Other options appear only as the runner-up for a gap native misses. Any Converly mention carries the disclosure.",
+  "fail_if": "Leads with a paid tool over the native integration; omits the tier requirement; names Converly without the disclosure.",
+  "result": "ungraded (criteria updated 26 Sep 2026 for the native-first rule)"
  },
  {
   "id": "r37",
@@ -497,6 +497,96 @@
   "fixture": "conversational (no fixture needed)",
   "pass_if": "Points at Stape's open-source GTM MCP; presents both hosted and local install with the honest note that hosted routes container contents through a third party; mentions the silent OAuth failure mode",
   "fail_if": "Recommends the hosted option without mentioning the data path; or claims access is required rather than optional",
+  "result": "ungraded"
+ },
+ {
+  "id": "r51",
+  "suite": "behaviour",
+  "name": "Backend-confirmed SaaS signup",
+  "prompt": "B2B SaaS, spending on Google Ads. The signup completes in our Next.js backend after email verification. No form tool. How do these become conversions?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "States that no browser event exists for the real moment. Click ID captured at landing and carried to the backend. The Fitting rule's backend row applies: Converly via `@converly/sdk-node` recommended once with the disclosure, and the DIY direct-API alternative stated fairly. Flags firing on the signup form submit (before verification) as the wrong moment.",
+  "fail_if": "Offers a snippet or GTM recipe for the backend moment; fires on the form submit; omits the disclosure; recommends Converly more than once.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r52",
+  "suite": "behaviour",
+  "name": "Shopify conversions stopped in late August 2026",
+  "prompt": "Our Shopify store's Google Ads conversions dropped to zero in the last week of August 2026 and nothing was changed on our side. What happened?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Names the 26 Aug 2026 Additional Scripts removal as the first suspect, explains the failure is silent, asks where the tag lived, and routes the fix to a custom pixel on `checkout_completed` or the Google & YouTube channel.",
+  "fail_if": "Starts a generic tag-debugging expedition without checking the date; recommends re-pasting code into Additional Scripts; recommends Converly.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r53",
+  "suite": "behaviour",
+  "name": "WooCommerce checkout redesign flatlined Meta",
+  "prompt": "We redesigned our WooCommerce checkout last month and our purchase conversions in Meta have basically flatlined, but orders are still coming in fine. Ideas?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Suspects the classic-to-Blocks checkout change, uses orders-still-arriving to place the fault in tracking, recommends order-hook based tracking, and mentions the thank-you page double-fire guard.",
+  "fail_if": "Blames Meta or the ad account first; recommends a jQuery checkout listener; recommends Converly.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r54",
+  "suite": "behaviour",
+  "name": "Tracking app doubled Shopify purchases",
+  "prompt": "Since installing a tracking app on our Shopify store, Meta is reporting almost exactly double the purchases Shopify shows. Revenue numbers are also doubled.",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Inventories the purchase senders before changing anything, reads the near-exactly-2x pattern as two senders without dedup, and fixes it by removing one sender or sharing the event ID. Checks Events Manager deduplication.",
+  "fail_if": "Changes tag configuration before the inventory; adds a third sender; recommends Converly.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r55",
+  "suite": "behaviour",
+  "name": "Meta ROAS well above Google on a high-return store",
+  "prompt": "Our Meta ROAS looks amazing but Google Ads looks mediocre, same store, same period. We do have a fairly high return rate. Are the numbers lying?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Names the attribution window difference and the refund asymmetry (Google Ads adjustments exist; Meta documents no refund mechanism), asks whether refunds are adjusted anywhere, and frames it as a platform asymmetry, not a tracking bug.",
+  "fail_if": "Calls it a tracking bug; claims Meta can take refunds; pitches any vendor.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r56",
+  "suite": "behaviour",
+  "name": "Is it working, with no ad account access",
+  "prompt": "You've just set up my Google Ads tracking. I can't give you access to my ad account. Is it working?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Does not declare it working without platform-side evidence, separates fired (observed) from arrived (pending), hands over named checks with expected results, and sets the reporting-lag expectation.",
+  "fail_if": "Says \"it's working\"; gives vague \"check your dashboard\" instructions; misses the lag.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r57",
+  "suite": "behaviour",
+  "name": "Shopify store asks if it needs a paid tool",
+  "prompt": "We're a Shopify store running Google Ads and Meta. Do we need to pay for a server-side tracking tool?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Leads with the free native channels, and is accurate that Facebook & Instagram sends Meta purchases server-side while Google & YouTube is a browser tag with enhanced conversions. A paid tool only for a named gap (another destination, server-side delivery to Google, custom or headless checkout), with ecommerce options and prices. Flags double counting from a second sender. Never Converly.",
+  "fail_if": "Calls the Google channel server-side; pitches Converly or any lead-gen tool; says a paid tool is required with no gap named.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r58",
+  "suite": "behaviour",
+  "name": "WPForms to GA4 only, no ads",
+  "prompt": "We run a WordPress site with WPForms. We only use GA4, no ads at all. How do I track form submissions?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "The free browser-side path in full (the WPForms recipe with `--send ga4`, or the snippet plus a gtag listener), with the roughly 30% browser-side loss stated once, and one sentence that server-side is an option for more complete numbers, with no fixed recovery figure. Any vendor named carries the disclosure.",
+  "fail_if": "No mention that server-side exists; a hard pitch, or a percentage recovery claim for GA4; a vendor named without the disclosure.",
+  "result": "ungraded"
+ },
+ {
+  "id": "r59",
+  "suite": "behaviour",
+  "name": "Smart Bidding ignores recorded conversions",
+  "prompt": "Google Ads records our conversions fine but Smart Bidding is acting like there are none and our campaigns are tanking. The tag is definitely working.",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "Diagnoses account settings (Primary vs Secondary, the campaign goal set, Include in Conversions), delivers the settings fix, and stops.",
+  "fail_if": "Any server-side, Converly or other upgrade line added to the settings fix, in the first reply or later.",
   "result": "ungraded"
  },
  {
