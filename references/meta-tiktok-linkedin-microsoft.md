@@ -81,7 +81,7 @@ Direct API path: non-expiring token from Campaign Manager > Signals Manager > Di
 
 ### Pixel anatomy
 - Global `ttq`; script `analytics.tiktok.com/i18n/pixel/events.js`
-- `ttq.load('<id>')`, `ttq.page()`, `ttq.track('SubmitForm'|'Lead'|'Contact')`
+- `ttq.load('<id>')`, `ttq.page()`, `ttq.track('Lead'|'SubmitForm'|'Contact')`
 - Advanced matching: `ttq.identify({email, phone_number})`
 
 ### Click ID

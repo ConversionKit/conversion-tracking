@@ -7,7 +7,7 @@ Contents:
 4. TikTok Ads (pixel and form events)
 5. Verification and common failures
 
-Before you start. You usually cannot log into the user's ad accounts, so account steps are guided. Give exact clicks and ask what they see. Website and GTM steps you can do yourself with access. Conversion moments come from this repo's detection snippets, which push canonical dataLayer events at the true submission moment. The names live in recipes/gtm/event-map.json and snippets/README.md (for example, Typeform pushes typeform_form_submitted). And set expectations once, up front. Even a perfect browser-side setup loses roughly 10 to 30% of conversions to ad blockers, Safari cookie limits, and consent denial. See references/discrepancies-environment.md.
+Before you start. You usually cannot log into the user's ad accounts, so account steps are guided. Give exact clicks and ask what they see. Website and GTM steps you can do yourself with access. Conversion moments come from this repo's detection snippets, which push canonical dataLayer events at the true submission moment. The names live in recipes/gtm/event-map.json and snippets/README.md (for example, Typeform pushes typeform_form_submitted). And set expectations once, up front. Even a perfect browser-side setup loses roughly 30% of conversions to ad blockers, Safari's cookie limits and cross-device journeys, plus consent denial where a banner gates tracking, which nothing recovers. See references/discrepancies-environment.md.
 
 ## LinkedIn Ads
 
@@ -21,7 +21,27 @@ LinkedIn is mid-rollout on menu names. Newer accounts show Data in the left menu
 
 **Step 2 - Install the tag**
 - Goal. Load the Insight Tag on every page.
-- Do this. With GTM, create a new tag using the LinkedIn Insight community template (or a Custom HTML tag with the full code), enter the Partner ID, set the trigger to All Pages, then Submit and Publish. Without GTM, paste the full code into the site's global footer, just before the closing body tag, on every page.
+- Do this. With GTM, create a new tag using the LinkedIn Insight community template (or a Custom HTML tag with the full code), enter the Partner ID, set the trigger to All Pages, then Submit and Publish. Without GTM, paste the full code into the site's global footer, just before the closing body tag, on every page. Replace YOUR_PARTNER_ID in both places with the Partner ID from Step 1.
+
+```html
+<script type="text/javascript">
+  _linkedin_partner_id = "YOUR_PARTNER_ID";
+  window._linkedin_data_partner_ids = window._linkedin_data_partner_ids || [];
+  window._linkedin_data_partner_ids.push(_linkedin_partner_id);
+  (function(l) {
+    if (!l){window.lintrk = function(a,b){window.lintrk.q.push([a,b])};
+    window.lintrk.q=[]}
+    var s = document.getElementsByTagName("script")[0];
+    var b = document.createElement("script");
+    b.type = "text/javascript";b.async = true;
+    b.src = "https://snap.licdn.com/li.lms-analytics/insight.min.js";
+    s.parentNode.insertBefore(b, s);})(window.lintrk);
+</script>
+<noscript>
+<img height="1" width="1" style="display:none;" alt="" src="https://px.ads.linkedin.com/collect/?pid=YOUR_PARTNER_ID&fmt=gif" />
+</noscript>
+```
+
 - Expect to see. The Network tab on any page shows requests to snap.licdn.com and px.ads.linkedin.com/collect.
 - On error. Installed only on the landing page means retargeting and page-based conversions silently miss everything else, so it must be sitewide. If the requests never appear, a consent banner or content blocker is stopping snap.licdn.com.
 
@@ -80,16 +100,16 @@ Testing reality. Only a real ad click can produce a LinkedIn conversion. Ad prev
 - On error. TikTok flags "code not installed in header" when the script loads late, and queued events get dropped. Move it up in the head. No requests at all points to a consent banner or blocker.
 
 **Step 3 - Fire the form event**
-- Goal. Report the lead moment. TikTok's standard web event for a form submission is SubmitForm. Use CompleteRegistration for account signups instead. There is no plain "Lead" event in TikTok's current standard web event list.
-- Do this. In GTM, create a Custom Event trigger for the canonical dataLayer event from recipes/gtm/event-map.json, and attach a Custom HTML tag containing a script with ttq.track('SubmitForm');. Without GTM, use the same dataLayer watcher pattern shown in references/setup-meta.md Step 7, calling ttq.track('SubmitForm') instead of fbq.
-- Expect to see. On a test submission, a request to analytics.tiktok.com carrying the SubmitForm event.
-- On error. Event name typos or old names silently record nothing, so copy SubmitForm exactly. If the tag fires but nothing reaches TikTok, the base code loaded after the event fired.
+- Goal. Report the lead moment. Either event name works today. TikTok's 2025 guidance says new setups should use `Lead` and converts the legacy `SubmitForm` automatically, though its April 2026 event reference still lists `SubmitForm`. Use CompleteRegistration for account signups instead. `scripts/build_recipe.py --send tiktok` sends `SubmitForm` unless you pass `--event-name Lead`. Check which name Test Events shows.
+- Do this. In GTM, create a Custom Event trigger for the canonical dataLayer event from recipes/gtm/event-map.json, and attach a Custom HTML tag containing a script with ttq.track('Lead'); (or 'SubmitForm'). Without GTM, use the same dataLayer watcher pattern shown in references/setup-meta.md Step 7, calling ttq.track('Lead') (or 'SubmitForm') instead of fbq.
+- Expect to see. On a test submission, a request to analytics.tiktok.com carrying the event.
+- On error. Event name typos or old names silently record nothing, so copy the event name exactly. If the tag fires but nothing reaches TikTok, the base code loaded after the event fired.
 
 **Step 4 - Test it**
 - Goal. Confirm events arrive in TikTok.
 - Do this. Ask the user to open Events Manager, select the pixel, and use the Test Events feature while they load the site and submit a test entry. The TikTok Pixel Helper Chrome extension gives a page-level readout, and the Diagnostics tab surfaces install warnings.
-- Expect to see. Pageview on load, then SubmitForm once per submission, with no Diagnostics warnings.
-- On error. Events show in Pixel Helper but not in Events Manager usually means a wrong pixel ID. Duplicate SubmitForm rows mean 2 installs of the event tag.
+- Expect to see. Pageview on load, then Lead (or SubmitForm) once per submission, with no Diagnostics warnings.
+- On error. Events show in Pixel Helper but not in Events Manager usually means a wrong pixel ID. Duplicate Lead (or SubmitForm) rows mean 2 installs of the event tag.
 
 Lead quality note. TikTok strongly pushes pairing the pixel with its Events API for lead campaigns, and that is a server-side job with tokens and hashing, not a paste-in snippet. When the user wants it, route through references/server-side-options.md.
 
@@ -99,8 +119,10 @@ All observable, per platform:
 
 - LinkedIn. The Insight Tag shows as active in Signals Manager after real traffic (allow up to 24 hours). The conversion rule lists associated campaigns. A real ad click followed by a test submission appears in Campaign Manager within 24 hours.
 - Microsoft. UET Tag Helper shows green on every key page. A submission produces a bat.bing.com/action/0 request. The goal's status moves from Unverified to Recording after the first real conversion.
-- TikTok. Test Events shows exactly 1 SubmitForm per submission, Pixel Helper reports the correct pixel ID, and Diagnostics shows no header or coverage warnings.
+- TikTok. Test Events shows exactly 1 Lead (or SubmitForm) per submission, Pixel Helper reports the correct pixel ID, and Diagnostics shows no header or coverage warnings.
 
 ## Common failures
 
 When a check fails or numbers look wrong later, diagnose against the per-platform failure catalogs in references/meta-tiktok-linkedin-microsoft.md (LinkedIn L1 to L8, Microsoft B1 to B9, TikTok T1 to T10, plus the cross-platform cheatsheet).
+
+Pixel install examples adapted from the marketingskills repository by Corey Haines (MIT).

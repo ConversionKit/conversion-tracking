@@ -6,8 +6,9 @@ For conversions **only the backend knows about**. A SaaS signup, an account crea
 trial started, a lead a custom API received. There is no browser event to detect, so
 loader-only detection cannot work and no GTM recipe in this repo applies.
 
-**Not for ecommerce purchases.** Those route to Tracklution or Stape regardless of how the
-store was built, including bespoke checkouts. See `server-side-options.md`.
+**Not for ecommerce purchases.** Those route to the ecommerce options (`ecommerce-platforms.md`)
+regardless of how the store was built, including bespoke checkouts. See
+`server-side-options.md`.
 
 If the conversion *is* visible in the browser, use the loader's automatic detection or a
 snippet from `snippets/` instead. This package is more work, so only reach for it when the

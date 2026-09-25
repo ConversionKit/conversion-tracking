@@ -2,7 +2,7 @@
 
 Literal, grep-able strings for auditing lead-gen conversion tracking from (A) form mechanics, (B) static page source, (C) headless browser, (D) codebase.
 
-**Fix assets.** When a finding in this file names a missing or wrong detection hook, the fix usually already exists in this repo. Tested listeners for 18 tools live in `../snippets/` (paste-in JS) and `../recipes/gtm/detect/` (importable GTM containers), both pushing the canonical dataLayer event names listed in `../recipes/gtm/event-map.json` (for example `gravity_form_submitted`, `typeform_form_submitted`, `calendly_event_scheduled`). Diagnose against those exact names, fix by installing those exact assets.
+**Fix assets.** When a finding in this file names a missing or wrong detection hook, the fix usually already exists in this repo. Tested listeners for 20 tools live in `../snippets/` (paste-in JS) and `../recipes/gtm/detect/` (importable GTM containers), both pushing the canonical dataLayer event names listed in `../recipes/gtm/event-map.json` (for example `gravity_form_submitted`, `typeform_form_submitted`, `calendly_event_scheduled`). Diagnose against those exact names, fix by installing those exact assets.
 
 ## A. FORM SUBMISSION MECHANICS
 
@@ -24,11 +24,12 @@ Stacking complications: multi-step forms (only final step converts; step events 
 **Calendly** - iframe. Script `assets.calendly.com/assets/external/widget.js`; `<div class="calendly-inline-widget" data-url=...>`. Parent messages where `e.data.event` starts with `"calendly."`: profile_page_viewed, event_type_viewed, date_and_time_selected, **event_scheduled** (the conversion). Payload has event.uri + invitee.uri only - NO email (enhanced conversions need invitee API or prefill capture). Beware: date_and_time_selected ≠ booked.
 
 **HubSpot Forms** - TWO variants, check BOTH:
-- Legacy v2: `js.hsforms.net/forms/embed/v2.js` + `hbspt.forms.create({portalId, formId})`; renders INLINE mostly. Window message events: `event.data.type === 'hsFormCallback'`, `event.data.eventName` ∈ onFormReady | onFormSubmit | **onFormSubmitted** (use this, post-success) | onFormFailedValidation; `event.data.id` = form GUID.
+- Legacy v2: `js.hsforms.net/forms/embed/v2.js` + `hbspt.forms.create({portalId, formId})`; a form built in HubSpot's current editor still loads the same cross-origin iframe under this embed code; forms from the legacy editor can render inline. Window message events: `event.data.type === 'hsFormCallback'`, `event.data.eventName` ∈ onFormReady | onFormSubmit | **onFormSubmitted** (use this, post-success) | onFormFailedValidation; `event.data.id` = form GUID.
 - New v4: `js.hsforms.net/forms/embed/<portalId>.js` + `<div class="hs-form-frame" data-form-id=...>`; renders in IFRAME. Real DOM events on window: `hs-form-event:on-ready`, **`hs-form-event:on-submission:success`**, `:failed`, `:on-interaction:navigate`; `event.detail.formId`; helper `window.HubSpotFormsV4` (has getConversionId()).
+- The shipped `hubspot-forms` detector listens for both: the `hs-form-event:on-submission:success` DOM event (current-editor forms, either embed code, live-verified 24 Sep 2026) and the origin-checked `hsFormCallback` `onFormSubmitted` message (legacy-editor forms, not live-verified).
 - Note: `js.hs-scripts.com/<portalId>.js` is the general HubSpot tracking script - presence ≠ ad conversion tracking.
 
-**Jotform** - iframe (`form.jotform.com/<id>` or script `form.jotform.com/jsform/<id>`). Posts message to parent on submit; the Thank You → redirect setting breaks out of the iframe, navigates TOP window to your URL, and can append field values + unique {id} param - redirect is the most robust method. Tags pasted inside the Jotform builder fire on jotform.com's domain (wrong context).
+**Jotform** - iframe (`form.jotform.com/<id>` or script `form.jotform.com/jsform/<id>`). Sends the parent page no submission message from the iframe or script embed (live-verified 5 Jul 2026, `jotform/HOW-IT-WORKS.md`), so for those embeds the thank-you redirect is the browser-side option; the Thank You → redirect setting breaks out of the iframe, navigates TOP window to your URL, and can append field values + unique {id} param - redirect is the most robust method. Tags pasted inside the Jotform builder fire on jotform.com's domain (wrong context). The full source-code embed renders a real `<form>` on the page; there Jotform cancels every submit and resends it with `form.submit()`, so the shipped detector (full source-code embed only) arms on the submit attempt and fires on the browser's `formdata` event.
 
 **Contact Form 7 (WP)** - always AJAX. Bubbling DOM events on document (plain addEventListener works): **`wpcf7mailsent`** (success - use this), wpcf7submit, wpcf7invalid, wpcf7spam, wpcf7mailfailed. `event.detail` includes contactFormId, inputs (name/value array - usable for enhanced conversions).
 
@@ -42,9 +43,11 @@ Stacking complications: multi-step forms (only final step converts; step events 
 
 **Framer** - React forms, inline success swap, no navigation, no built-in GTM event. Track via custom listener/element observation or redirect. Framer can auto-capture UTM/GCLID into form fields (built-in feature).
 
-**Squarespace** - AJAX + inline message default; options: redirect URL, or "Post-Submit HTML" field that injects and executes code only after successful submit (a de facto conversion hook; plan-gated Business+).
+**Squarespace** - AJAX + inline message default; options: redirect URL, or "Post-Submit HTML" field that injects and executes code only after successful submit (a de facto conversion hook; Squarespace's form docs state no plan gate for it, while code injection needs a Core plan or above).
 
 **Wix** - AJAX + inline success; tracking via Wix's own dashboard integrations (auto-fires form-submit conversion) or Velo `wixWindow.trackEvent`; raw GTM DOM listeners unreliable in Wix's framework. "Wix + manually pasted pixel" = high risk of no submit event.
+
+**Duda** - Duda's own site API announces a confirmed submission. `dmAPI.subscribeEvent(dmAPI.EVENTS.FORM_SUBMISSION, cb)` fires only after Duda's server accepts it (not on blocked validation, a failed reCAPTCHA, or a multi-step form advancing), for both the legacy Contact Form and the Advanced Forms widget. The payload has no form id. Shipped detector: `snippets/duda.js`.
 
 ## B. STATIC DETECTION SIGNATURES (grep fetched HTML + inline JS)
 

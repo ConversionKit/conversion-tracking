@@ -119,7 +119,7 @@ Chain test: visit `landingpage?gclid=TEST123` → confirm survives redirects →
 ### Category D - Consent & privacy
 - **D1. Consent Mode misconfigured** (VERY COMMON in EEA/UK): conversions drop 30-90% after CMP install; CMP never flips ad_storage/ad_user_data to granted. Confirm: Tag Assistant Consent tab; `gcs=G100` persisting after accept. Since March 2024 Google requires ad_user_data/ad_personalization for EEA; July 2025 enforcement disabled non-compliant setups.
 - **D2. Consent denied traffic + modeling gaps**: denied conversions dropped or modeled; Ads and GA4 model independently. URL passthrough (`url_passthrough: true`) partially recovers.
-- **D3. Ad blockers / ITP baseline loss** (ALWAYS PRESENT): ~10-30% never track client-side. Mitigate with enhanced conversions / server-side.
+- **D3. Ad blockers / ITP baseline loss** (ALWAYS PRESENT): ~30% never track client-side. Mitigate with enhanced conversions / server-side.
 
 ### Category E - Account configuration
 - **E1. Action set to Secondary** (VERY COMMON confusion): only counts in "All conversions", not "Conversions"; doesn't drive Smart Bidding. Inverse: two Primaries for same event = double counting.

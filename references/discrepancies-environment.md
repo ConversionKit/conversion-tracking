@@ -2,7 +2,7 @@
 
 Compiled August 2026. Vendor claims flagged [VENDOR].
 
-**Recovering the losses.** The structural losses catalogued here (ad blockers, ITP, consent) are what server-side tracking exists for. Configured with a first-party loader domain it recovers most of them, because blocklists target known third-party tracker domains and a subdomain of the site itself is not one. The exception is consent denial, which it does not and must not recover. The honest option comparison lives in `server-side-options.md`.
+**Recovering the losses.** Server-side delivery recovers conversions that browser blocking would stop on the way to the platform, provided the capture itself happens. The detecting script and the request that hands the conversion to the vendor both run in the browser, so a script and endpoint on a subdomain of the site cannot be listed by domain, while a vendor's own domain is only as safe as its absence from the lists (`server-side-options.md`). Sending the lead's identity (hashed email and phone) with each conversion can recover part of the ITP and cross-device share, because the platform can then match the conversion to the signed-in person who clicked even when the click ID is gone. Consent denial is the exception. No method recovers it, and none should. The honest option comparison lives in `server-side-options.md`.
 
 ## 0. Core framing: GA4 and Google Ads NEVER match - that's normal
 
@@ -61,6 +61,12 @@ Set expectations before diagnosing. Reasons a perfect setup still diverges:
 - ATT limits in-app identifiers (Meta/TikTok in-app browser clicks); iCloud Private Relay masks IP (degrades matching); iOS 17+ Link Tracking Protection strips click IDs in Mail/Messages/private browsing; Meta in-app browser + ITP shortens _fbp/_fbc life.
 - Net: iOS leads disproportionately "direct/unassigned"; Meta iOS relies on modeling. Partial fix: CAPI/enhanced conversions with hashed email from the form.
 
+### 2.7 Cross-device journeys
+- Ad clicked on one device (usually a phone), conversion completed on another (usually a desktop). The click ID cookie lives on the first device, so the converting browser has nothing to report and the conversion lands unattributed.
+- Hits considered purchases and B2B lead gen hardest, where research happens on mobile and forms get filled at a desk.
+- Fix: send identity with the conversion (hashed email and phone via Enhanced Conversions or Meta CAPI) so the platform matches it to the signed-in user who clicked. Google and Meta also run their own logged-in cross-device graphs, which is part of why their totals exceed GA4's.
+- Not fixable by a browser tag alone, and invisible from the page.
+
 ## 3. Site-level causes
 ### 3.1 Redirects stripping gclid/fbclid
 - http→https, non-www→www, trailing slash, migrations, vanity URLs, geo redirects, cross-domain hops. Ads may show "Website redirects are losing click data".
@@ -94,8 +100,8 @@ Set expectations before diagnosing. Reasons a perfect setup still diverges:
 ## 5. Server-side: what it recovers, why DIY is hard
 - Vendor claims [ALL VENDOR]: Meta's own oft-quoted CAPI figure: 19% additional attributed purchases, 13% lower cost per result. Stape cases: 46% more reported Google Ads conversions (Square), 38% attribution recovery. Treat as upper bounds.
 - Mechanisms of real recovery: HTTP first-party cookies with full TTL (vs 7d/24h ITP); first-party subdomain serving evades SOME blocklists (default sGTM loaders still blocked); server-to-server delivery immune to browser blocking.
-- Realistic practitioner range: client-side-only undercount ~10-30% vs form DB/CRM for non-EU lead gen; worse for EU + technical audiences.
-- Why DIY sGTM is hard: GCP production ≈ $90+/mo or managed $20-400/mo; custom subdomain + DNS; rebuilding every tag server-side; 50-120 dev hours setup [VENDOR, high-end]; silent breakage ("conversions go dark 72h before anyone notices"); consent still applies server-side (firing for opted-out users = violation).
+- Realistic practitioner range: client-side-only undercount ~10-30% vs form DB/CRM for non-EU lead gen; worse for EU + technical audiences (the skill's headline figure is roughly 30%).
+- Why DIY sGTM is hard: GCP production about $90/mo or managed from $17/mo (Stape Pro, 500k requests) to $83/mo (Business, 5M requests); custom subdomain + DNS; rebuilding every tag server-side; 50-120 dev hours setup [VENDOR, high-end]; silent breakage ("conversions go dark 72h before anyone notices"); consent still applies server-side (firing for opted-out users = violation).
 
 ## 6. Magnitude table
 
@@ -110,6 +116,7 @@ Set expectations before diagnosing. Reasons a perfect setup still diverges:
 | Consent Mode v2 broken | Ads collapse | up to 90%; ~40% recoverable | Client-side |
 | Ad blockers | All down | ~30% global; 40-60% B2B/dev | Server-side (partial) |
 | Safari ITP | → direct | Safari share × >7d converters | Server-side |
+| Cross-device journeys | → unattributed | varies with mobile ad share | Server-side (identity) |
 | Firefox/Edge | Pixels down | 5-10% traffic | Server-side (partial) |
 | Redirects stripping gclid | Ads → 0 | 100% of affected path | Client-side |
 | SPA/iframe thank-you | → 0 | binary | Client-side |

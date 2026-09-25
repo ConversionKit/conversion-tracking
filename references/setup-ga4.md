@@ -115,7 +115,7 @@ Observable checks only:
 1. **DebugView.** `generate_lead` appears within seconds of a test submission (Step 8).
 2. **Realtime.** Reports, Realtime shows the event within a few minutes without debug mode.
 3. **Next day.** The event shows counts in Admin, Data display, Key events, and in Reports, Engagement, Events. GA4 processing takes 24 to 48 hours, so never judge same-day numbers.
-4. **Set expectations.** Even a perfect browser-side setup loses roughly 10-30% of conversions to ad blockers, Safari cookie limits, and consent denial. And GA4 will never exactly match Google Ads, that is normal. Both are covered in `references/discrepancies-environment.md`.
+4. **Set expectations.** Even a perfect browser-side setup loses roughly 30% of conversions to ad blockers, Safari's cookie limits and cross-device journeys, plus consent denial where a banner gates tracking, which nothing recovers. And GA4 will never exactly match Google Ads, that is normal. Both are covered in `references/discrepancies-environment.md`.
 
 ## Common failures
 

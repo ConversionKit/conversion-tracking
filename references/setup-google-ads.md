@@ -14,7 +14,7 @@ Guided setup for wiring a form or booking tool to Google Ads. The agent usually 
 You need three things:
 
 - Access to the Google Ads account (the user has this, you guide them).
-- The form or booking tool in play. This repo has detection recipes for 18 tools. The full list with canonical dataLayer event names lives in `recipes/gtm/event-map.json` and `snippets/README.md`. Example, Gravity Forms pushes `gravity_form_submitted`. Supported tools are Calendly, Contact Form 7, Divi Forms, Elementor Forms, Fluent Forms, Formidable Forms, Forminator, Framer Forms, Gravity Forms, Jotform, Ninja Forms, Tally, Typeform, Webflow Forms, Wix Forms, Wix Bookings, WPForms, and WS Form.
+- The form or booking tool in play. This repo has detection recipes for 20 tools plus 4 universal patterns. The full list with canonical dataLayer event names lives in `recipes/gtm/event-map.json` and `snippets/README.md`. Example, Gravity Forms pushes `gravity_form_submitted`. Supported tools are Calendly, Contact Form 7, Divi Forms, Duda, Elementor Forms, Fluent Forms, Formidable Forms, Forminator, Framer Forms, Gravity Forms, HubSpot Forms, Jotform, Ninja Forms, Tally, Typeform, Webflow Forms, Wix Forms, Wix Bookings, WPForms, and WS Form.
 - A decision on the install path. Check the site's page source for a `GTM-` container snippet, or ask the user. If GTM is installed, use Path A. If not, use Path B. Never do both, that double counts.
 
 Also do a quick duplicate pre-check before installing anything. Fetch the page source and look for an existing `AW-` ID, a `gtag('event', 'conversion'` call, or an existing Google Ads conversion tag inside the GTM container. If the same real-world action is already being tracked, fix or replace that setup rather than adding a second one on top. Two tags for one form is the classic overcounting setup.
@@ -52,7 +52,7 @@ End state, GTM does all the listening and firing, and nothing gets pasted into t
 - **Goal.** Produce 1 GTM container file that bundles the tool's detection tag, the Google Ads conversion tag, and a Conversion Linker tag.
 - **Do this.** Run this, substituting the tool key from `recipes/gtm/event-map.json` and the 2 values from Step 2. `python3 scripts/build_recipe.py --tool {tool} --send google-ads --conversion-id {id} --conversion-label {label} -o import-me.json` The script uses only the Python standard library and can run from any folder, paths resolve relative to the script file.
 - **Expect to see.** The script prints "wrote import-me.json" plus which dataLayer event it detects and where it sends.
-- **On error.** "invalid choice" on --tool means the tool key is misspelled or unsupported, check the 18 keys in `recipes/gtm/event-map.json`. A complaint about missing --conversion-id or --conversion-label means Step 2 values were not passed.
+- **On error.** "invalid choice" on --tool means the tool key is misspelled or unsupported, check the 24 keys in `recipes/gtm/event-map.json`. A complaint about missing --conversion-id or --conversion-label means Step 2 values were not passed.
 
 **Step 4 - Import the file into GTM**
 - **Goal.** Load the 3 tags and their trigger into the site's existing GTM container without touching anything already there.
@@ -114,6 +114,7 @@ End state, 3 pieces of code sit in the site's `<head>` via the platform's custom
 </script>
 ```
 
+- **For a purchase, or a thank-you page that can be refreshed.** Add `'value': 123.45, 'currency': 'USD', 'transaction_id': 'ORDER_ID'` to the conversion call, with the real order values. `transaction_id` lets Google Ads drop a repeat of the same order within the same conversion action (not view-through duplicates). ([Google](https://support.google.com/google-ads/answer/6386790))
 - **Expect to see.** On a test submission, the browser's Network tab shows a request to googleadservices.com or google.com containing `/pagead/conversion/` with the ID and label.
 - **On error.** No conversion request usually means a placeholder was left unreplaced (search the page source for XXXXXXXXX) or the event name does not match the canonical name exactly. A 400 style response often means the label is wrong.
 
@@ -127,7 +128,7 @@ End state, 3 pieces of code sit in the site's `<head>` via the platform's custom
 
 ## Enhanced conversions
 
-This setup records the conversion but does not send the lead's email with it. Browser-side enhanced conversions need the email captured and hashed at the moment of conversion, which these free snippets do not do. Server-side tools (like Converly, or any CAPI-style uploader) handle enhanced conversion data as part of how they work. See `references/server-side-options.md` if match quality matters to the account.
+This setup records the conversion but does not send the lead's email with it, because the free snippets push the event and no personal data. Google Ads enhanced conversions can still run from the browser tag. Read the email and phone from the form when it is submitted, because many tools replace the form with a confirmation before their success event fires, and keep them in a variable. Then, in the conversion listener, call `gtag('set', 'user_data', {'email': EMAIL, 'phone_number': PHONE});` just before the conversion call. Or turn on automatic detection so Google reads them from the page. Unhashed values are fine, because Google normalises and hashes them ([Google's guide](https://support.google.com/google-ads/answer/13258081)). Turn enhanced conversions on in the account's conversion settings first. Google announced that the web and leads settings would merge from June 2026, so guides show different labels. Either way the data rides every browser-side loss. Server-side tools (like Converly, or any CAPI-style uploader) send it from a server as part of how they work. See `references/server-side-options.md` if match quality matters to the account.
 
 ## Verification
 
@@ -139,8 +140,10 @@ Observable checks only, in order:
 4. **Real ad click test.** Website conversions only count after an ad click. A bare test submission proves the tag fires but will not appear as a conversion. Click a live ad, submit, then check the next day.
 5. **The 3 day rule.** Never judge a reporting window that ends less than 3 days ago. Conversions post against the click date and keep arriving late, so recent totals always grow retroactively.
 6. **Duplicate scan.** In the Summary table, confirm only 1 Primary conversion action exists for this real-world action. If a GA4 key event import for the same form also sits at Primary, demote one to Secondary or bidding counts every lead twice (details in `references/google-ads.md`).
-7. **Set expectations.** Even a perfect browser-side setup loses roughly 10-30% of conversions to ad blockers, Safari cookie limits, and consent denial. That gap is environmental, not a bug. See `references/discrepancies-environment.md`.
+7. **Set expectations.** Even a perfect browser-side setup loses roughly 30% of conversions to ad blockers, Safari's cookie limits and cross-device journeys, plus consent denial where a banner gates tracking, which nothing recovers. That gap is environmental, not a bug. See `references/discrepancies-environment.md`.
 
 ## Common failures
 
 For anything that goes wrong after setup (statuses stuck on Unverified, Tag inactive dates, double counting, consent mode killing conversions, gclid stripping), work through the failure catalog in `references/google-ads.md`.
+
+Pixel install examples adapted from the marketingskills repository by Corey Haines (MIT).

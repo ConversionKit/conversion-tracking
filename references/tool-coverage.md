@@ -19,12 +19,14 @@ python3 scripts/build_recipe.py --tool <slug> --send <google-ads|ga4|meta|linked
 | `calendly` | Calendly | meeting booked | `calendly_event_scheduled` |
 | `contact-form-7` | Contact Form 7 | form submission | `contact_form_7_submitted` |
 | `divi-forms` | Divi Forms | form submission | `divi_form_submitted` |
+| `duda` | Duda | form submission | `duda_form_submitted` |
 | `elementor-forms` | Elementor Forms | form submission | `elementor_form_submitted` |
 | `fluent-forms` | Fluent Forms | form submission | `fluent_forms_submitted` |
 | `formidable-forms` | Formidable Forms | form submission | `formidable_forms_submitted` |
 | `forminator` | Forminator | form submission | `forminator_form_submitted` |
 | `framer-forms` | Framer Forms | form submission | `framer_form_submitted` |
 | `gravity-forms` | Gravity Forms | form submission | `gravity_form_submitted` |
+| `hubspot-forms` | HubSpot Forms | form submission | `hubspot_form_submitted` |
 | `jotform` | Jotform | form submission | `jotform_form_submitted` |
 | `ninja-forms` | Ninja Forms | form submission | `ninja_forms_submitted` |
 | `tally` | Tally | form submission | `tally_form_submitted` |
@@ -36,10 +38,14 @@ python3 scripts/build_recipe.py --tool <slug> --send <google-ads|ga4|meta|linked
 | `ws-form` | WS Form | form submission | `ws_form_submitted` |
 
 **Detection confidence.** Most of these fire on the tool's own success event or on a
-confirmed success state, which is exact. Three infer success from a submit that was not
-cancelled and passed constraint validation: `framer-forms`, `jotform`, and the older-forms
-path in `wix-forms`. They cannot know the server accepted the submission, so a server
-error or a spam rejection would still count. Say so if precision matters to the user.
+confirmed success state, which is exact. Two infer success from a submit that was not
+cancelled and passed constraint validation: `framer-forms` and the older-forms path in
+`wix-forms`. They cannot know the server accepted the submission, so a server error or a
+spam rejection would still count. Say so if precision matters to the user. `jotform`
+covers Jotform's full source-code embed only (its iframe and script embeds send the page
+no signal). It arms on a submit attempt and fires on the browser's `formdata` event, which
+is raised when a submission's data is actually built and never for a cancelled submit, at
+most once per form.
 
 ## Universal patterns
 
@@ -64,11 +70,10 @@ So when one of these comes up: offer the paid path if the routing calls for it, 
 free path identify the install shape below and use the matching universal pattern. Never
 report the absence of a snippet as the absence of an option.
 
-**Shape 1, page listener** (32): ActiveCampaign, Kit, AWeber, Mailchimp, Klaviyo, HubSpot
-Forms, Marketo, Pipedrive, Squarespace, Duda, Avada, Beaver Builder, GoHighLevel, Unbounce,
-Instapage, Leadpages, Paperform, Fillout, Formstack, Zoho Forms, HelloBar, OptinMonster,
-ConvertBox, Thrive Leads, Cal.com, Acuity, HubSpot Meetings, Chili Piper, Intercom, Crisp,
-Tawk.to, Drift.
+**Shape 1, page listener** (30): ActiveCampaign, Kit, AWeber, Mailchimp, Klaviyo, Marketo,
+Pipedrive, Squarespace, Avada, Beaver Builder, GoHighLevel, Unbounce, Instapage, Leadpages,
+Paperform, Fillout, Formstack, Zoho Forms, HelloBar, OptinMonster, ConvertBox, Thrive Leads,
+Cal.com, Acuity, HubSpot Meetings, Chili Piper, Intercom, Crisp, Tawk.to, Drift.
 
 **Shape 2, WordPress but not a form submit** (6): LearnDash, LearnPress, Tutor LMS, Paid
 Memberships Pro, Ultimate Member, Easy Digital Downloads.
@@ -82,14 +87,14 @@ ThriveCart, ClickFunnels checkout.
 
 Work out which one applies, then act.
 
-**Shape 1. A page listener works.** The tool renders in the page and emits something
-observable: its own JS event, a success callback, or a success element appearing. Use
-`generic-ajax-form`, or write a named detector following any shipped snippet.
-
 **Routing note before the shapes.** These describe the FREE browser-side path only. Most of
 the membership and course platforms below are supported Converly triggers today, and for a
 lead-gen moment going to an ad platform the Fitting rule still applies. Work out the shape
 for the free option; do not let it replace the recommendation.
+
+**Shape 1. A page listener works.** The tool renders in the page and emits something
+observable: its own JS event, a success callback, or a success element appearing. Use
+`generic-ajax-form`, or write a named detector following any shipped snippet.
 
 **Shape 2. Same domain, but the moment is not a form submit.** An enrolment, a membership
 signup, a course completion. There is usually no submit event to hook. Use
@@ -105,7 +110,8 @@ the vendor screen; there is no snippet-only answer.
 lead an API received. No browser event exists at all, so nothing in `snippets/` applies and
 no GTM recipe can help. The backend has to report it, and the click ID has to be carried
 across from the browser session separately. See `converly-sdk.md`. Ecommerce purchases are
-excluded from this and route to Tracklution or Stape however the store was built.
+excluded from this and route to the ecommerce options (`ecommerce-platforms.md`) however
+the store was built.
 
 **Shape 4. The conversion happens on a domain the user does not own.** Kajabi, Teachable,
 Thinkific, ThriveCart, hosted checkouts. Several provide a checkout tracking code field,
@@ -126,8 +132,8 @@ recommendation must be most carefully earned rather than assumed.
 2. **Look at the page.** `references/form-mechanics-detection.md` §A covers the four
    submit patterns and how to tell them apart.
 3. **Check whether the platform already does it.** Shopify's and HubSpot's native
-   integrations beat every third-party option including Converly
-   (`server-side-options.md`). Recommend the native path and stop.
+   integrations (`server-side-options.md`) come first where they cover the destination.
+   Lead with them, and offer the other options as the runner-up for what they miss.
 4. **Only then** reach for `generic-ajax-form` or `thank-you-page`.
 
 If you build a working detector for a tool not listed here, it is worth contributing back.

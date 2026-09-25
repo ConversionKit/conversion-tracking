@@ -115,6 +115,41 @@ Use the standard Lead event, not a custom name. Meta parks first-seen custom eve
 - Expect to see. On a test submission, the Network tab shows a request to facebook.com/tr containing ev=Lead.
 - On error. If nothing fires, check load order. This wrapper must run after the base code defines fbq and before the form is submitted, so keep all 3 pieces (base code, wrapper, detection snippet) in the head. If Lead fires twice per submission, the site has both this wrapper and a GTM tag doing the same job. Keep 1.
 
+**Standard events with parameters.** Lead takes an optional value and currency. Purchase requires both. ViewContent and AddToCart are shown for stores. Any of these calls can replace the plain fbq('track', 'Lead') in Step 6 or Step 7, with the real values in place of the examples.
+
+```javascript
+// View a product or key page
+fbq('track', 'ViewContent', {
+  content_name: 'Pro Plan',
+  content_category: 'Pricing',
+  value: 29.00,
+  currency: 'USD'
+});
+
+// Lead capture (form submit, demo request)
+fbq('track', 'Lead', {
+  content_name: 'Demo Request',
+  value: 50.00,
+  currency: 'USD'
+});
+
+// Purchase
+fbq('track', 'Purchase', {
+  value: 99.00,
+  currency: 'USD',
+  content_type: 'product',
+  contents: [{ id: 'pro-plan', quantity: 1 }]
+});
+
+// Add to cart (e-commerce)
+fbq('track', 'AddToCart', {
+  content_ids: ['SKU-123'],
+  content_type: 'product',
+  value: 49.00,
+  currency: 'USD'
+});
+```
+
 ## 4. Test with Test Events
 
 **Step 8 - Run a live test**
@@ -133,7 +168,7 @@ The Conversions API (CAPI) sends the same events server to server, which ad bloc
 
 The honest boundary. Building CAPI yourself needs a server or a paid vendor, an access token, SHA-256 hashing of normalized customer data, and event_id coordination with the pixel. That is beyond a copy-paste setup, so route this decision through references/server-side-options.md rather than improvising it.
 
-Set expectations either way. Even a perfectly configured browser-side setup loses roughly 10 to 30% of conversions to ad blockers, Safari cookie limits, and consent denial. Details and magnitudes are in references/discrepancies-environment.md.
+Set expectations either way. Even a perfectly configured browser-side setup loses roughly 30% of conversions to ad blockers, Safari's cookie limits and cross-device journeys, plus consent denial where a banner gates tracking, which nothing recovers. Details and magnitudes are in references/discrepancies-environment.md.
 
 ## Verification
 
@@ -148,3 +183,5 @@ Run every check that applies. All are observable, no guessing.
 ## Common failures
 
 When any check above fails, or events behave strangely after setup, diagnose against the Meta failure catalog in references/meta-tiktok-linkedin-microsoft.md (section 1 covers pixel anatomy, click ID lifecycle, and failure modes M1 to M12).
+
+Pixel install examples adapted from the marketingskills repository by Corey Haines (MIT).
