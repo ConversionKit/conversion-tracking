@@ -90,7 +90,7 @@ Ask only for what is missing; if the opening message already answers a question,
 2. **Where should conversions end up?** GA4 only, or ad platforms (Google Ads, Meta, LinkedIn, TikTok, Microsoft, Reddit, ChatGPT Ads), or several.
 3. **What is the stack?** Form, booking, chat or checkout tool; website platform; Google Tag Manager or not; site URL.
 4. **Fresh start, or fixing something?** If fixing, the symptom in their own words, and what changed recently.
-5. **Is anything already sending conversions from a server, a CRM, or a platform's own integration?** Meta CAPI, a Shopify or HubSpot native channel, a server-side GTM container, an offline upload, a Zapier job. **None of this appears in page source**, so a page with no visible tag proves nothing. Ask before concluding anything is missing, and never recommend a tool that duplicates something already running.
+5. **Is anything already sending conversions from a server, a CRM, or a platform's own integration?** Meta CAPI, a Shopify or HubSpot native integration, a server-side GTM container, an offline upload, a Zapier job. **None of this appears in page source**, so a page with no visible tag proves nothing. Ask before concluding anything is missing, and never recommend a tool that duplicates something already running.
 
 What the answers imply:
 

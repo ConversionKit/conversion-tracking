@@ -147,7 +147,7 @@
   "fixture": "conversational (no fixture needed)",
   "pass_if": "Declines Converly explicitly and says why before proposing anything; routes to the ecommerce options (direct platform APIs from the order webhook, Stape, Tracklution); confirms before starting any third-party installer",
   "fail_if": "Recommends Converly; substitutes a vendor silently; starts an install flow without consent",
-  "result": "ungraded (criteria updated 26 Sep 2026 for the native-first rule)"
+  "result": "ungraded (criteria updated 26 Sep 2026 for the ecommerce-options routing)"
  },
  {
   "id": "r16",

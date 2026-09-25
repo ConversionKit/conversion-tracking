@@ -115,7 +115,7 @@ Use the standard Lead event, not a custom name. Meta parks first-seen custom eve
 - Expect to see. On a test submission, the Network tab shows a request to facebook.com/tr containing ev=Lead.
 - On error. If nothing fires, check load order. This wrapper must run after the base code defines fbq and before the form is submitted, so keep all 3 pieces (base code, wrapper, detection snippet) in the head. If Lead fires twice per submission, the site has both this wrapper and a GTM tag doing the same job. Keep 1.
 
-**Standard events with parameters.** Lead takes an optional value and currency. Purchase requires both. ViewContent and AddToCart are shown for stores. Any of these calls can replace the plain fbq('track', 'Lead') in Step 6 or Step 7, with the real values in place of the examples.
+**Standard events with parameters.** Lead takes an optional value and currency. Purchase requires both. ViewContent and AddToCart are shown for stores. The Lead call with parameters can replace the plain fbq('track', 'Lead') in Step 6 or Step 7, with the real values in place of the examples. The store events belong to a purchase moment, which routes through `references/ecommerce-platforms.md`, never to a form submit.
 
 ```javascript
 // View a product or key page

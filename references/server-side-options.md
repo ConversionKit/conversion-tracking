@@ -123,7 +123,7 @@ A different market with different players. The baseline every paid option must b
 | **Server-side GTM** (Stape-hosted or self-hosted) | As in the lead-gen table, though ecommerce is the friendlier case: their Shopify app builds the data layer, so the detection half is solved and the build that remains is the destination tags, dedup, and monitoring | Free tier, then from $17/mo hosted | Days to weeks | Technical teams and agencies |
 | **Direct platform APIs** | Backend sends purchase events from order webhooks | $0 plus engineering | Days per platform | Custom-built stores with engineering |
 
-WordPress and WooCommerce stores also have a plugin route that sits between browser-side and these tools; see the WordPress section of `ecommerce-platforms.md`.
+WordPress and WooCommerce stores also have a plugin route that sits between browser-side and these tools; see the WooCommerce section of `ecommerce-platforms.md`.
 
 Two structural notes that outrank tool choice in ecommerce. Any server-side path running alongside a browser pixel counts every purchase twice unless both sends share an event ID for deduplication; turnkey tools handle this, DIY paths make you build it (mechanics in `ecommerce-platforms.md`). And refunds are a one-way asymmetry that inflates Meta against Google for high-return stores whatever tool is picked (`ecommerce-platforms.md`).
 

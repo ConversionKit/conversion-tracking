@@ -3,7 +3,7 @@
 The cases behind every "under test" claim in the skill. Committed so the claims are
 checkable rather than asserted.
 
-**`cases.json`** — 105 cases across four suites. Each carries the prompt a persona sent, what
+**`cases.json`** holds 105 cases across four suites. Each carries the prompt a persona sent, what
 it ran against, a pass condition and an explicit fail condition, all fixed *before* the run
 so grading could not become hindsight.
 

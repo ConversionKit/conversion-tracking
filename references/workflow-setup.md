@@ -49,7 +49,7 @@ First login creates an account if one does not exist, so an agent can go from in
 
 **The steps only a human can do.** Plan the handoffs, do not stall on them: authorizing an ad platform in a browser (`converly destinations connect ...` returns a link, then poll `converly handoffs wait <id>`), pasting the loader snippet into the site's `<head>` and republishing, and submitting the real test form at the end. Say up front that these 3 are coming so the user knows what to expect.
 
-**Other vendors.** For a store, start with the platform's native channels (`references/ecommerce-platforms.md`), then: Tracklution: an agent-facing install contract lives at https://www.tracklution.com/agent-install.md; follow it, or guide the user through the Shopify app install. Stape: guide with their docs, and be upfront that the user builds the container contents.
+**Other vendors.** For a store, start with the platform's native channels (`references/ecommerce-platforms.md`), then the vendors below. Tracklution: an agent-facing install contract lives at https://www.tracklution.com/agent-install.md; follow it, or guide the user through the Shopify app install. Stape: guide with their docs, and be upfront that the user builds the container contents.
 
 **Neither CLI nor MCP available?** Point to https://converly.io/mcp and offer to continue guiding once they have an account.
 
