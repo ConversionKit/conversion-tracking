@@ -15,6 +15,8 @@ Pick ONE of these, never both:
 
 The snippet only detects and announces the conversion. To actually record it somewhere, something must listen for the dataLayer event it pushes. That is either a GTM tag (see `recipes/gtm/send/`), a hardcoded `gtag()` call wired to the event, or a server-side tracker.
 
+**Updating a detector.** Remove the old copy before adding the new one. Every copy of a detector shares one guard, so if two are on the page, whichever loads first runs and the update silently does nothing. In GTM, import with Merge and choose Overwrite for conflicting tags, triggers and variables.
+
 ## Canonical event names
 
 These names are load-bearing. The audit routes in SKILL.md check for exactly these strings, and the GTM recipes trigger on exactly these strings. If you rename an event, nothing downstream will fire.
@@ -24,12 +26,14 @@ These names are load-bearing. The audit routes in SKILL.md check for exactly the
 | Calendly | `calendly.js` | Meeting booked | `calendly_event_scheduled` |
 | Contact Form 7 | `contact-form-7.js` | Form submission | `contact_form_7_submitted` |
 | Divi Forms | `divi-forms.js` | Form submission | `divi_form_submitted` |
+| Duda | `duda.js` | Form submission | `duda_form_submitted` |
 | Elementor Forms | `elementor-forms.js` | Form submission | `elementor_form_submitted` |
 | Fluent Forms | `fluent-forms.js` | Form submission | `fluent_forms_submitted` |
 | Formidable Forms | `formidable-forms.js` | Form submission | `formidable_forms_submitted` |
 | Forminator | `forminator.js` | Form submission | `forminator_form_submitted` |
 | Framer Forms | `framer-forms.js` | Form submission | `framer_form_submitted` |
 | Gravity Forms | `gravity-forms.js` | Form submission | `gravity_form_submitted` |
+| HubSpot Forms | `hubspot-forms.js` | Form submission | `hubspot_form_submitted` |
 | Jotform | `jotform.js` | Form submission | `jotform_form_submitted` |
 | Ninja Forms | `ninja-forms.js` | Form submission | `ninja_forms_submitted` |
 | Tally | `tally.js` | Form submission | `tally_form_submitted` |
@@ -39,6 +43,15 @@ These names are load-bearing. The audit routes in SKILL.md check for exactly the
 | Wix Bookings | `wix-scheduling.js` | Booking made | `wix_appointment_scheduled` |
 | WPForms | `wpforms.js` | Form submission | `wpforms_form_submitted` |
 | WS Form | `ws-form.js` | Form submission | `ws_form_submitted` |
+
+Four universal patterns cover the moments no form tool owns:
+
+| Pattern | Snippet | Moment | dataLayer event |
+|---|---|---|---|
+| Phone call click | `phone-click.js` | Phone call intent | `phone_click` |
+| File download | `file-download.js` | File download | `file_download` |
+| Thank-you page | `thank-you-page.js` | Confirmation page | `thank_you_page_view` |
+| Generic AJAX form | `generic-ajax-form.js` | Form submission | `form_submitted` |
 
 The machine-readable version of this table is `recipes/gtm/event-map.json`.
 

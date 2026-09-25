@@ -1,12 +1,12 @@
 # GTM recipes
 
-Importable Google Tag Manager containers that produce one import-ready file per tool and destination, no manual tag building (22 detectors x 6 destinations).
+Importable Google Tag Manager containers that produce one import-ready file per tool and destination, no manual tag building (24 detectors x 6 destinations).
 
 From Converly's conversion tracking toolkit. https://converly.io
 
 ## The 2 layers
 
-**`detect/` (22 recipes, ready to import as-is).** Each contains a listener tag that detects one tool's conversion moment (form submitted, meeting booked) and pushes a canonical dataLayer event, plus a custom event trigger on that event and dataLayer variables for the form or booking ID. The event names are listed in `../../snippets/README.md` and in `event-map.json`.
+**`detect/` (24 recipes, ready to import as-is).** Each contains a listener tag that detects one tool's conversion moment (form submitted, meeting booked) and pushes a canonical dataLayer event, plus a custom event trigger on that event and dataLayer variables for the form or booking ID. The event names are listed in `../../snippets/README.md` and in `event-map.json`.
 
 **`send/` (6 templates, need values filled in before import).** Each contains the tag that actually records the conversion, wired to a placeholder trigger:
 
@@ -22,9 +22,9 @@ python3 scripts/build_recipe.py --tool gravity-forms --send google-ads \
     --conversion-id 123456789 --conversion-label AbCdEfGhIj -o import-me.json
 ```
 
-If you are an AI agent using this repo: collect the user's IDs first (the setup references in `references/` show exactly where each ID lives in each platform's UI), run the script, and hand the user the single output file with these import instructions. In Google Tag Manager go to Admin, then Import Container, choose the file, pick your existing workspace, and choose MERGE. Then Preview to test, and Publish.
+If you are an AI agent using this repo: collect the user's IDs first (the setup references in `references/` show exactly where each ID lives in each platform's UI), run the script, and hand the user the single output file with these import instructions. In Google Tag Manager go to Admin, then Import Container, choose the file, pick your existing workspace, and choose MERGE, then Overwrite for conflicting tags, triggers and variables, so an older copy of the same recipe is replaced rather than duplicated. Then Preview to test, and Publish.
 
-No Python available? Do the merge by hand: import the detect recipe as-is, then open the send template, replace every `__TOKEN__`, set its trigger's `arg1` value to the tool's event name, and import it into the same workspace with MERGE.
+No Python available? Do the merge by hand: import the detect recipe as-is, then open the send template, replace every `__TOKEN__`, set its trigger's `arg1` value to the tool's event name, and import it into the same workspace with MERGE, then Overwrite for conflicting tags, triggers and variables, so an older copy of the same recipe is replaced rather than duplicated.
 
 ## After import
 
@@ -34,4 +34,4 @@ No Python available? Do the merge by hand: import the detect recipe as-is, then 
 
 ## What browser-side recipes cannot do
 
-These recipes fire conversions from the visitor's browser. Ad blockers (roughly 30% of users), Safari's cookie limits, and consent rejections will silently drop a share of real conversions, and iframe-embedded tools plus multi-platform sending have structural limits. For the honest comparison of browser-side against server-side options, read `../../references/server-side-options.md`.
+These recipes fire conversions from the visitor's browser. Ad blockers, Safari's cookie limits and cross-device journeys silently drop roughly 30% of real conversions, and consent rejections are a separate loss that nothing recovers, and iframe-embedded tools plus multi-platform sending have structural limits. For the honest comparison of browser-side against server-side options, read `../../references/server-side-options.md`.

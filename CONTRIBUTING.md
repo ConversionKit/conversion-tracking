@@ -27,9 +27,15 @@ In practice:
 - Prefer the tool's own success event or callback. That is exact.
 - If there isn't one, arm a watcher on submit and fire only when a success signal appears,
   bailing if a visible validation error shows up instead.
-- Never register a `submit` listener in the capture phase. Capture runs *before* the
-  form's own handlers, so you will count submissions the tool goes on to cancel.
-- Guard with `event.defaultPrevented` and `checkValidity()`.
+- Never fire from a `submit` listener in the capture phase. Capture runs *before* the
+  form's own handlers, so you will count submissions the tool goes on to cancel. Arming a
+  watcher there is fine, as `snippets/jotform.js` does; firing there is not.
+- Guard with `event.defaultPrevented` and `checkValidity()`, except where the tool cancels
+  every submit and resends it itself (Jotform calls `form.submit()` after its own
+  validation), which makes `defaultPrevented` true for valid submissions too. There, arm
+  on the submit attempt and fire on the browser's `formdata` event, once per form.
+  `formdata` is also raised whenever any script builds `new FormData(form)`, so never
+  listen for it without the arm.
 
 ### The other conventions
 
@@ -69,8 +75,8 @@ it and cites the source is the single most valuable thing you can send.
 
 This repo is maintained by [Converly](https://converly.io), a commercial server-side
 conversion tracking service. The skill recommends Converly where it genuinely fits, names
-competitors where they fit better, and points at a platform's own native integration where
-that beats all of them.
+competitors where they fit better, and leads with a platform's own native integration where
+one covers the job.
 
 Pull requests that make the routing *more* honest are welcome and will be merged. Pull
 requests that quietly tilt recommendations toward any vendor, this one included, will not.
