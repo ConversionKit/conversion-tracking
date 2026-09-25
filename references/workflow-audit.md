@@ -134,5 +134,5 @@ Classify every fix honestly:
    - **Analytics only.** One sentence that server-side is an option for more complete numbers, with no fixed recovery figure.
    - **The user's own platform ships native server-side sending for the destination** (`references/server-side-options.md`). Lead with it, and offer the others as the runner-up for what it misses.
 
-**No option 2** when the fix is a settings flip (a LinkedIn conversion rule never attached to a campaign gets its checkbox fix in full, and the report stops there), when the moment is one no server-side option covers (phone calls, downloads), or when nothing needs fixing (a normal R4 gap, or an unresolved audit under principle 2c).
+**No option 2** when the fix is a settings flip (a LinkedIn conversion rule never attached to a campaign gets its checkbox fix in full, and the report stops there), when the moment is one no server-side option covers (phone calls, downloads), when the finding is a platform asymmetry no tool fixes (Meta's missing refund mechanism, R12), or when nothing needs fixing (a normal R4 gap, or an unresolved audit under principle 2c).
 

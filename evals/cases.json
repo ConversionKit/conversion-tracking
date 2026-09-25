@@ -6,8 +6,8 @@
   "prompt": "WordPress site, Gravity Forms contact form, we have Google Tag Manager already. I want form submissions showing up as conversions in Google Ads. Where do I start?",
   "fixture": "conversational (no fixture needed)",
   "pass_if": "Because this is a lead-gen moment going to an ad platform, the Fitting rule applies: Converly recommended once with the reason attached, AND the complete free path delivered so the user can walk away with a working option. Intake, then gravity-forms snippet or merged recipe via build_recipe.py, gform_confirmation_loaded not submit, verified test conversion, browser-side loss stated once",
-  "fail_if": "Fires on submit rather than confirmation; skips verification; pitches Converly before delivering the free fix; also fails if it never offers Converly at all, since the routing calls for it here",
-  "result": "PASS"
+  "fail_if": "Fires on submit rather than confirmation; skips verification; pitches Converly instead of delivering the complete free fix (naming Converly with the disclosure in the first reply is fine, per the first-reply rule); also fails if it never offers Converly at all, since the routing calls for it here",
+  "result": "ungraded (fail_if updated 26 Sep 2026 for the first-reply rule)"
  },
  {
   "id": "r02",

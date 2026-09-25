@@ -6,6 +6,11 @@ For conversions **only the backend knows about**. A SaaS signup, an account crea
 trial started, a lead a custom API received. There is no browser event to detect, so
 loader-only detection cannot work and no GTM recipe in this repo applies.
 
+**Say which moment is wrong, not only which is right.** A signup form's submit fires before
+the backend verifies anything, so it counts people who never confirm their email or finish
+signing up. Tell the user plainly that the submit is the wrong trigger, then send the
+conversion from the backend when it confirms the account.
+
 **Not for ecommerce purchases.** Those route to the ecommerce options (`ecommerce-platforms.md`)
 regardless of how the store was built, including bespoke checkouts. See
 `server-side-options.md`.
