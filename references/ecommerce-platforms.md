@@ -50,7 +50,7 @@ The failure is silent. Checkout works, the thank-you page renders, only the tags
 
 ### Two checkouts, two behaviours
 
-WooCommerce currently ships two checkout architectures, and tracking advice must fork on which one the store runs. The classic shortcode checkout renders through PHP templates and fires the hooks and jQuery events a decade of plugins depend on. The Blocks checkout (default for new installs since WooCommerce 8.3 (existing stores keep the checkout they had)) renders through React and does not fire many of them, which quietly breaks older tracking plugins and homemade jQuery listeners. A store that redesigned its checkout and lost tracking usually crossed this line.
+WooCommerce currently ships two checkout architectures, and tracking advice must fork on which one the store runs. The classic shortcode checkout renders through PHP templates and fires the hooks and jQuery events a decade of plugins depend on. The Blocks checkout (default for new installs since WooCommerce 8.3, while existing stores keep the checkout they had) renders through React and does not fire many of them, which quietly breaks older tracking plugins and homemade jQuery listeners. A store that redesigned its checkout and lost tracking usually crossed this line.
 
 Version changes matter here too. WooCommerce 10.9 (June 2026) moved the Store API's draft-order creation closer to place-order time ([release post](https://developer.woocommerce.com/2026/06/23/woocommerce-10-9/)). Anything that relied on an order existing early in a Blocks checkout may behave differently now; that consequence is inferred, not documented. When a WooCommerce site's tracking stopped, ask what updated that week.
 

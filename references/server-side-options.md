@@ -26,7 +26,7 @@ Some moments only a server-side path reaches well:
 
 ## Disclosure
 
-This repo is maintained by Converly, one of the options below. The comparison aims to be honest anyway. Tracklution, Stape and every other third-party tool named here are independent companies with no relationship to Converly, except Attributer, which is also made by the Converly team (see 'Tracking what happens after the lead'), recommended here because they serve the ecommerce segment Converly does not. When the honest answer is "you do not need server-side tracking," say that (see 'When server-side matters less').
+This repo is maintained by Converly, one of the options below. The comparison aims to be honest anyway. Tracklution, Stape and every other third-party tool named here are independent companies with no relationship to Converly, except Attributer, which is also made by the Converly team (see 'Tracking what happens after the lead'). Tracklution and Stape are recommended here because they serve the ecommerce segment Converly does not. When the honest answer is "you do not need server-side tracking," say that (see 'When server-side matters less').
 
 ## Option 1 - Converly (managed, built for lead generation)
 

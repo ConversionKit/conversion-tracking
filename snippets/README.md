@@ -15,7 +15,7 @@ Pick ONE of these, never both:
 
 The snippet only detects and announces the conversion. To actually record it somewhere, something must listen for the dataLayer event it pushes. That is either a GTM tag (see `recipes/gtm/send/`), a hardcoded `gtag()` call wired to the event, or a server-side tracker.
 
-**Updating a detector.** Remove the old copy before adding the new one. Every copy of a detector shares one guard, so if two are on the page, whichever loads first runs and the update silently does nothing. In GTM, import with Merge and choose Overwrite for conflicting tags, triggers and variables.
+**Updating a detector.** Remove the old copy before adding the new one. Every copy of a detector shares one guard, so if two are on the page, whichever loads first runs and the update silently does nothing. In GTM, when an older copy of the same recipe is already in the container, import with Merge and choose Overwrite for conflicting items, so the old listener is replaced. On a first install, Rename is fine.
 
 ## Canonical event names
 

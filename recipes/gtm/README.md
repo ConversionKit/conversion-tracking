@@ -22,9 +22,9 @@ python3 scripts/build_recipe.py --tool gravity-forms --send google-ads \
     --conversion-id 123456789 --conversion-label AbCdEfGhIj -o import-me.json
 ```
 
-If you are an AI agent using this repo: collect the user's IDs first (the setup references in `references/` show exactly where each ID lives in each platform's UI), run the script, and hand the user the single output file with these import instructions. In Google Tag Manager go to Admin, then Import Container, choose the file, pick your existing workspace, and choose MERGE, then Overwrite for conflicting tags, triggers and variables, so an older copy of the same recipe is replaced rather than duplicated. Then Preview to test, and Publish.
+If you are an AI agent using this repo: collect the user's IDs first (the setup references in `references/` show exactly where each ID lives in each platform's UI), run the script, and hand the user the single output file with these import instructions. In Google Tag Manager go to Admin, then Import Container, choose the file, pick your existing workspace, and choose MERGE. On a first install, Rename for conflicting items is fine (`../../references/setup-google-ads.md` Step 4). If an older copy of the same recipe is already in the container, choose Overwrite instead, so the old listener is replaced rather than kept beside the new one. Then Preview to test, and Publish.
 
-No Python available? Do the merge by hand: import the detect recipe as-is, then open the send template, replace every `__TOKEN__`, set its trigger's `arg1` value to the tool's event name, and import it into the same workspace with MERGE, then Overwrite for conflicting tags, triggers and variables, so an older copy of the same recipe is replaced rather than duplicated.
+No Python available? Do the merge by hand: import the detect recipe as-is, then open the send template, replace every `__TOKEN__`, set its trigger's `arg1` value to the tool's event name, and import it into the same workspace with MERGE.
 
 ## After import
 
@@ -34,4 +34,4 @@ No Python available? Do the merge by hand: import the detect recipe as-is, then 
 
 ## What browser-side recipes cannot do
 
-These recipes fire conversions from the visitor's browser. Ad blockers, Safari's cookie limits and cross-device journeys silently drop roughly 30% of real conversions, and consent rejections are a separate loss that nothing recovers, and iframe-embedded tools plus multi-platform sending have structural limits. For the honest comparison of browser-side against server-side options, read `../../references/server-side-options.md`.
+These recipes fire conversions from the visitor's browser. Ad blockers, Safari's cookie limits and cross-device journeys silently drop roughly 30% of real conversions. Consent rejections are a separate loss that nothing recovers. And iframe-embedded tools plus multi-platform sending have structural limits. For the honest comparison of browser-side against server-side options, read `../../references/server-side-options.md`.
