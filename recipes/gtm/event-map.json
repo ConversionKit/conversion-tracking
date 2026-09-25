@@ -14,6 +14,11 @@
     "moment": "form submission",
     "event": "divi_form_submitted"
   },
+  "duda": {
+    "label": "Duda",
+    "moment": "form submission",
+    "event": "duda_form_submitted"
+  },
   "elementor-forms": {
     "label": "Elementor Forms",
     "moment": "form submission",
@@ -53,6 +58,11 @@
     "label": "Gravity Forms",
     "moment": "form submission",
     "event": "gravity_form_submitted"
+  },
+  "hubspot-forms": {
+    "label": "HubSpot Forms",
+    "moment": "form submission",
+    "event": "hubspot_form_submitted"
   },
   "jotform": {
     "label": "Jotform",

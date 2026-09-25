@@ -28,22 +28,20 @@
     });
   }
 
-  // Bubble phase deliberately. A capture-phase listener runs BEFORE the form's
-  // own handlers, so it would count submissions Jotform's validation cancels.
+  var attempted = {};
+  var fired = {};
+
   document.addEventListener('submit', function (event) {
     var formEl = event.target;
     if (!isJotformInlineForm(formEl)) return;
+    attempted[formEl.id] = true;
+  }, true);
 
-    // A submission another handler already cancelled never happened.
-    if (event.defaultPrevented) return;
-
-    // Constraint validation gate: an invalid form cannot have submitted.
-    try {
-      if (typeof formEl.checkValidity === 'function' && formEl.checkValidity() === false) return;
-    } catch (e) {
-      // constraint validation unavailable — fall through
-    }
-
+  document.addEventListener('formdata', function (event) {
+    var formEl = event.target;
+    if (!isJotformInlineForm(formEl)) return;
+    if (!attempted[formEl.id] || fired[formEl.id]) return;
+    fired[formEl.id] = true;
     fireConversion(formEl.id);
-  }, false);
+  }, true);
 })();
