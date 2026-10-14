@@ -38,10 +38,11 @@ python3 scripts/build_recipe.py --tool <slug> --send <google-ads|ga4|meta|linked
 | `ws-form` | WS Form | form submission | `ws_form_submitted` |
 
 **Detection confidence.** Most of these fire on the tool's own success event or on a
-confirmed success state, which is exact. Two infer success from a submit that was not
-cancelled and passed constraint validation: `framer-forms` and the older-forms path in
-`wix-forms`. They cannot know the server accepted the submission, so a server error or a
-spam rejection would still count. Say so if precision matters to the user. `jotform`
+confirmed success state, which is exact. `framer-forms` fires when Framer's own form
+endpoint answers its request with success. The older-forms path in `wix-forms` infers
+success from a submit that was not cancelled and passed constraint validation. It cannot
+know the server accepted the submission, so a server error or a spam rejection would
+still count. Say so if precision matters to the user. `jotform`
 covers Jotform's full source-code embed only (its iframe and script embeds send the page
 no signal). It arms on a submit attempt and fires on the browser's `formdata` event, which
 is raised when a submission's data is actually built and never for a cancelled submit, at
