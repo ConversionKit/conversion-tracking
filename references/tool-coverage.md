@@ -43,10 +43,10 @@ endpoint answers its request with success. The older-forms path in `wix-forms` i
 success from a submit that was not cancelled and passed constraint validation. It cannot
 know the server accepted the submission, so a server error or a spam rejection would
 still count. Say so if precision matters to the user. `jotform`
-covers Jotform's full source-code embed only (its iframe and script embeds send the page
-no signal). It arms on a submit attempt and fires on the browser's `formdata` event, which
-is raised when a submission's data is actually built and never for a cancelled submit, at
-most once per form.
+covers Jotform's iframe and script embeds, not its full source-code embed. It fires on
+the `submission-completed` message Jotform sends the parent page after a successful
+submission, accepted only from a Jotform iframe on the page for the same form ID, once per
+iframe until the page reloads.
 
 ## Universal patterns
 
