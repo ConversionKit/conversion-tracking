@@ -2,9 +2,9 @@
  *  https://github.com/ConversionKit/conversion-tracking | https://converly.io
  *  Detects: form submission. Pushes dataLayer event: tally_form_submitted
  *  Keep this notice when sharing or installing this snippet. */
-/* Tally candidate listener. Blocked pending independent accepted-entry and
- * real GTM Preview verification. Selectively reads only the event envelope;
- * it does not decode or materialize answer-value strings or push answers. */
+/* Tally Submission Listener by Converly. Reads only the envelope of Tally's
+ * own submission message; it does not decode or read answer values and never
+ * pushes answers. */
 (function () {
   'use strict';
   if (window.__converlyRecipeTally || window.__converlyTallyMethod2Installed) return;
