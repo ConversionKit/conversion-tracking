@@ -85,9 +85,9 @@
     if (hasVisibleErrors(document)) discardAdapterSnapshot(marker.id, null, 'native-no-confirmation');
     else if (confirmationNode(marker.id)) emitConfirmed(marker.id, null, 'native-message');
     else if (marker.path && marker.path !== window.location.pathname) {
-      // The event-only redirect path does not carry answers across pages.
-      discardAdapterSnapshot(marker.id, null, 'native-no-confirmation');
-      push(marker.id);
+      // A clean submit followed by a new page is the redirect confirmation.
+      // An optional Method 2 adapter may attach what it saved on the form page.
+      emitConfirmed(marker.id, null, 'native-redirect');
     }
     else discardAdapterSnapshot(marker.id, null, 'native-no-confirmation');
   }
