@@ -42,7 +42,9 @@ confirmed success state, which is exact. `framer-forms` fires when Framer's own 
 endpoint answers its request with success. `wix-forms` fires when Wix's own thank-you
 message appears inside the form, which Wix shows only after the entry is saved. It covers
 Wix's current forms with an inline thank-you message, not older Wix contact forms or forms
-set to go to another page after submitting. `jotform`
+set to go to another page after submitting. `wix-scheduling` fires on the Purchase Wix reports
+through its own site analytics stream on the Thank You page, only when the order has an item
+sold by Wix Bookings, so Wix Stores orders on the same page don't count. `jotform`
 covers Jotform's iframe and script embeds, not its full source-code embed. It fires on
 the `submission-completed` message Jotform sends the parent page after a successful
 submission, accepted only from a Jotform iframe on the page for the same form ID, once per
