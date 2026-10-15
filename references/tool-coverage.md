@@ -39,10 +39,10 @@ python3 scripts/build_recipe.py --tool <slug> --send <google-ads|ga4|meta|linked
 
 **Detection confidence.** Most of these fire on the tool's own success event or on a
 confirmed success state, which is exact. `framer-forms` fires when Framer's own form
-endpoint answers its request with success. The older-forms path in `wix-forms` infers
-success from a submit that was not cancelled and passed constraint validation. It cannot
-know the server accepted the submission, so a server error or a spam rejection would
-still count. Say so if precision matters to the user. `jotform`
+endpoint answers its request with success. `wix-forms` fires when Wix's own thank-you
+message appears inside the form, which Wix shows only after the entry is saved. It covers
+Wix's current forms with an inline thank-you message, not older Wix contact forms or forms
+set to go to another page after submitting. `jotform`
 covers Jotform's iframe and script embeds, not its full source-code embed. It fires on
 the `submission-completed` message Jotform sends the parent page after a successful
 submission, accepted only from a Jotform iframe on the page for the same form ID, once per
