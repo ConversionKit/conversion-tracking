@@ -7,22 +7,46 @@
   window.__converlyRecipeHubspotForms = true;
   window.dataLayer = window.dataLayer || [];
 
-  // One submission, one push. Keyed on the form id, so a duplicate signal for
-  // the same submission inside 2 seconds is ignored, while a genuinely new
-  // submission (which takes far longer than 2 seconds) still fires.
-  var DEDUPE_WINDOW_MS = 2000;
-  var lastFiredAt = {};
+  // Updated-editor conversions are keyed by HubSpot's documented conversion
+  // ID. Legacy messages use event-object identity because their documented
+  // callback payload has no conversion ID.
+  var seenConversions = {};
+  var seenLegacyEvents = typeof WeakSet === 'function' ? new WeakSet() : [];
 
-  function fireConversion(formId) {
+  function fireConversion(formId, conversionId, acceptedContext) {
     var id = formId ? String(formId) : '';
-    var key = id || 'unknown';
-    var now = Date.now();
-    if (lastFiredAt[key] && now - lastFiredAt[key] < DEDUPE_WINDOW_MS) return;
-    lastFiredAt[key] = now;
-    window.dataLayer.push({
-      event: 'hubspot_form_submitted',
-      form_id: id
-    });
+    if (typeof conversionId !== 'string' || !conversionId) return false;
+    var key = '$' + conversionId;
+    if (seenConversions[key]) return false;
+    seenConversions[key] = true;
+    var handled = false;
+    var adapter = window.__converlyHubspotMethod2Handler;
+    if (typeof adapter === 'function') {
+      try {
+        handled = adapter({
+          formId: id,
+          instanceId: acceptedContext && acceptedContext.instanceId || '',
+          conversionId: conversionId,
+          form: acceptedContext && acceptedContext.form || null
+        }) === true;
+      } catch (e) {
+        handled = false;
+      }
+    }
+    if (!handled) window.dataLayer.push({ event: 'hubspot_form_submitted', form_id: id });
+    return true;
+  }
+
+  function claimLegacyEvent(event) {
+    if (!event || typeof event !== 'object') return false;
+    if (seenLegacyEvents && typeof seenLegacyEvents.has === 'function') {
+      if (seenLegacyEvents.has(event)) return false;
+      seenLegacyEvents.add(event);
+      return true;
+    }
+    if (seenLegacyEvents.indexOf(event) !== -1) return false;
+    seenLegacyEvents.push(event);
+    return true;
   }
 
   // ------------------------------------------------------------
@@ -47,10 +71,16 @@
       // instance HubSpot actually rendered here. A stray or malformed event
       // with a made-up instance id is ignored.
       var api = hubspotFormsApi();
-      if (api && typeof api.getFormFromEvent === 'function') {
-        if (!api.getFormFromEvent(event)) return;
-      }
-      fireConversion(detail.formId);
+      if (!api || typeof api.getFormFromEvent !== 'function') return;
+      var form = api.getFormFromEvent(event);
+      if (!form || typeof form.getFormId !== 'function' ||
+          typeof form.getInstanceId !== 'function' ||
+          typeof form.getConversionId !== 'function') return;
+      if (form.getFormId() !== detail.formId ||
+          form.getInstanceId() !== detail.instanceId) return;
+      // HubSpot documents getConversionId as valid after successful
+      // submission. It is the stable key for event replay and repeated submits.
+      fireConversion(detail.formId, form.getConversionId(), { form: form, instanceId: detail.instanceId });
     } catch (e) {
       // Never throw back into HubSpot's own event dispatch.
     }
@@ -64,37 +94,38 @@
   // means the submission was accepted; 'onFormSubmit' also fires for
   // submissions that then fail validation, so it is ignored.
   //
-  // Origin check: an inline legacy form broadcasts from the page's own window,
-  // and an iframed one from a HubSpot-owned https origin. Anything else (an ad
-  // iframe, another site) is rejected. Hosts are anchored so a lookalike such
-  // as "hsforms.com.attacker.example" cannot pass.
-  var HUBSPOT_ORIGIN_PATTERNS = [
-    /(^|\.)hsforms\.com$/,
-    /(^|\.)hsforms\.net$/,
-    /(^|\.)hubspot\.com$/
-  ];
-
+  // The legacy callback payload documents its form ID but not a safe mapping
+  // from a cross-origin source WindowProxy to that ID. Accept only the inline
+  // same-window callback; cross-origin iframe messages fail closed until a
+  // vendor-supported source/form binding can be verified.
   function isTrustedOrigin(event) {
-    if (!event) return false;
-    if (event.source === window && event.origin === window.location.origin) return true;
-    if (!event.source) return false;
-    if (!event.origin || typeof event.origin !== 'string') return false;
-    var hostMatch = /^https:\/\/([^/:]+)(:\d+)?$/.exec(event.origin);
-    if (!hostMatch) return false;
-    for (var i = 0; i < HUBSPOT_ORIGIN_PATTERNS.length; i++) {
-      if (HUBSPOT_ORIGIN_PATTERNS[i].test(hostMatch[1])) return true;
-    }
-    return false;
+    return !!(event && event.source === window &&
+      event.origin === window.location.origin);
   }
 
   function handleMessage(event) {
     try {
+      // Reject an unbound source before even reading its structured-clone data.
+      if (!isTrustedOrigin(event)) return;
       var data = event && event.data;
       if (!data || typeof data !== 'object') return;
       if (data.type !== 'hsFormCallback') return;
       if (data.eventName !== 'onFormSubmitted') return;
-      if (!isTrustedOrigin(event)) return;
-      fireConversion(typeof data.id === 'string' ? data.id : '');
+      var formId = data.id;
+      if (typeof formId !== 'string' || !/^[A-Za-z0-9_-]{1,128}$/.test(formId)) return;
+      if (!claimLegacyEvent(event)) return;
+      // The documented legacy callback runs after persistence, but has no
+      // stable conversion ID. The local guard only recognizes replay of this
+      // exact MessageEvent object; a distinct event object may be a replay or a
+      // new conversion, so cross-event deduplication is not claimed.
+      var handled = false;
+      var adapter = window.__converlyHubspotMethod2Handler;
+      if (typeof adapter === 'function') {
+        try {
+          handled = adapter({ formId: formId, legacyEvent: event }) === true;
+        } catch (e) { handled = false; }
+      }
+      if (!handled) window.dataLayer.push({ event: 'hubspot_form_submitted', form_id: formId });
     } catch (e) {
       // Never throw back into the page's own message handling.
     }

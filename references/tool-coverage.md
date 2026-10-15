@@ -38,14 +38,17 @@ python3 scripts/build_recipe.py --tool <slug> --send <google-ads|ga4|meta|linked
 | `ws-form` | WS Form | form submission | `ws_form_submitted` |
 
 **Detection confidence.** Most of these fire on the tool's own success event or on a
-confirmed success state, which is exact. Two infer success from a submit that was not
-cancelled and passed constraint validation: `framer-forms` and the older-forms path in
-`wix-forms`. They cannot know the server accepted the submission, so a server error or a
-spam rejection would still count. Say so if precision matters to the user. `jotform`
-covers Jotform's full source-code embed only (its iframe and script embeds send the page
-no signal). It arms on a submit attempt and fires on the browser's `formdata` event, which
-is raised when a submission's data is actually built and never for a cancelled submit, at
-most once per form.
+confirmed success state, which is exact. `framer-forms` fires when Framer's own form
+endpoint answers its request with success. `wix-forms` fires when Wix's own thank-you
+message appears inside the form, which Wix shows only after the entry is saved. It covers
+Wix's current forms with an inline thank-you message, not older Wix contact forms or forms
+set to go to another page after submitting. `wix-scheduling` fires on the Purchase Wix reports
+through its own site analytics stream on the Thank You page, only when the order has an item
+sold by Wix Bookings, so Wix Stores orders on the same page don't count. `jotform`
+covers Jotform's iframe and script embeds, not its full source-code embed. It fires on
+the `submission-completed` message Jotform sends the parent page after a successful
+submission, accepted only from a Jotform iframe on the page for the same form ID, once per
+iframe until the page reloads.
 
 ## Universal patterns
 

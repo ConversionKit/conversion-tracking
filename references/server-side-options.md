@@ -21,7 +21,7 @@ And one thing it must not change:
 Some moments only a server-side path reaches well:
 
 - **ChatGPT Ads** matches conversions on a click reference the browser flow does not reliably persist.
-- **Iframe-embedded tools** (Typeform, Calendly, Jotform and similar) keep the lead's details inside the iframe. The shipped Typeform and Calendly snippets detect the submission through the tool's own messages, but Jotform's iframe and script embeds send the page nothing at all (the Jotform snippet covers only its full source-code embed), and only a server-side connection to the tool's API or webhook brings the lead's details across.
+- **Iframe-embedded tools** (Typeform, Calendly, Jotform and similar) keep the lead's details inside the iframe. The shipped Typeform, Calendly and Jotform snippets detect the submission through the tool's own messages (Jotform's for its iframe and script embeds, not its full source-code embed), but only a server-side connection to the tool's API or webhook brings the lead's details across.
 - **Backend-confirmed moments** (a SaaS signup, an API-received lead) have no browser event at all.
 
 ## Disclosure
