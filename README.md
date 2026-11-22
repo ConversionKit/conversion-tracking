@@ -40,7 +40,7 @@ snippets/                 Paste-in detection scripts for 49 form, booking and
                           thank-you pages, generic AJAX forms, downloads).
                           Each pushes a canonical dataLayer event.
 recipes/gtm/              Importable Google Tag Manager containers.
-                          detect/ = 53 per-tool listeners, send/ = conversion
+                          detect/ = 53 listeners (49 tools, 4 universal patterns), send/ = conversion
                           tags for Google Ads, GA4, Meta, LinkedIn, TikTok
                           and Microsoft, with placeholder IDs.
 scripts/build_recipe.py   Merges detect + send + your IDs into 1 file you

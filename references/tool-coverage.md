@@ -20,7 +20,6 @@ python3 scripts/build_recipe.py --tool <slug> --send <google-ads|ga4|meta|linked
 | `acuity-scheduling` | Acuity Scheduling | booking made | `acuity_appointment_scheduled` |
 | `avada-forms` | Avada Forms | form submission | `avada_forms_submitted` |
 | `beaver-builder` | Beaver Builder | form submission | `beaver_builder_form_submitted` |
-| `avada-forms` | Forms using Avada's default AJAX submit. Post and Send to URL forms are not covered |
 | `cal-com` | Cal.com | booking made | `calcom_booking_successful` |
 | `calendly` | Calendly | meeting booked | `calendly_event_scheduled` |
 | `capsule-forms` | Capsule Web Forms | form submission | `capsule_form_submitted` |
@@ -90,36 +89,50 @@ should hear which group their tool is in when precision matters:
 
 ## Setup each detector needs
 
-Pasting the snippet or importing the recipe is enough for every tool not listed here. These
-need something more, or cover only some of the tool's embed types. "Not covered" means not
-tested, so say "this detector does not cover it" rather than "it cannot be tracked".
+Every tool needs the snippet or recipe on the page that carries the form. The tools below
+also need something configured, or cover only some of the tool's embed types and modes. Read
+the row before handing a detector over, because a mode it does not cover usually counts
+nothing at all, with no error. "Live-tested" names what was exercised on the real tool;
+other options of the same tool may work but are unverified, so say so. "Not covered" means
+this detector does not handle it, not that it cannot be tracked another way.
 
 | Slug | What the user must do, and what is not covered |
 |---|---|
-| `acuity-scheduling` | Two parts. Paste `snippets/acuity-scheduling-acuity-field.html` into Acuity (Integrations, Custom Conversion Tracking) after putting the site's address in `SITES`; a wrong address fails silently. Bookings on Acuity's own scheduling page are not counted |
+| `acuity-scheduling` | Two parts. Paste `snippets/acuity-scheduling-acuity-field.html` into Acuity (Integrations, Custom Conversion Tracking) after putting the site's address in `SITES`, exactly as the browser shows it on the page carrying the scheduler (`www` matters); a wrong address fails silently. Bookings on Acuity's own scheduling page are not counted. `appointment_type` is the business's own service name: if it names a health service, do not forward it to ad platforms |
+| `avada-forms` | Forms using Avada's default AJAX submit. Post and Send to URL forms are not covered; multi-step forms, file uploads and off-canvas forms are untested |
+| `beaver-builder` | The classic Contact Form module, live-tested. Other Beaver Builder form modules are untested |
 | `cal-com` | Cal.com cloud embeds and plain Cal.com iframes. Self-hosted Cal.com is not covered. Reschedules do not count |
-| `capsule-forms`, `insightly-forms` | A native form on the site, submitted in the same tab, returning to a page on the same site. The detector must run on the form page and the return page. Return counting (above) |
-| `clickfunnels` | ClickFunnels 2.0 opt-in steps. Classic 1.0, custom domains and purchases are not covered |
+| `calendly` | Needs Calendly's real `widget.js` embed. A raw Calendly iframe sends the page nothing and counts zero |
+| `capsule-forms`, `insightly-forms` | A native form on the site, submitted in the same tab, returning to a page on the same site. The detector must run on the form page and the return page. Return counting (above). Capsule: a verify step that keeps the visitor away for more than 60 seconds is not counted (seen live) |
+| `clickfunnels` | ClickFunnels 2.0 opt-in steps; live-tested on a pop-up opt-in step with name and email. Classic 1.0, custom domains, External Page and Custom HTML steps, embedded ClickFunnels pages and purchases are not covered |
 | `close-forms` | Single-step inline embeds. Hosted pages, iframe embeds and multi-step forms are not covered |
+| `contact-form-7` | AJAX submission, Contact Form 7's normal mode. Legacy non-AJAX setups cannot be tracked by any page listener |
 | `copper-forms` | Copper's floating contact widget only. Iframe embeds and Copper-hosted pages are not covered |
-| `fillout-forms`, `paperform` | Embeds on the site. Hosted share pages and custom tool domains are not covered |
+| `divi-forms` | AJAX submission. Divi's native (non-AJAX) submission is not covered |
+| `fillout-forms`, `paperform` | Embeds on the site. Fillout's standard embed and Paperform's inline embed were live-tested; pop-up, slider, full-screen and multi-page embeds were not. Hosted share pages and custom tool domains are not covered, nor Fillout redirecting forms, payment blocks and scheduling blocks |
+| `forminator` | AJAX submission. Forms set to a page-reload confirmation are not covered |
 | `formsite` | Set the Success Page to Redirect to a page on the site with `?formsite_form=<short key>`, and run the detector there. Formsite's own thank-you message is not covered |
 | `freshsales-forms` | The classic inline form with a custom success message. Redirects, hosted forms and iframes are not covered |
 | `getleadforms` | LeadCapture.io's Form only embed. The full funnel frame embed sends the page no success signal |
+| `gravity-forms` | AJAX submission with a text confirmation. Page-reload and redirect confirmations navigate away before any signal and are not covered; switch the form to AJAX |
+| `happyforms` | The default AJAX success message, live-tested. Redirect and multi-page setups are untested |
 | `highlevel-forms` | HighLevel forms and surveys embedded on the site. White-label domains and bookings are not covered |
 | `hubspot-meetings` | Personal inline meeting embeds on `meetings.hubspot.com`. Regional and custom domains, group, round-robin and paid meetings are not covered |
 | `instapage` | reCAPTCHA pages and AMP are not covered |
 | `jotform` | The full source-code embed only. Jotform's iframe and JavaScript embeds send the page no signal; switching the embed type makes the form trackable |
-| `kit` | Embedded forms. Hosted Kit landing pages are not covered |
-| `mailchimp` | Classic embeds work as pasted. Plain embeds need the return link set to the user's own page with `?converly=mailchimp`, same tab. Pop-up forms and hosted signup pages are not covered |
-| `netlify` | A custom thank-you page set as the form's `action`, same tab, with the detector on both pages. Netlify's default success page is not covered |
+| `kit` | The inline JavaScript embed was live-tested; the full HTML embed, modal, slide-in and sticky bar were not. If Kit sends the visitor to a separate spam-check page, the signup is missed. Hosted Kit landing pages are not covered |
+| `mailchimp` | Classic embeds, live-tested. Plain embeds need the return link set to the user's own page with `?converly=mailchimp`, same tab; that path is checked offline only. Pop-up forms and hosted signup pages are not covered |
+| `netlify` | A custom thank-you page set as the form's `action`, same tab, with the detector on both pages. Netlify's default success page is not covered. Submissions Netlify files as spam still reach the thank-you page and count (seen live) |
 | `optinmonster` | Popup campaigns with name and email were tested. Other campaign types use the same mechanism but are untested |
-| `pipedrive-forms` | Set the form's after-submit option to redirect to an HTTPS page on the same site. Pipedrive's default inline thank-you mode is not covered |
-| `salesforce-forms` | A Web-to-Lead form on the site whose return URL is a different HTTPS page on the same site, with the detector on all pages. Return counting (above). Pardot is a different product and is not covered |
+| `pipedrive-forms` | Set the form's after-submit option to redirect to an HTTPS page on the same site. The standard single-form embed was live-tested, with spam protection off. Pipedrive's default inline thank-you mode is not covered |
+| `salesforce-forms` | A Web-to-Lead form on the site whose return URL is a different HTTPS page on the same site, with the detector on all pages. Return counting (above). The form page's path is sent as `form_id`, so it must not contain personal details. Forms with Salesforce's reCAPTCHA are unverified. Pardot is a different product and is not covered |
 | `squarespace-forms` | Form blocks, including ones that redirect. Lightbox forms, 7.0 legacy forms, newsletter blocks and commerce and member forms are not covered |
-| `unbounce` | Smart Builder pages, with GTM added through Script Manager in the Head. Classic builder pages, standalone pop-ups and sticky bars are not covered |
+| `typeform`, `tally` | Embeds on the site. A visitor who completes the form on the tool's own hosted link is not on the site, so nothing counts |
+| `unbounce` | Smart Builder pages, with GTM added through Script Manager in the Head. Dialog and redirect confirmations were live-tested; lightboxes were checked offline only. Classic builder pages, standalone pop-ups and sticky bars are not covered |
+| `webflow-forms` | Forms that show Webflow's inline success message. Forms set to redirect to a thank-you page do not fire; use `thank-you-page` for those |
+| `ws-form` | AJAX forms on a site that loads jQuery. WS Form without jQuery, and custom non-AJAX form actions, are not covered |
 | `zoho-bookings` | Australian data centre (`zohobookings.com.au`) inline and button embeds, on a paid plan with Show your own confirmation page set to a page on the same site and Pass booking details on. Other data centres are not covered |
-| `zoho-crm-forms` | The Source Code web form, whose return URL is a different HTTPS path on the same site, with the detector on all pages. Return counting (above). This is Zoho CRM, not Zoho Forms |
+| `zoho-crm-forms` | The Source Code web form, whose return URL is a different HTTPS path on the same site, with the detector on all pages. Return counting (above). Only the Australian data centre was live-tested; other regions were checked offline. This is Zoho CRM, not Zoho Forms |
 
 ## Universal patterns
 

@@ -14,7 +14,7 @@ Guided setup for wiring a form or booking tool to Google Ads. The agent usually 
 You need three things:
 
 - Access to the Google Ads account (the user has this, you guide them).
-- The form or booking tool in play. This repo has detection recipes for 49 tools plus 4 universal patterns. The full list with canonical dataLayer event names lives in `recipes/gtm/event-map.json` and `snippets/README.md`. Example, Gravity Forms pushes `gravity_form_submitted`. Supported tools are Calendly, Contact Form 7, Divi Forms, Duda, Elementor Forms, Fluent Forms, Formidable Forms, Forminator, Framer Forms, Gravity Forms, HubSpot Forms, Jotform, Ninja Forms, Tally, Typeform, Webflow Forms, Wix Forms, Wix Bookings, WPForms, and WS Form.
+- The form or booking tool in play. This repo has detection recipes for 49 tools plus 4 universal patterns. The full list with canonical dataLayer event names lives in `recipes/gtm/event-map.json` and `snippets/README.md`. Example, Gravity Forms pushes `gravity_form_submitted`. Some need a setup step or cover only some embed types: check the setup table in `references/tool-coverage.md`.
 - A decision on the install path. Check the site's page source for a `GTM-` container snippet, or ask the user. If GTM is installed, use Path A. If not, use Path B. Never do both, that double counts.
 
 Also do a quick duplicate pre-check before installing anything. Fetch the page source and look for an existing `AW-` ID, a `gtag('event', 'conversion'` call, or an existing Google Ads conversion tag inside the GTM container. If the same real-world action is already being tracked, fix or replace that setup rather than adding a second one on top. Two tags for one form is the classic overcounting setup.

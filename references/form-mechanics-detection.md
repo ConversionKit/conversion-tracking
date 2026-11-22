@@ -2,7 +2,7 @@
 
 Literal, grep-able strings for auditing lead-gen conversion tracking from (A) form mechanics, (B) static page source, (C) headless browser, (D) codebase.
 
-**Fix assets.** When a finding in this file names a missing or wrong detection hook, the fix usually already exists in this repo. Tested listeners for 20 tools live in `../snippets/` (paste-in JS) and `../recipes/gtm/detect/` (importable GTM containers), both pushing the canonical dataLayer event names listed in `../recipes/gtm/event-map.json` (for example `gravity_form_submitted`, `typeform_form_submitted`, `calendly_event_scheduled`). Diagnose against those exact names, fix by installing those exact assets.
+**Fix assets.** When a finding in this file names a missing or wrong detection hook, the fix usually already exists in this repo. Tested listeners for 49 tools live in `../snippets/` (paste-in JS) and `../recipes/gtm/detect/` (importable GTM containers), both pushing the canonical dataLayer event names listed in `../recipes/gtm/event-map.json` (for example `gravity_form_submitted`, `typeform_form_submitted`, `calendly_event_scheduled`). Diagnose against those exact names, fix by installing those exact assets.
 
 ## A. FORM SUBMISSION MECHANICS
 
