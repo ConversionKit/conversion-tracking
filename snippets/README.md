@@ -23,26 +23,57 @@ These names are load-bearing. The audit routes in SKILL.md check for exactly the
 
 | Tool | Snippet | Moment | dataLayer event |
 |---|---|---|---|
+| ActiveCampaign | `activecampaign.js` | Form submission | `activecampaign_form_submitted` |
+| Acuity Scheduling | `acuity-scheduling.js` | Booking made | `acuity_appointment_scheduled` |
+| Avada Forms | `avada-forms.js` | Form submission | `avada_forms_submitted` |
+| Beaver Builder | `beaver-builder.js` | Form submission | `beaver_builder_form_submitted` |
+| Cal.com | `cal-com.js` | Booking made | `calcom_booking_successful` |
 | Calendly | `calendly.js` | Meeting booked | `calendly_event_scheduled` |
+| Capsule Web Forms | `capsule-forms.js` | Form submission | `capsule_form_submitted` |
+| ClickFunnels | `clickfunnels.js` | Form submission | `clickfunnels_form_submitted` |
+| Close Forms | `close-forms.js` | Form submission | `close_form_submitted` |
 | Contact Form 7 | `contact-form-7.js` | Form submission | `contact_form_7_submitted` |
+| Copper Web Forms | `copper-forms.js` | Form submission | `copper_form_submitted` |
 | Divi Forms | `divi-forms.js` | Form submission | `divi_form_submitted` |
 | Duda | `duda.js` | Form submission | `duda_form_submitted` |
 | Elementor Forms | `elementor-forms.js` | Form submission | `elementor_form_submitted` |
+| Fillout Forms | `fillout-forms.js` | Form submission | `fillout_form_submitted` |
 | Fluent Forms | `fluent-forms.js` | Form submission | `fluent_forms_submitted` |
 | Formidable Forms | `formidable-forms.js` | Form submission | `formidable_forms_submitted` |
 | Forminator | `forminator.js` | Form submission | `forminator_form_submitted` |
+| Formsite | `formsite.js` | Form submission | `formsite_form_submitted` |
 | Framer Forms | `framer-forms.js` | Form submission | `framer_form_submitted` |
+| Freshsales Forms | `freshsales-forms.js` | Form submission | `freshsales_form_submitted` |
 | Gravity Forms | `gravity-forms.js` | Form submission | `gravity_form_submitted` |
+| HappyForms | `happyforms.js` | Form submission | `happyforms_form_submitted` |
+| HighLevel Forms | `highlevel-forms.js` | Form submission | `highlevel_form_submitted` |
 | HubSpot Forms | `hubspot-forms.js` | Form submission | `hubspot_form_submitted` |
+| HubSpot Meetings | `hubspot-meetings.js` | Meeting booked | `hubspot_meeting_booked` |
+| Insightly Web Forms | `insightly-forms.js` | Form submission | `insightly_form_submitted` |
+| Instapage | `instapage.js` | Form submission | `instapage_form_submitted` |
 | Jotform | `jotform.js` | Form submission | `jotform_form_submitted` |
+| Kit | `kit.js` | Form submission | `kit_form_submitted` |
+| LeadCapture.io | `getleadforms.js` | Form submission | `getleadforms_form_submitted` |
+| Mailchimp | `mailchimp.js` | Form submission | `mailchimp_form_submitted` |
+| Netlify | `netlify.js` | Form submission | `netlify_form_submitted` |
 | Ninja Forms | `ninja-forms.js` | Form submission | `ninja_forms_submitted` |
+| OptinMonster | `optinmonster.js` | Form submission | `optinmonster_form_submitted` |
+| Paperform | `paperform.js` | Form submission | `paperform_form_submitted` |
+| Pipedrive Web Forms | `pipedrive-forms.js` | Form submission | `pipedrive_form_submitted` |
+| Salesforce Web-to-Lead | `salesforce-forms.js` | Form submission | `salesforce_form_submitted` |
+| Squarespace Forms | `squarespace-forms.js` | Form submission | `squarespace_form_submitted` |
 | Tally | `tally.js` | Form submission | `tally_form_submitted` |
 | Typeform | `typeform.js` | Form submission | `typeform_form_submitted` |
+| Unbounce | `unbounce.js` | Form submission | `unbounce_form_submitted` |
 | Webflow Forms | `webflow-forms.js` | Form submission | `webflow_form_submitted` |
-| Wix Forms | `wix-forms.js` | Form submission | `wix_form_submitted` |
 | Wix Bookings | `wix-scheduling.js` | Booking made | `wix_appointment_scheduled` |
+| Wix Forms | `wix-forms.js` | Form submission | `wix_form_submitted` |
 | WPForms | `wpforms.js` | Form submission | `wpforms_form_submitted` |
 | WS Form | `ws-form.js` | Form submission | `ws_form_submitted` |
+| Zoho Bookings | `zoho-bookings.js` | Booking made | `zoho_bookings_appointment_scheduled` |
+| Zoho CRM Web Forms | `zoho-crm-forms.js` | Form submission | `zoho_crm_form_submitted` |
+
+**Two-part and redirect setups.** Acuity Scheduling also needs `acuity-scheduling-acuity-field.html` pasted into Acuity itself. Several CRM and redirect-based detectors only work once the tool returns the visitor to a page of the site. Read the setup table in `../references/tool-coverage.md` before handing one over.
 
 Four universal patterns cover the moments no form tool owns:
 

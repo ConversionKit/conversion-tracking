@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-12 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Close",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Close Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Close Form Listener by Converly. Sends only the event and public form ID. */\n(function() {\n  'use strict';\n\n  if (window.__converlyRecipeCloseForms) return;\n  var roots = [], candidates = [], pending = [], consumed = Object.create(null);\n  var previousFetch = null, wrappedFetch = null, observer = null;\n  var discoveryTimer = null, pendingTimer = null, paused = false, stopped = false;\n  var FORM_ID = /^form_[A-Za-z0-9]{1,128}$/;\n  var SESSION_ID = /^formsession_[A-Za-z0-9]{1,128}$/;\n  var own = Object.prototype.hasOwnProperty;\n\n  function allowed() { return !stopped && !paused; }\n  function pageAllowed() {\n    try { return window.top === window && location.protocol === 'https:' &&\n      !/(^|\\.)close\\.com$/i.test(location.hostname); } catch (e) { return false; }\n  }\n  function hostId(host) {\n    var id = host && host.getAttribute('id');\n    return host && host.tagName === 'CLOSE-FORM' && host.isConnected && FORM_ID.test(id || '') ? id : null;\n  }\n  function snapshot(form, root, id) { return { submissionContext: { form_id: id } }; }\n  function remove(list, item) {\n    var index = list.indexOf(item);\n    if (index !== -1) list.splice(index, 1);\n  }\n  function cancelReader(attempt) {\n    var reader = attempt.reader;\n    attempt.reader = null;\n    if (reader) try {\n      var result = reader.cancel();\n      if (result && result.catch) result.catch(function() {});\n    } catch (e) {  }\n  }\n  function invalidate(attempt) {\n    attempt.dead = true;\n    attempt.payload = null;\n    cancelReader(attempt);\n  }\n  function finish(attempt) {\n    invalidate(attempt);\n    clearTimeout(attempt.timer);\n    remove(pending, attempt);\n    if (!pending.length && pendingTimer) { clearInterval(pendingTimer); pendingTimer = null; }\n  }\n  function live(attempt) {\n    if (attempt.dead) return false;\n    if (!allowed() || hostId(attempt.host) !== attempt.id || Date.now() - attempt.started >= 180000) {\n      invalidate(attempt); return false;\n    }\n    return true;\n  }\n  function onSubmit(event) {\n    try {\n\n      if (observer) mutations(observer.takeRecords());\n      var root = event.currentTarget, form = event.target, host = root && root.host, id = hostId(host);\n      if (!allowed() || !id || !event.isTrusted || event.type !== 'submit' || !event.eventPhase ||\n          host.shadowRoot !== root || !form || form.tagName !== 'FORM' || form.getRootNode() !== root) return;\n      var payload = snapshot(form, root, id);\n      if (!payload || !allowed()) return;\n      var candidate = { event: event, root: root, form: form, host: host, id: id, payload: payload, bound: false };\n      candidates.push(candidate);\n      candidate.timer = setTimeout(function() { candidate.payload = null; remove(candidates, candidate); }, 0);\n    } catch (e) {  }\n  }\n  function requestInfo(args) {\n    var input = args[0], init = args[1], raw, method;\n\n    if (typeof input === 'string') raw = input;\n    else if (typeof window.Request === 'function' && input instanceof window.Request) raw = input.url;\n    else if (typeof window.URL === 'function' && input instanceof window.URL) raw = input.href;\n    else return null;\n    method = init && init.method !== undefined ? init.method : input && input.method;\n    if (typeof method !== 'string' || method.toUpperCase() !== 'POST' || typeof raw !== 'string') return null;\n\n    var match = /^https:\\/\\/webforms\\.close\\.com\\/webforms\\/form\\/(formconf_[A-Za-z0-9]{1,128})\\/$/.exec(raw);\n    return match ? { url: raw, configuration: match[1] } : null;\n  }\n  function bind(args) {\n    if (!allowed()) return null;\n    var info = requestInfo(args);\n    if (!info) return null;\n    for (var i = candidates.length - 1; i >= 0; i--) {\n      var c = candidates[i], event = c.event;\n      if (c.bound || !c.payload || !event.isTrusted || event.eventPhase === 0 || !event.currentTarget ||\n          event.target !== c.form || c.form.getRootNode() !== c.root || hostId(c.host) !== c.id) continue;\n\n      if (event.currentTarget !== c.root && (!event.currentTarget.getRootNode || event.currentTarget.getRootNode() !== c.root)) continue;\n      c.bound = true;\n      var attempt = { host: c.host, id: c.id, payload: c.payload, url: info.url,\n        configuration: info.configuration, started: Date.now(), dead: false, reader: null };\n      c.payload = null;\n      for (var j = 0; j < pending.length; j++) if (pending[j].host === c.host) {\n        invalidate(pending[j]); invalidate(attempt);\n      }\n      pending.push(attempt);\n      attempt.timer = setTimeout(function() { finish(attempt); }, 180000);\n      if (!pendingTimer) pendingTimer = setInterval(function() {\n        pending.slice().forEach(function(a) { live(a); });\n      }, 250);\n      return attempt;\n    }\n    return null;\n  }\n  function completion(text, attempt) {\n    var data;\n    try { data = JSON.parse(text); } catch (e) { return null; }\n    if (!data || typeof data !== 'object' || Array.isArray(data) ||\n        !own.call(data, 'form_configuration_id') || data.form_configuration_id !== attempt.configuration ||\n        !own.call(data, 'form_field_errors') || !Array.isArray(data.form_field_errors) || data.form_field_errors.length ||\n        !own.call(data, 'form_session_id') || typeof data.form_session_id !== 'string' || !SESSION_ID.test(data.form_session_id) ||\n        !own.call(data, 'step') || !data.step || Array.isArray(data.step) || !own.call(data.step, 'type') || data.step.type !== 'form_complete' ||\n        data.step.redirect_url != null || data.step.redirect_after_seconds != null) return null;\n    return data.form_session_id;\n  }\n  function observe(response, attempt) {\n    if (!live(attempt) || !response || typeof response.status !== 'number' || response.status < 200 || response.status >= 300 ||\n        !isFinite(response.status) || response.url !== attempt.url || response.redirected !== false ||\n        (response.type !== 'basic' && response.type !== 'cors' && response.type !== 'default')) { finish(attempt); return; }\n    var clone = response.clone();\n    if (!live(attempt) || !clone.body || typeof clone.body.getReader !== 'function' || typeof window.TextDecoder !== 'function') {\n      if (clone.body && clone.body.cancel) { var cancelled = clone.body.cancel(); if (cancelled && cancelled.catch) cancelled.catch(function() {}); }\n      finish(attempt); return;\n    }\n    var reader = clone.body.getReader(), decoder = new window.TextDecoder('utf-8', { fatal: true });\n    attempt.reader = reader;\n    var size = 0, text = '';\n    function read() {\n      if (!live(attempt)) { finish(attempt); return; }\n      return reader.read().then(function(chunk) {\n        if (!live(attempt)) { finish(attempt); return; }\n        if (!chunk.done) {\n          size += chunk.value.byteLength;\n          if (size > 65536) { finish(attempt); return; }\n          text += decoder.decode(chunk.value, { stream: true });\n          return read();\n        }\n        text += decoder.decode();\n        var session = completion(text, attempt);\n        text = '';\n        if (!session || !live(attempt)) { finish(attempt); return; }\n        var key = attempt.id + ':' + session, payload = attempt.payload;\n        if (consumed[key]) { finish(attempt); return; }\n        consumed[key] = true;\n        finish(attempt);\n        if (allowed()) {\n          var push = { event: 'close_form_submitted', form_id: payload.submissionContext.form_id };\n          (window.dataLayer = window.dataLayer || []).push(push);\n        }\n      });\n    }\n    return read();\n  }\n  function installFetch() {\n    if (wrappedFetch || typeof window.fetch !== 'function') return;\n    var delegate = window.fetch;\n    var wrapper = function() {\n      var attempt = null;\n      try { if (window.fetch && wrappedFetch === wrapper) attempt = bind(arguments); } catch (e) {  }\n      var result;\n      try { result = delegate.apply(this, arguments); }\n      catch (error) { if (attempt) finish(attempt); throw error; }\n      if (attempt) try {\n        result.then(function(response) { return observe(response, attempt); }, function() { finish(attempt); })\n          .catch(function() { finish(attempt); });\n      } catch (e) { finish(attempt); }\n      return result;\n    };\n    try {\n      window.fetch = wrapper;\n      if (window.fetch === wrapper) { previousFetch = delegate; wrappedFetch = wrapper; }\n    } catch (e) {  }\n  }\n  function discover() {\n    if (stopped || paused || !pageAllowed()) return;\n    var hosts = document.querySelectorAll('close-form'), waiting = false;\n    for (var i = 0; i < hosts.length; i++) {\n      var host = hosts[i];\n      if (!hostId(host)) continue;\n      var root = host.shadowRoot;\n      if (!root || !root.querySelector('form')) { waiting = true; continue; }\n      if (roots.some(function(entry) { return entry.root === root; })) continue;\n      var rootObserver = new MutationObserver(function() {\n        candidates.forEach(function(c) { if (!c.bound && c.form.getRootNode() !== c.root) c.payload = null; });\n      });\n      rootObserver.observe(root, { childList: true, subtree: true });\n      root.addEventListener('submit', onSubmit, true);\n      roots.push({ root: root, observer: rootObserver });\n      installFetch();\n    }\n    if (waiting && !discoveryTimer) discoveryTimer = setInterval(discover, 250);\n    if (!waiting && discoveryTimer) { clearInterval(discoveryTimer); discoveryTimer = null; }\n    for (i = roots.length - 1; i >= 0; i--) if (!roots[i].root.host.isConnected) {\n      roots[i].root.removeEventListener('submit', onSubmit, true); roots[i].observer.disconnect(); roots.splice(i, 1);\n    }\n  }\n  function mutations(records) {\n    pending.slice().forEach(function(a) {\n      for (var i = 0; i < records.length; i++) {\n        var record = records[i];\n        if (record.type === 'attributes' && record.target === a.host) invalidate(a);\n        for (var j = 0; record.removedNodes && j < record.removedNodes.length; j++) {\n          var node = record.removedNodes[j];\n          if (node === a.host || (node.contains && node.contains(a.host))) invalidate(a);\n        }\n      }\n      live(a);\n    });\n    discover();\n  }\n  function clearWork() {\n    candidates.forEach(function(c) { clearTimeout(c.timer); c.payload = null; }); candidates = [];\n    pending.slice().forEach(finish);\n    roots.forEach(function(entry) { entry.root.removeEventListener('submit', onSubmit, true); entry.observer.disconnect(); }); roots = [];\n    if (observer) observer.disconnect(); observer = null;\n    clearInterval(discoveryTimer); discoveryTimer = null;\n    try { if (window.fetch === wrappedFetch) window.fetch = previousFetch; } catch (e) {  }\n    wrappedFetch = null; previousFetch = null;\n  }\n  function start() {\n    if (stopped || !pageAllowed()) return;\n    paused = false;\n    if (!observer) { observer = new MutationObserver(mutations); observer.observe(document, { subtree: true, childList: true, attributes: true, attributeFilter: ['id'] }); }\n    discover();\n  }\n  function pagehide() { paused = true; clearWork(); }\n  function teardown() {\n    stopped = true; clearWork();\n    window.removeEventListener('pagehide', pagehide, true);\n    window.removeEventListener('pageshow', start, true);\n  }\n  window.__converlyRecipeCloseForms = { discover: discover, teardown: teardown };\n  window.addEventListener('pagehide', pagehide, true);\n  window.addEventListener('pageshow', start, true);\n  start();\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Close Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "close_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - Close Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-25 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Fillout",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Fillout Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Fillout Form Listener by Converly. Pushes only event and form metadata. */\n(function() {\n  'use strict';\n\n  window.dataLayer = window.dataLayer || [];\n  var sink = {\n    siteKey: 'gtm-pack-fillout-event-only',\n    advertisingAllowed: function () { return true; },\n    onSubmission: function (payload) {\n      var context = payload.submissionContext || {};\n      var push = { event: 'fillout_form_submitted', form_id: context.form_id || null };\n      window.dataLayer.push(push);\n    }\n  };\n\n  if (typeof window === 'undefined' || window.__converlyRecipeFillout) return;\n  window.__converlyRecipeFillout = true;\n\n  function consentAllows() {\n    try {\n      var c = sink;\n      return !(c && typeof c.advertisingAllowed === 'function' && c.advertisingAllowed() === false);\n    } catch (e) { return true; }\n  }\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n\n    if (autocomplete) {\n      var tokens = autocomplete.split(/\\s+/);\n      for (var t = 0; t < tokens.length; t++) {\n        if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true) return true;\n      }\n    }\n    if (isSensitiveName(name)) return true;\n    return false;\n  }\n\n  function object(value) {\n    if (value === null || typeof value !== 'object' || Array.isArray(value)) return false;\n    var proto = Object.getPrototypeOf(value);\n\n    return proto === Object.prototype || proto === null;\n  }\n\n  function extractAnswers() { return { userData: {}, formFieldsSeen: [] }; }\n\n  var ORIGIN = 'https://embed.fillout.com';\n  function frameUrl(frame) {\n    try {\n      var src = frame.getAttribute('src');\n      if (!src) return null;\n      var url = new URL(src, document.baseURI);\n      if (url.username || url.password || url.origin !== ORIGIN) return null;\n      return url;\n    } catch (e) { return null; }\n  }\n\n  var frames = [];\n  var trackerStarted = false;\n  function scan() {\n    frames = [];\n    var candidates = document.querySelectorAll('iframe');\n    for (var i = 0; i < candidates.length; i++) {\n      if (frameUrl(candidates[i])) frames.push(candidates[i]);\n    }\n  }\n  function startTracker() {\n    if (trackerStarted || !document.documentElement) return;\n    trackerStarted = true;\n    scan();\n    if (typeof MutationObserver !== 'undefined') {\n      new MutationObserver(scan).observe(document.documentElement, {\n        childList: true, subtree: true, attributes: true, attributeFilter: ['src']\n      });\n    }\n  }\n  function boundUrl(source) {\n    for (var i = 0; i < frames.length; i++) {\n      try {\n        if (document.documentElement.contains(frames[i]) && frames[i].contentWindow === source) {\n          var url = frameUrl(frames[i]);\n          if (url) return url;\n        }\n      } catch (e) {  }\n    }\n    return null;\n  }\n\n  var seen = Object.create(null);\n  function handleMessage(event) {\n    try {\n      if (!event || !event.source || event.source === window || event.isTrusted !== true) return;\n      if (event.origin !== ORIGIN || !consentAllows()) return;\n      var message = event.data;\n      if (!object(message) || message.type !== 'form_submit' ||\n          typeof message.submissionUuid !== 'string' || !message.submissionUuid.trim() ||\n          !Array.isArray(message.questions)) return;\n      var url = boundUrl(event.source);\n      if (!url) return;\n      var loader = sink;\n      if (!loader || typeof loader.onSubmission !== 'function' || !consentAllows()) return;\n      var id = message.submissionUuid;\n      if (Object.prototype.hasOwnProperty.call(seen, id)) return;\n\n      var match = /^\\/t\\/([a-zA-Z0-9_-]+)\\/?$/.exec(url.pathname);\n      var context = match ? { form_id: match[1] } : {};\n      var extracted = extractAnswers(message.questions);\n      if (!consentAllows()) return;\n      seen[id] = true;\n      loader.onSubmission({\n        trigger: 'fillout-forms', pageUrl: window.location.pathname,\n        userData: extracted.userData, formFieldsSeen: extracted.formFieldsSeen,\n        submissionContext: context\n      });\n    } catch (e) {  }\n  }\n\n  window.addEventListener('message', handleMessage, false);\n  startTracker();\n  if (!trackerStarted) document.addEventListener('DOMContentLoaded', startTracker, false);\n\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Fillout Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "fillout_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - Fillout Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

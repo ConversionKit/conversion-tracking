@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-12 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Pipedrive",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Pipedrive Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n(function () {\n  'use strict';\n\n  if (typeof window === 'undefined' || window.__converlyRecipePipedriveForms) return;\n  if (window.top !== window || window.location.protocol !== 'https:') return;\n  window.__converlyRecipePipedriveForms = true;\n\n  var ORIGIN = 'https://webforms.pipedrive.com';\n  var records = [];\n  var observer;\n\n  function own(value, key) {\n    if (!value || typeof value !== 'object' || Array.isArray(value)) return undefined;\n    var descriptor = Object.getOwnPropertyDescriptor(value, key);\n    return descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'value') ? descriptor.value : undefined;\n  }\n\n  function identifier(value, limit) {\n    return typeof value === 'string' && value.length > 0 && value.length <= limit &&\n      !/[\\s\\x00-\\x1f\\x7f/?#%\\\\]/.test(value);\n  }\n\n  function formUrl(src) {\n    if (typeof src !== 'string' || src.length > 2048 || !/^https:\\/\\//.test(src)) return null;\n    try {\n      var url = new URL(src);\n      if (url.origin !== ORIGIN || url.username || url.password || url.hash) return null;\n      var match = /^\\/f\\/([^/]+)$/.exec(url.pathname);\n      if (!match || !identifier(match[1], 256)) return null;\n      return { url: url, hash: match[1] };\n    } catch (e) { return null; }\n  }\n\n  function frameIdentity(frame) {\n    if (!frame || frame.tagName !== 'IFRAME' || !document.documentElement.contains(frame)) return null;\n    var container = frame.parentElement;\n    while (container && !container.hasAttribute('data-pd-webforms')) container = container.parentElement;\n    if (!container || !container.classList.contains('pipedriveWebForms')) return null;\n    var src = frame.getAttribute('src');\n    var frameUrl = formUrl(src);\n    var owner = formUrl(container.getAttribute('data-pd-webforms'));\n    if (!frameUrl || !owner || frameUrl.hash !== owner.hash) return null;\n    if (frameUrl.url.searchParams.getAll('embeded').length !== 1 || frameUrl.url.searchParams.get('embeded') !== '1' ||\n        frameUrl.url.searchParams.getAll('uuid').length !== 1) return null;\n    var uuid = frameUrl.url.searchParams.get('uuid');\n    if (!identifier(uuid, 128)) return null;\n    return { frame: frame, container: container, src: src, hash: frameUrl.hash, uuid: uuid };\n  }\n\n  function track(frame) {\n    for (var i = 0; i < records.length; i++) if (records[i].frame === frame) return;\n    var record = frameIdentity(frame);\n    if (record) { record.consumed = false; records.push(record); }\n  }\n\n  function scan() {\n    var frames = document.querySelectorAll('iframe');\n    for (var i = 0; i < frames.length; i++) track(frames[i]);\n  }\n\n  function current(record) {\n    var identity = frameIdentity(record.frame);\n    return identity && identity.container === record.container && identity.src === record.src &&\n      identity.hash === record.hash && identity.uuid === record.uuid;\n  }\n\n  function boundSource(source) {\n    scan();\n    for (var i = 0; i < records.length; i++) {\n      var record = records[i];\n      try {\n        if (record.frame.contentWindow === source && current(record)) return record;\n      } catch (e) { /* inaccessible or removed frame */ }\n    }\n    return null;\n  }\n\n  function isTrustedOrigin(event) {\n    return !!(event && event.source && event.source !== window && event.origin === ORIGIN);\n  }\n\n  function validRedirect(value) {\n    if (typeof value !== 'string' || value.length === 0 || value.length > 2048 ||\n        !/^https:\\/\\//.test(value) || /[\\s\\x00-\\x1f\\x7f\\\\]/.test(value)) return false;\n    try {\n      var url = new URL(value);\n      return url.protocol === 'https:' && !url.username && !url.password && url.origin === window.location.origin;\n    } catch (e) { return false; }\n  }\n\n  function handleMessage(event) {\n    if (!isTrustedOrigin(event)) return;\n    var message = event.data;\n    if (own(message, 'type') !== 6) return;\n    var record;\n    var payload = own(message, 'payload');\n    var uuid = own(payload, 'uuid');\n    if (own(payload, 'source') !== 'pipedriveWebForms' || !identifier(uuid, 128) ||\n        !validRedirect(own(payload, 'url'))) return;\n    record = boundSource(event.source);\n    if (!record || record.consumed || uuid !== record.uuid) return;\n    record.consumed = true;\n    if (!current(record)) return;\n    window.dataLayer = window.dataLayer || [];\n    window.dataLayer.push({\n      event: 'pipedrive_form_submitted',\n      form_id: record.hash\n    });\n  }\n\n  scan();\n  if (typeof MutationObserver !== 'undefined') {\n    observer = new MutationObserver(scan);\n    observer.observe(document.documentElement, {\n      childList: true, subtree: true, attributes: true,\n      attributeFilter: ['src', 'data-pd-webforms', 'class']\n    });\n  }\n  window.addEventListener('message', handleMessage, false);\n\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Pipedrive Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "pipedrive_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "1",
+        "name": "DLV - Pipedrive Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-11 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - LeadCapture.io",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - LeadCapture.io Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n(function() {\n  'use strict';\n  if (window.__converlyRecipeGetLeadForms) return;\n  window.__converlyRecipeGetLeadForms = true;\n  var counted = new Set();\n  var records = new WeakMap();\n  var activity = 0;\n  function interaction(event) {\n    if (event.type === 'keydown' && event.key !== 'Enter') return;\n    var target = event.target;\n    var form = target && target.closest && target.closest('form.lc-form');\n    if (!form) return;\n    var instance = form.closest('.lc-form-container') || form;\n    form = instance === form ? form : instance.querySelector('form.lc-form');\n    if (!form || form.querySelector('button.lc-button:disabled')) return;\n    records.set(instance, ++activity);\n  }\n  function onSuccess(event) {\n    try {\n      var detail = event.detail;\n      if (!detail || Object.prototype.toString.call(detail) !== '[object Object]') return;\n      var proto = Object.getPrototypeOf(detail);\n      if (proto !== null && proto !== Object.prototype) return;\n      if (typeof detail.funnelId !== 'string' || !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(detail.funnelId) ||\n          typeof detail.leadId !== 'string' || !/^[A-Za-z0-9_-]{8,80}$/.test(detail.leadId) || counted.has(detail.leadId)) return;\n      var forms = document.querySelectorAll('form.lc-form');\n      var selected = null;\n      var lastActivity = -1;\n      for (var i = 0; i < forms.length; i++) {\n        if (forms[i].id !== 'lc-form-' + detail.funnelId) continue;\n        var instance = forms[i].closest('.lc-form-container') || forms[i];\n        var last = records.get(instance) || 0;\n        if (last > lastActivity) { selected = instance; lastActivity = last; }\n      }\n      if (!selected) return;\n      var context = { event: 'getleadforms_form_submitted' };\n      var container = selected.closest('.lc-form-container');\n      var shortId = container && container.getAttribute('data-funnel-id');\n      if (shortId && /^[A-Za-z0-9_-]{4,64}$/.test(shortId)) context.form_id = shortId;\n      counted.add(detail.leadId);\n      records.delete(selected);\n      window.dataLayer = window.dataLayer || [];\n      window.dataLayer.push(context);\n    } catch (e) {  }\n  }\n  ['input', 'change', 'click', 'keydown'].forEach(function(type) {\n    document.addEventListener(type, interaction, true);\n  });\n  document.addEventListener('leadcapture:submitted', onSuccess, true);\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - LeadCapture.io Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "getleadforms_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "1",
+        "name": "DLV - LeadCapture.io Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

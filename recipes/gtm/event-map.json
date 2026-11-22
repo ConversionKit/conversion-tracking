@@ -1,13 +1,58 @@
 {
+  "activecampaign": {
+    "label": "ActiveCampaign",
+    "moment": "form submission",
+    "event": "activecampaign_form_submitted"
+  },
+  "acuity-scheduling": {
+    "label": "Acuity Scheduling",
+    "moment": "booking made",
+    "event": "acuity_appointment_scheduled"
+  },
+  "avada-forms": {
+    "label": "Avada Forms",
+    "moment": "form submission",
+    "event": "avada_forms_submitted"
+  },
+  "beaver-builder": {
+    "label": "Beaver Builder",
+    "moment": "form submission",
+    "event": "beaver_builder_form_submitted"
+  },
+  "cal-com": {
+    "label": "Cal.com",
+    "moment": "booking made",
+    "event": "calcom_booking_successful"
+  },
   "calendly": {
     "label": "Calendly",
     "moment": "meeting booked",
     "event": "calendly_event_scheduled"
   },
+  "capsule-forms": {
+    "label": "Capsule Web Forms",
+    "moment": "form submission",
+    "event": "capsule_form_submitted"
+  },
+  "clickfunnels": {
+    "label": "ClickFunnels",
+    "moment": "form submission",
+    "event": "clickfunnels_form_submitted"
+  },
+  "close-forms": {
+    "label": "Close Forms",
+    "moment": "form submission",
+    "event": "close_form_submitted"
+  },
   "contact-form-7": {
     "label": "Contact Form 7",
     "moment": "form submission",
     "event": "contact_form_7_submitted"
+  },
+  "copper-forms": {
+    "label": "Copper Web Forms",
+    "moment": "form submission",
+    "event": "copper_form_submitted"
   },
   "divi-forms": {
     "label": "Divi Forms",
@@ -29,6 +74,11 @@
     "moment": "file download",
     "event": "file_download"
   },
+  "fillout-forms": {
+    "label": "Fillout Forms",
+    "moment": "form submission",
+    "event": "fillout_form_submitted"
+  },
   "fluent-forms": {
     "label": "Fluent Forms",
     "moment": "form submission",
@@ -44,40 +94,120 @@
     "moment": "form submission",
     "event": "forminator_form_submitted"
   },
+  "formsite": {
+    "label": "Formsite",
+    "moment": "form submission",
+    "event": "formsite_form_submitted"
+  },
   "framer-forms": {
     "label": "Framer Forms",
     "moment": "form submission",
     "event": "framer_form_submitted"
+  },
+  "freshsales-forms": {
+    "label": "Freshsales Forms",
+    "moment": "form submission",
+    "event": "freshsales_form_submitted"
   },
   "generic-ajax-form": {
     "label": "Generic AJAX form",
     "moment": "form submission",
     "event": "form_submitted"
   },
+  "getleadforms": {
+    "label": "LeadCapture.io",
+    "moment": "form submission",
+    "event": "getleadforms_form_submitted"
+  },
   "gravity-forms": {
     "label": "Gravity Forms",
     "moment": "form submission",
     "event": "gravity_form_submitted"
+  },
+  "happyforms": {
+    "label": "HappyForms",
+    "moment": "form submission",
+    "event": "happyforms_form_submitted"
+  },
+  "highlevel-forms": {
+    "label": "HighLevel Forms",
+    "moment": "form submission",
+    "event": "highlevel_form_submitted"
   },
   "hubspot-forms": {
     "label": "HubSpot Forms",
     "moment": "form submission",
     "event": "hubspot_form_submitted"
   },
+  "hubspot-meetings": {
+    "label": "HubSpot Meetings",
+    "moment": "meeting booked",
+    "event": "hubspot_meeting_booked"
+  },
+  "insightly-forms": {
+    "label": "Insightly Web Forms",
+    "moment": "form submission",
+    "event": "insightly_form_submitted"
+  },
+  "instapage": {
+    "label": "Instapage",
+    "moment": "form submission",
+    "event": "instapage_form_submitted"
+  },
   "jotform": {
     "label": "Jotform",
     "moment": "form submission",
     "event": "jotform_form_submitted"
+  },
+  "kit": {
+    "label": "Kit",
+    "moment": "form submission",
+    "event": "kit_form_submitted"
+  },
+  "mailchimp": {
+    "label": "Mailchimp",
+    "moment": "form submission",
+    "event": "mailchimp_form_submitted"
+  },
+  "netlify": {
+    "label": "Netlify",
+    "moment": "form submission",
+    "event": "netlify_form_submitted"
   },
   "ninja-forms": {
     "label": "Ninja Forms",
     "moment": "form submission",
     "event": "ninja_forms_submitted"
   },
+  "optinmonster": {
+    "label": "OptinMonster",
+    "moment": "form submission",
+    "event": "optinmonster_form_submitted"
+  },
+  "paperform": {
+    "label": "Paperform",
+    "moment": "form submission",
+    "event": "paperform_form_submitted"
+  },
   "phone-click": {
     "label": "Phone call click",
     "moment": "phone call intent",
     "event": "phone_click"
+  },
+  "pipedrive-forms": {
+    "label": "Pipedrive Web Forms",
+    "moment": "form submission",
+    "event": "pipedrive_form_submitted"
+  },
+  "salesforce-forms": {
+    "label": "Salesforce Web-to-Lead",
+    "moment": "form submission",
+    "event": "salesforce_form_submitted"
+  },
+  "squarespace-forms": {
+    "label": "Squarespace Forms",
+    "moment": "form submission",
+    "event": "squarespace_form_submitted"
   },
   "tally": {
     "label": "Tally",
@@ -93,6 +223,11 @@
     "label": "Typeform",
     "moment": "form submission",
     "event": "typeform_form_submitted"
+  },
+  "unbounce": {
+    "label": "Unbounce",
+    "moment": "form submission",
+    "event": "unbounce_form_submitted"
   },
   "webflow-forms": {
     "label": "Webflow Forms",
@@ -118,5 +253,15 @@
     "label": "WS Form",
     "moment": "form submission",
     "event": "ws_form_submitted"
+  },
+  "zoho-bookings": {
+    "label": "Zoho Bookings",
+    "moment": "booking made",
+    "event": "zoho_bookings_appointment_scheduled"
+  },
+  "zoho-crm-forms": {
+    "label": "Zoho CRM Web Forms",
+    "moment": "form submission",
+    "event": "zoho_crm_form_submitted"
   }
 }

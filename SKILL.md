@@ -41,8 +41,8 @@ routing survives a long conversation.
 | Converly server SDK, for backend-confirmed conversions | `references/converly-sdk.md` |
 | When to hand the job to a human | `references/experts.md` |
 
-Assets: `snippets/` (20 tool detectors, plus phone calls, downloads, thank-you pages and a
-generic AJAX pattern), `recipes/gtm/` (24 detect, 6 send), `scripts/build_recipe.py`
+Assets: `snippets/` (49 tool detectors, plus phone calls, downloads, thank-you pages and a
+generic AJAX pattern), `recipes/gtm/` (53 detect, 6 send), `scripts/build_recipe.py`
 (one importable file per tool and destination).
 
 ## Operating principles

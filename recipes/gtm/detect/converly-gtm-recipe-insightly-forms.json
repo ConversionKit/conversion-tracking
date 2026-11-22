@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-13 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Insightly",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Insightly Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n// Counts a return to the site after Web-to-Lead, not a confirmed saved lead.\n(function() {\n  'use strict';\n\n  if (window.__converlyRecipeInsightlyInstalled) return;\n  window.__converlyRecipeInsightlyInstalled = true;\n\n  if (window.top !== window) return;\n\n  var PENDING_KEY = '__converly_recipe_insightly_pending_v1';\n  var TTL = 60000;\n  var active = null;\n  var landingWait = null;\n  var disabled = false;\n  var CONTACTS = { email: 'email', FirstName: 'firstName', LastName: 'lastName', phone: 'phone' };\n\n  function ready() { return !disabled; }\n  function removePending() {\n    try { window.sessionStorage.removeItem(PENDING_KEY); return true; } catch (e) { return false; }\n  }\n  function plain(value) { return !!value && typeof value === 'object' && !Array.isArray(value); }\n  function keys(value, expected) { return plain(value) && Object.keys(value).sort().join(',') === expected; }\n  function safeString(value, max) {\n    return typeof value === 'string' && value.length > 0 && value.length <= max && !/[\\x00-\\x1f\\x7f]/.test(value);\n  }\n  function validPath(path) {\n    return safeString(path, 2048) && /^\\/(?!\\/)/.test(path) && !/[?#\\\\]/.test(path) &&\n      new URL(path, window.location.origin).pathname === path;\n  }\n  function pathKey(path) { return path.replace(/\\/+$/, '') || '/'; }\n  function boundedRaw(raw) {\n    return typeof raw === 'string' && raw.length <= 16384 &&\n      encodeURIComponent(raw).replace(/%[A-F0-9]{2}/g, 'x').length <= 16384;\n  }\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n    var tokens = autocomplete.split(/\\s+/);\n    for (var t = 0; t < tokens.length; t++) {\n      if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true || /^cc-/.test(tokens[t])) return true;\n    }\n    return isSensitiveName(name);\n  }\n\n  function labelTextFor(el, form) {\n    var text = '';\n    var wrap = el.closest ? el.closest('label') : null;\n    if (wrap) text += ' ' + wrap.textContent;\n    var labels = document.getElementsByTagName('label');\n    for (var i = 0; i < labels.length; i++) {\n      var owner = labels[i].closest ? labels[i].closest('form') : null;\n      if (el.id && labels[i].getAttribute('for') === el.id && (!owner || owner === form)) {\n        text += ' ' + labels[i].textContent;\n      }\n    }\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    for (var j = 0; j < ids.length; j++) {\n      if (!ids[j]) continue;\n      var nodes = form.querySelectorAll('[id]');\n      var found = false;\n      for (var k = 0; k < nodes.length; k++) {\n        if (nodes[k].id === ids[j]) { text += ' ' + nodes[k].textContent; found = true; }\n      }\n      if (!found) {\n        var node = document.getElementById(ids[j]);\n        var nodeForm = node && node.closest ? node.closest('form') : null;\n        if (node && (!nodeForm || nodeForm === form)) text += ' ' + node.textContent;\n      }\n    }\n    return text;\n  }\n\n  function safeControl(el, form) {\n    var type = (el.type || 'text').toLowerCase();\n    return !isSensitiveField(type, (el.getAttribute('autocomplete') || '').toLowerCase(), el.name) &&\n      !isSensitiveName(el.id) && !isSensitiveName(el.getAttribute('aria-label')) &&\n      !isSensitiveName(el.getAttribute('placeholder')) && !isSensitiveName(labelTextFor(el, form));\n  }\n\n  function isInsightlyForm(form) {\n    if (!form || form.tagName !== 'FORM' || !form.getAttribute) return false;\n\n    var raw = form.getAttribute('action');\n    return typeof raw === 'string' && !/\\s/.test(raw) &&\n      /^https:\\/\\/crm\\.[a-z0-9]+\\.insightly\\.com\\/WebToLead\\/Create$/.test(raw);\n  }\n\n  function ownedNamed(form, name) {\n    var result = [];\n    for (var i = 0; i < form.elements.length; i++) {\n      var el = form.elements[i];\n      if (el.form === form && el.name === name) result.push(el);\n    }\n    return result;\n  }\n  function enabled(el) { return !el.disabled && !el.matches(':disabled'); }\n  function identity(form, submitter) {\n    if (!isInsightlyForm(form) || form.ownerDocument !== document ||\n        !document.documentElement.contains(form) || window.location.protocol !== 'https:' ||\n        form.method.toLowerCase() !== 'post' || form.enctype !== 'application/x-www-form-urlencoded') return null;\n    if (submitter && (submitter.form !== form || submitter.hasAttribute('formaction') ||\n        submitter.hasAttribute('formmethod') || submitter.hasAttribute('formenctype') || submitter.hasAttribute('formtarget'))) return null;\n    var base = document.querySelector('base[target]');\n    var target = form.getAttribute('target') || (base && base.getAttribute('target')) || '_self';\n    if (target.toLowerCase() !== '_self') return null;\n    var ids = ownedNamed(form, 'formId');\n    if (ids.length !== 1) return null;\n    var control = ids[0];\n    if (control.tagName !== 'INPUT' || control.type !== 'hidden' || !enabled(control) || !safeControl(control, form)) return null;\n    var formId = control.value;\n    if (!safeString(formId, 256) || formId.trim() !== formId) return null;\n    return { formPath: window.location.pathname, formId: formId,\n      action: form.getAttribute('action'), control: control };\n  }\n\n  function excluded(el, form) {\n    var type = (el.type || 'text').toLowerCase();\n    return el.form !== form || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || !enabled(el) ||\n      /^(hidden|submit|button|reset|image|file)$/.test(type) || !safeString(el.name, 256) ||\n      /(?:captcha|honeypot|debug)/i.test(el.name + ' ' + el.id) || !safeControl(el, form);\n  }\n  function snapshot(form) {\n    var data = {}, seen = [], tracked = [];\n    for (var i = 0; i < form.elements.length; i++) {\n      var el = form.elements[i];\n      if (excluded(el, form)) continue;\n      var type = (el.type || 'text').toLowerCase();\n      if (seen.length >= 100) return null;\n      seen.push({ name: el.name, type: type });\n      tracked.push({ el: el, name: el.name, type: type, count: ownedNamed(form, el.name).length });\n      var key = Object.prototype.hasOwnProperty.call(CONTACTS, el.name) && CONTACTS[el.name];\n      if (!key || el.tagName !== 'INPUT' || !/^(text|email|tel)$/.test(type) || ownedNamed(form, el.name).length !== 1) continue;\n        // Event-only mode does not read contact values.\n    }\n    return { payload: { userData: data, formFieldsSeen: seen }, tracked: tracked };\n  }\n  function validRecord(record) {\n    if (!keys(record, 'attemptId,created,formId,formPath,origin,payload,siteKey,v') || record.v !== 1 || !ready() ||\n        record.siteKey !== 'insightly-forms-event-v1' || record.origin !== window.location.origin || window.location.protocol !== 'https:' ||\n        (typeof record.attemptId !== 'string' || !/^[a-f0-9]{32}$/.test(record.attemptId)) || typeof record.created !== 'number' || !isFinite(record.created) ||\n        Date.now() - record.created < 0 || Date.now() - record.created >= TTL ||\n        !validPath(record.formPath) || !safeString(record.formId, 256) || record.formId.trim() !== record.formId) return false;\n    var payload = record.payload;\n    if (!keys(payload, 'formFieldsSeen,userData') || !plain(payload.userData) || !Array.isArray(payload.formFieldsSeen) || payload.formFieldsSeen.length > 100) return false;\n    var names = Object.keys(payload.userData);\n    for (var i = 0; i < names.length; i++) {\n      if (['email', 'phone', 'firstName', 'lastName'].indexOf(names[i]) === -1 || !safeString(payload.userData[names[i]], 512)) return false;\n    }\n    for (var j = 0; j < payload.formFieldsSeen.length; j++) {\n      var field = payload.formFieldsSeen[j];\n      if (!keys(field, 'name,type') || typeof field.type !== 'string' || !safeString(field.name, 256) || isSensitiveName(field.name) ||\n          /(?:captcha|honeypot|debug)/i.test(field.name) ||\n          !/^(text|email|tel|url|number|search|date|datetime-local|month|week|time|color|range|checkbox|radio|textarea|select-one|select-multiple)$/.test(field.type)) return false;\n    }\n    return true;\n  }\n  function attemptId() {\n    var bytes = new Uint8Array(16), id = '';\n    window.crypto.getRandomValues(bytes);\n    for (var i = 0; i < bytes.length; i++) id += ('0' + bytes[i].toString(16)).slice(-2);\n    return id;\n  }\n  function stop(attempt, preserve) {\n    if (!attempt || active !== attempt) return;\n    clearTimeout(attempt.afterDispatch); clearTimeout(attempt.timeout); clearInterval(attempt.sweep);\n    if (attempt.observer) attempt.observer.disconnect();\n    window.removeEventListener('pagehide', attempt.hide, true);\n    active = null;\n    attempt.form = attempt.record = attempt.event = attempt.identity = attempt.tracked = null;\n    if (!preserve) removePending();\n  }\n  function unchanged(attempt) {\n    if (!ready() || attempt.event.defaultPrevented) return false;\n    var current = identity(attempt.form, attempt.event.submitter), original = attempt.identity;\n    if (!current || !validRecord(attempt.record) || current.formPath !== original.formPath || current.action !== original.action ||\n        current.formId !== original.formId || current.control !== original.control) return false;\n    for (var i = 0; i < attempt.tracked.length; i++) {\n      var item = attempt.tracked[i], el = item.el;\n      if (!document.documentElement.contains(el) || excluded(el, attempt.form) || el.name !== item.name || el.type !== item.type ||\n          (Object.prototype.hasOwnProperty.call(CONTACTS, item.name) && ownedNamed(attempt.form, item.name).length !== item.count)) return false;\n    }\n    return true;\n  }\n  function recheck(attempt) {\n    if (active !== attempt) return;\n    try { if (!unchanged(attempt)) stop(attempt); } catch (e) { stop(attempt); }\n  }\n  function handleSubmit(event) {\n    if (event.isTrusted !== true) return;\n    cancelLanding();\n\n    stop(active); removePending();\n    try {\n      if (!ready() || event.defaultPrevented || !removePending()) return;\n      var key = identity(event.target, event.submitter);\n      if (!key) return;\n      var captured = snapshot(event.target);\n      if (!captured) return;\n      var record = { v: 1, siteKey: 'insightly-forms-event-v1', origin: window.location.origin,\n        created: Date.now(), attemptId: attemptId(), formPath: key.formPath,\n        formId: key.formId, payload: captured.payload };\n      if (!validRecord(record) || !boundedRaw(JSON.stringify(record))) return;\n      var attempt = { form: event.target, event: event, identity: key, record: record, tracked: captured.tracked };\n      active = attempt;\n      attempt.hide = function() {\n        try {\n          if (!unchanged(attempt)) { stop(attempt); return; }\n          var raw = JSON.stringify(attempt.record);\n          if (!boundedRaw(raw)) { stop(attempt); return; }\n          window.sessionStorage.setItem(PENDING_KEY, raw);\n          stop(attempt, true);\n        } catch (e) { stop(attempt); }\n      };\n      window.addEventListener('pagehide', attempt.hide, true);\n      attempt.afterDispatch = setTimeout(function() {\n        recheck(attempt);\n        if (active !== attempt) return;\n        try {\n          var raw = JSON.stringify(attempt.record);\n          if (!boundedRaw(raw)) { stop(attempt); return; }\n          window.sessionStorage.setItem(PENDING_KEY, raw);\n        } catch (e) { stop(attempt); }\n      }, 0);\n      attempt.sweep = setInterval(function() { recheck(attempt); }, 250);\n      attempt.timeout = setTimeout(function() { stop(attempt); }, TTL);\n      attempt.observer = new MutationObserver(function() { recheck(attempt); });\n      attempt.observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true, characterData: true });\n    } catch (e) { stop(active); removePending(); }\n  }\n  function clearLandingWait() {\n    var waiting = landingWait;\n    if (!waiting) return null;\n    landingWait = null;\n    clearInterval(waiting.sweep); clearTimeout(waiting.timeout);\n    window.removeEventListener('load', onLandingLoad);\n    window.removeEventListener('pagehide', cancelLanding, true);\n    return waiting.record;\n  }\n  function cancelLanding() { clearLandingWait(); removePending(); }\n  function onLandingLoad() {\n    var record = clearLandingWait();\n    try { if (record) evaluateLanding(record, true); } catch (e) { cancelLanding(); }\n  }\n  function evaluateLanding(record, afterLoad) {\n    if (!validRecord(record)) return;\n    var url = new URL(window.location.href);\n    if (pathKey(url.pathname) === pathKey(record.formPath)) return;\n    var entries = window.performance.getEntriesByType('navigation'), nav = entries && entries[0];\n    if (!nav && !afterLoad && document.readyState !== 'complete') {\n      landingWait = { record: record };\n      landingWait.sweep = setInterval(function() { if (!ready()) cancelLanding(); }, 250);\n      landingWait.timeout = setTimeout(cancelLanding, TTL - (Date.now() - record.created));\n      window.addEventListener('load', onLandingLoad);\n      window.addEventListener('pagehide', cancelLanding, true);\n      return;\n    }\n    if (!nav || nav.type !== 'navigate' || ('responseStatus' in nav && nav.responseStatus !== 200)) return;\n    if (!ready()) return;\n    var output = { event: 'insightly_form_submitted', form_id: record.formId };\n    window.dataLayer = window.dataLayer || [];\n    window.dataLayer.push(output);\n  }\n  function processLanding() {\n    if (window.__converlyRecipeInsightlyBlockedArrival) { removePending(); return; }\n    try {\n      var raw = window.sessionStorage.getItem(PENDING_KEY);\n      if (!removePending() || !raw || !boundedRaw(raw)) return;\n      evaluateLanding(JSON.parse(raw), false);\n    } catch (e) { cancelLanding(); }\n  }\n  function abandon(event) {\n    if (!active) return;\n    if ((event.type === 'input' || event.type === 'change') &&\n        (event.target.form === active.form || active.form.contains(event.target))) stop(active);\n    else if (event.type === 'reset' && event.target === active.form) stop(active);\n    else if (event.type === 'click' && event.target.closest && event.target.closest('a[href]')) stop(active);\n  }\n  function onPageShow(event) { if (event.persisted) { cancelLanding(); stop(active); removePending(); } }\n\n  function disable() { disabled = true; cancelLanding(); stop(active); removePending(); }\n  function destroy() {\n    clearLandingWait(); stop(active);\n    document.removeEventListener('submit', handleSubmit, true);\n    document.removeEventListener('input', abandon, true);\n    document.removeEventListener('change', abandon, true);\n    document.removeEventListener('reset', abandon, true);\n    document.removeEventListener('click', abandon, true);\n    window.removeEventListener('pageshow', onPageShow, true);\n    delete window.__converlyRecipeInsightlyInstalled;\n    delete window.__converlyRecipeInsightly;\n  }\n  window.__converlyRecipeInsightly = { disable: disable };\n  processLanding();\n  document.addEventListener('submit', handleSubmit, true);\n  document.addEventListener('input', abandon, true);\n  document.addEventListener('change', abandon, true);\n  document.addEventListener('reset', abandon, true);\n  document.addEventListener('click', abandon, true);\n  window.addEventListener('pageshow', onPageShow, true);\n  if (typeof module !== 'undefined' && module.exports) {\n    module.exports = { handleSubmit: handleSubmit, destroy: destroy, disable: disable,\n      isInsightlyForm: isInsightlyForm, pendingKey: PENDING_KEY };\n  }\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Insightly Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "insightly_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "1",
+        "name": "DLV - Insightly Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

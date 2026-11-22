@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-25 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Mailchimp",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Mailchimp Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Mailchimp Form Listener by Converly. Pushes only event and form metadata. */\n(function() {\n  'use strict';\n\n  window.dataLayer = window.dataLayer || [];\n  var sink = {\n    siteKey: 'gtm-pack-mailchimp-event-only',\n    advertisingAllowed: function () { return true; },\n    onSubmission: function (payload) {\n      var context = payload.submissionContext || {};\n      var push = { event: 'mailchimp_form_submitted', form_id: context.form_id || null };\n      window.dataLayer.push(push);\n    }\n  };\n\n  var INSTALL_KEY = '__converlyRecipeMailchimp';\n  var PENDING_KEY = '__converlyRecipe_mailchimp_pending_v2';\n  var WATCH_MS = 60000;\n  var RETURN_MS = 120000;\n  var MERGE_FIELDS = { EMAIL: 'email', FNAME: 'firstName', LNAME: 'lastName', PHONE: 'phone' };\n  var attempts = [];\n  var landingWait = null;\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n\n    if (autocomplete) {\n      var tokens = autocomplete.split(/\\s+/);\n      for (var t = 0; t < tokens.length; t++) {\n        if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true) return true;\n      }\n    }\n    if (isSensitiveName(name)) return true;\n    return false;\n  }\n\n  function labelTextFor(el) {\n    try {\n      if (el.closest) {\n        var wrap = el.closest('label');\n        if (wrap && wrap.textContent) return wrap.textContent;\n      }\n      var doc = el.ownerDocument;\n      if (!doc) return '';\n      if (el.id && doc.getElementsByTagName) {\n        var labels = doc.getElementsByTagName('label');\n        for (var i = 0; i < labels.length; i++) {\n          var lf = labels[i].getAttribute && labels[i].getAttribute('for');\n          if (lf && lf === el.id && labels[i].textContent) {\n            return labels[i].textContent;\n          }\n        }\n      }\n      var lb = el.getAttribute ? (el.getAttribute('aria-labelledby') || '') : '';\n      if (lb && doc.getElementById) {\n        var ids = lb.split(/\\s+/);\n        var txt = '';\n        for (var k = 0; k < ids.length; k++) {\n          var n = doc.getElementById(ids[k]);\n          if (n && n.textContent) txt += ' ' + n.textContent;\n        }\n        if (txt) return txt;\n      }\n    } catch (e) {\n\n    }\n    return '';\n  }\n\n  function consentAllows() {\n    try {\n      var c = sink;\n      return !(c && typeof c.advertisingAllowed === 'function' && c.advertisingAllowed() === false);\n    } catch (e) { return true; }\n  }\n\n  function loaderReady() {\n    return sink && typeof sink.onSubmission === 'function';\n  }\n\n  function removePending() {\n    try { window.sessionStorage.removeItem(PENDING_KEY); } catch (e) {}\n  }\n\n  function isMailchimpForm(form) {\n    if (!form || form.tagName !== 'FORM') return false;\n    try {\n      var url = new URL(form.getAttribute('action') || '', document.baseURI);\n      return url.protocol === 'https:' && /\\.list-manage\\.com$/i.test(url.hostname) &&\n        url.pathname === '/subscribe/post' && !url.username && !url.password;\n    } catch (e) { return false; }\n  }\n\n  function hasValidationScript() {\n    var scripts = document.querySelectorAll('script[src]');\n    for (var i = 0; i < scripts.length; i++) {\n      try {\n        var url = new URL(scripts[i].getAttribute('src'), document.baseURI);\n        if ((url.protocol === 'https:' || url.protocol === 'http:') && url.hostname === 's3.amazonaws.com' &&\n            url.pathname === '/downloads.mailchimp.com/js/mc-validate.js') return true;\n      } catch (e) {}\n    }\n\n    return typeof window.mc_validate === 'function' || typeof window.mce_success_cb === 'function';\n  }\n\n  function ownBoxes(form) {\n    var wrapper = form.closest('#mc_embed_signup') || form;\n    var forms = wrapper.tagName === 'FORM' ? [wrapper] : wrapper.querySelectorAll('form');\n    var success = wrapper.querySelectorAll('[id=\"mce-success-response\"]');\n    var error = wrapper.querySelectorAll('[id=\"mce-error-response\"]');\n    if (forms.length !== 1 || forms[0] !== form || success.length !== 1 || error.length !== 1) return null;\n    return { wrapper: wrapper, success: success[0], error: error[0] };\n  }\n\n  function shown(el) {\n    if (!el || !el.isConnected) return false;\n    try {\n      for (var node = el; node && node.nodeType === 1; node = node.parentElement) {\n        var style = window.getComputedStyle(node);\n        if (node.hidden || style.display === 'none' || style.visibility === 'hidden' ||\n            style.visibility === 'collapse') return false;\n      }\n      return true;\n    } catch (e) { return false; }\n  }\n\n  function hasSensitiveLabel(el) {\n    if (isSensitiveName(labelTextFor(el))) return true;\n\n    var labels = el.labels || [];\n    for (var i = 0; i < labels.length; i++) {\n      if (isSensitiveName(labels[i].textContent)) return true;\n    }\n\n    var root = el.getRootNode ? el.getRootNode() : document;\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    for (var j = 0; j < ids.length; j++) {\n      var label = root.getElementById && root.getElementById(ids[j]);\n      if (label && isSensitiveName(label.textContent)) return true;\n    }\n    return false;\n  }\n\n  function audienceId(form) {\n    var id = new URL(form.getAttribute('action'), document.baseURI).searchParams.get('id') || '';\n    return /^[A-Za-z0-9]{1,32}$/.test(id) ? id : '';\n  }\n\n  function snapshot(form) { return { userData: {}, formFieldsSeen: [], audienceId: audienceId(form) }; }\n\n  function stop(attempt, preservePending) {\n    if (!attempt || attempt.closed) return;\n    attempt.closed = true;\n    if (attempt.observer) attempt.observer.disconnect();\n    clearTimeout(attempt.timer);\n    clearInterval(attempt.sweep);\n    attempt.form.removeAttribute('data-converly-recipe-processing');\n    if (attempt.plain && !preservePending) removePending();\n    attempt.payload = null;\n    var index = attempts.indexOf(attempt);\n    if (index !== -1) attempts.splice(index, 1);\n  }\n\n  function send(payload, page) {\n    if (!consentAllows() || !loaderReady()) { removePending(); return; }\n    try {\n      sink.onSubmission({\n        trigger: 'mailchimp-forms', pageUrl: page,\n        userData: payload.userData, formFieldsSeen: payload.formFieldsSeen, submissionContext: { form_id: payload.audienceId }\n      });\n    } catch (e) {\n\n    }\n  }\n\n  function freshInlineError(record, form) {\n    var target = record.target.nodeType === 1 ? record.target : record.target.parentElement;\n    var candidates = [];\n    if (target && target.closest) candidates.push(target.closest('.mce_inline_error'));\n    for (var i = 0; record.addedNodes && i < record.addedNodes.length; i++) {\n      var node = record.addedNodes[i];\n      if (node.nodeType !== 1) continue;\n      if (node.matches('.mce_inline_error')) candidates.push(node);\n      var children = node.querySelectorAll('.mce_inline_error');\n      for (var j = 0; j < children.length; j++) candidates.push(children[j]);\n    }\n    for (var c = 0; c < candidates.length; c++) {\n      var error = candidates[c];\n      if (error && form.contains(error) && shown(error) && error.textContent.trim()) return true;\n    }\n    return false;\n  }\n\n  function check(attempt, records) {\n    if (attempt.closed) return;\n    var boxes = ownBoxes(attempt.form);\n    if (!consentAllows() || !attempt.form.isConnected || Date.now() - attempt.at >= WATCH_MS ||\n        !boxes || boxes.success !== attempt.boxes.success || boxes.error !== attempt.boxes.error) {\n      stop(attempt); return;\n    }\n    var errorTouched = false, successHidden = false, errorHidden = false;\n    for (var i = 0; i < records.length; i++) {\n      var record = records[i], target = record.target;\n      if (freshInlineError(record, attempt.form)) { stop(attempt); return; }\n      if (target === boxes.error || boxes.error.contains(target)) errorTouched = true;\n      if ((record.type === 'childList' || record.type === 'characterData') &&\n          (target === boxes.success || boxes.success.contains(target))) attempt.rewritten = true;\n      if (record.type === 'attributes' && record.attributeName === 'style') {\n        if (target === boxes.success) successHidden = !shown(boxes.success);\n        if (target === boxes.error) errorHidden = !shown(boxes.error);\n      }\n    }\n    if (errorTouched && shown(boxes.error)) { consumeAnswer(attempt); return; }\n\n    if (successHidden && errorHidden) { consumeAnswer(attempt); return; }\n    if (!attempt.rewritten || !shown(boxes.success) || !boxes.success.textContent.trim()) return;\n    var payload = attempt.payload, page = attempt.page;\n    stop(attempt);\n    send(payload, page);\n  }\n\n  function consumeAnswer(attempt) {\n    attempt.rewritten = false;\n    attempt.outstanding--;\n    if (attempt.outstanding === 0) stop(attempt);\n  }\n\n  function writePending(attempt) {\n    if (!consentAllows()) { removePending(); return false; }\n    var siteKey = sink && sink.siteKey;\n    if (typeof siteKey !== 'string' || !siteKey || siteKey.length > 256) return false;\n    try {\n      window.sessionStorage.setItem(PENDING_KEY, JSON.stringify({\n        v: 1, siteKey: siteKey, origin: window.location.origin,\n        path: attempt.page, created: attempt.at, payload: attempt.payload\n      }));\n      return true;\n    } catch (e) { removePending(); return false; }\n  }\n\n  function handleSubmit(event) {\n    var form = event.target;\n    if (event.isTrusted !== true || !isMailchimpForm(form)) return;\n    cancelLanding();\n    if (!consentAllows()) { cancelAll(); removePending(); return; }\n    if (!loaderReady() || !form.isConnected) return;\n    for (var i = 0; i < attempts.length; i++) {\n      if (attempts[i].form === form) {\n        attempts[i].outstanding++; // Double click keeps the first snapshot.\n        return;\n      }\n    }\n    var classic = hasValidationScript(), boxes = ownBoxes(form);\n    if (classic && (!boxes || typeof MutationObserver !== 'function')) return;\n    if (!classic) {\n\n      var base = document.querySelector('base[target]');\n      var target = form.getAttribute('target') || (base && base.getAttribute('target')) || '_self';\n      if (target.toLowerCase() !== '_self' || form.method.toLowerCase() !== 'post') return;\n      if (event.submitter && (event.submitter.hasAttribute('formaction') || event.submitter.hasAttribute('formtarget') ||\n          event.submitter.hasAttribute('formmethod'))) return;\n\n      for (var p = attempts.length - 1; p >= 0; p--) if (attempts[p].plain) stop(attempts[p]);\n    }\n    var payload = snapshot(form);\n    if (!payload) return;\n    var attempt = { form: form, boxes: boxes, plain: !classic, payload: payload,\n      at: Date.now(), page: window.location.pathname, outstanding: 1, rewritten: false, closed: false };\n    attempts.push(attempt);\n    form.setAttribute('data-converly-recipe-processing', 'true');\n    if (classic) {\n      attempt.observer = new MutationObserver(function(records) { check(attempt, records); });\n      attempt.observer.observe(boxes.wrapper, { subtree: true, childList: true, characterData: true, attributes: true });\n    } else if (!writePending(attempt)) { stop(attempt); return; }\n    attempt.timer = setTimeout(function() { stop(attempt); }, classic ? WATCH_MS : RETURN_MS);\n    attempt.sweep = setInterval(function() {\n      if (!consentAllows() || !form.isConnected) stop(attempt);\n    }, 250);\n  }\n\n  function validRecord(record) {\n    var c = sink;\n    if (!record || record.v !== 1 || !c || typeof c.siteKey !== 'string' || !c.siteKey ||\n        record.siteKey !== c.siteKey || record.origin !== window.location.origin ||\n        typeof record.created !== 'number' || !isFinite(record.created) ||\n        Date.now() - record.created < 0 || Date.now() - record.created >= RETURN_MS ||\n        typeof record.path !== 'string' || !/^\\/(?!\\/)/.test(record.path) ||\n        record.path.length > 2048 || /[?#\\r\\n]/.test(record.path)) return false;\n    var payload = record.payload;\n    if (!payload || !payload.userData || typeof payload.userData !== 'object' || Array.isArray(payload.userData) ||\n        !Array.isArray(payload.formFieldsSeen) || payload.formFieldsSeen.length > 4) return false;\n    var dataKeys = Object.keys(payload.userData);\n    for (var i = 0; i < dataKeys.length; i++) {\n      var key = dataKeys[i], value = payload.userData[key];\n      if (['email', 'firstName', 'lastName', 'phone'].indexOf(key) === -1 ||\n          typeof value !== 'string' || value.length > 512) return false;\n    }\n    for (var f = 0; f < payload.formFieldsSeen.length; f++) {\n      var field = payload.formFieldsSeen[f];\n      if (!field || !Object.prototype.hasOwnProperty.call(MERGE_FIELDS, field.name) ||\n          !/^(text|email|tel)$/.test(field.type) || Object.keys(field).sort().join(',') !== 'name,type') return false;\n    }\n    return typeof payload.audienceId === 'string' && /^(?:[A-Za-z0-9]{1,32})?$/.test(payload.audienceId) && Object.keys(payload).sort().join(',') === 'audienceId,formFieldsSeen,userData';\n  }\n\n  function clearLandingWait() {\n    if (!landingWait) return;\n    clearInterval(landingWait.sweep);\n    window.removeEventListener('load', onLandingLoad);\n    window.removeEventListener('pagehide', cancelLanding, true);\n    landingWait = null;\n  }\n\n  function cancelLanding() {\n    if (!landingWait) return;\n    clearLandingWait();\n    removePending();\n  }\n\n  function onLandingLoad() {\n    clearLandingWait();\n    processLanding(true);\n  }\n\n  function processLanding(afterLoad) {\n\n    if (!consentAllows()) { cancelLanding(); removePending(); return; }\n    if (landingWait) return;\n    var raw, navigation, nav;\n    try {\n      raw = window.sessionStorage.getItem(PENDING_KEY);\n      navigation = raw && window.performance.getEntriesByType('navigation');\n      nav = navigation && navigation[0];\n      if (raw && !nav && !afterLoad && document.readyState !== 'complete') {\n        landingWait = { sweep: setInterval(function() {\n          if (!consentAllows()) cancelLanding();\n        }, 250) };\n        window.addEventListener('load', onLandingLoad);\n        window.addEventListener('pagehide', cancelLanding, true);\n        return;\n      }\n    } catch (e) { removePending(); return; }\n    var marked = false;\n    try {\n      var url = new URL(window.location.href);\n      marked = url.searchParams.getAll('converly').length === 1 && url.searchParams.get('converly') === 'mailchimp';\n      if (url.searchParams.getAll('converly').indexOf('mailchimp') !== -1) {\n        url.searchParams.delete('converly');\n        window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash);\n      }\n    } catch (e) { return; }\n    try {\n\n      window.sessionStorage.removeItem(PENDING_KEY);\n      if (!raw) return;\n      if (!marked) {\n        ;\n        return;\n      }\n      if (raw.length > 10000) return;\n      if (!nav || nav.type !== 'navigate') return;\n      var record = JSON.parse(raw);\n      if (!validRecord(record) || !loaderReady()) return;\n      send(record.payload, record.path);\n    } catch (e) { removePending(); }\n  }\n\n  function cancelAll() {\n    while (attempts.length) stop(attempts[0]);\n  }\n\n  function onPageHide() {\n    var allowed = consentAllows();\n    while (attempts.length) stop(attempts[0], allowed && attempts[0].plain);\n    if (!allowed) removePending();\n  }\n\n  function onPageShow(event) {\n    if (event.persisted) { cancelLanding(); cancelAll(); removePending(); }\n  }\n\n  function onAbandon(event) {\n    for (var i = attempts.length - 1; i >= 0; i--) {\n      var attempt = attempts[i];\n      if (!attempt.plain) continue;\n      if ((event.type === 'input' || event.type === 'change') && attempt.form.contains(event.target)) stop(attempt);\n      else if (event.type === 'click' && event.target.closest && event.target.closest('a[href]')) stop(attempt);\n    }\n  }\n\n  if (window[INSTALL_KEY]) return;\n  window[INSTALL_KEY] = true;\n  processLanding();\n  document.addEventListener('submit', handleSubmit, true);\n  document.addEventListener('input', onAbandon, true);\n  document.addEventListener('change', onAbandon, true);\n  document.addEventListener('click', onAbandon, true);\n  window.addEventListener('pagehide', onPageHide, true);\n  window.addEventListener('pageshow', onPageShow, true);\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Mailchimp Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "mailchimp_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "1",
+        "name": "DLV - Mailchimp Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

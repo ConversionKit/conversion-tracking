@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-12 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Freshsales",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Freshsales Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Freshsales Form Listener by Converly. Sends only the event and public form key. */\n(function() {\n  'use strict';\n\n  if (window.__converlyRecipeFreshsales) return;\n  var controller = { state: 'waiting' };\n  window.__converlyRecipeFreshsales = controller;\n  var supportsWindowEvent = 'event' in window;\n  var PATH = '/crm/sales/smart_form/create_entity';\n  var QUERY = '?file_attachments_present=false';\n  var requests = new WeakMap(), dispatches = new WeakMap();\n  var pending = [], observer = null;\n  var previousOpen, previousSend, wrappedOpen, wrappedSend, prototype;\n  var installationFailed = false;\n  var installed = false, suspended = false, stopped = false, warned = false;\n\n  function warn() {}\n  function allowed() { return true; }\n  function accountUrl(value) {\n    if (typeof value !== 'string' || !/^https:\\/\\//.test(value) ||\n        /[\\\\\\s#]/.test(value)) return null;\n    try {\n      var url = new URL(value);\n      if (url.protocol !== 'https:' || url.username || url.password || url.port ||\n          !/^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.myfreshworks\\.com$/.test(url.hostname)) return null;\n\n      if (value !== url.origin + url.pathname + url.search) return null;\n      return url;\n    } catch (e) { return null; }\n  }\n  function requestUrl(value) {\n    var url = accountUrl(value);\n    return url && url.pathname === PATH && url.search === QUERY ? url.href : null;\n  }\n  function identity(form) {\n    if (window.top !== window || window.location.protocol !== 'https:' || !form ||\n        form.tagName !== 'FORM' || form.ownerDocument !== document ||\n        !document.documentElement.contains(form) ||\n        (form.getAttribute('method') || '').toUpperCase() !== 'POST') return null;\n    var action = accountUrl(form.getAttribute('action'));\n    if (!action || action.pathname !== PATH || action.search) return null;\n    var wrapper = form.closest('.fs-webform-container');\n    if (!wrapper || wrapper.querySelectorAll('form').length !== 1) return null;\n    var match = /^fs-webform-container_([a-f0-9]{64})_([0-9]{1,4})$/.exec(wrapper.id);\n    if (!match || !wrapper.classList.contains('fs_' + match[1])) return null;\n\n    var script = null, scripts = document.querySelectorAll('script[src]');\n    var instance = match[1] + '_' + match[2];\n    for (var i = 0; i < scripts.length; i++) {\n      if (scripts[i].id !== instance) continue;\n      if (script) return null;\n      script = scripts[i];\n    }\n    if (!script || !wrapper.parentElement || script.parentElement !== wrapper.parentElement.parentElement) return null;\n    var source = accountUrl(script.getAttribute('src'));\n    if (!source || source.origin !== action.origin || source.search ||\n        source.pathname !== '/crm/sales/web_forms/' + match[1] + '/form.js') return null;\n    var wrappers = document.querySelectorAll('.fs-webform-container');\n    for (var w = 0; w < wrappers.length; w++) {\n      if (wrappers[w] !== wrapper && wrappers[w].id === wrapper.id) return null;\n    }\n\n    if (form.querySelector('input[type=\"file\"], [name*=\"captcha\"], .g-recaptcha, .h-captcha')) return null;\n    return { id: match[1], instance: instance, wrapper: wrapper, script: script, endpoint: action.origin + PATH + QUERY };\n  }\n\n  function snapshot() { return []; }\n  function release() { return {}; }\n\n  function recordFor(form) {\n    for (var i = 0; i < pending.length; i++) if (pending[i].form === form) return pending[i];\n    return null;\n  }\n  function discard(record) {\n    if (!record || record.dead) return;\n    record.dead = true;\n    var i = pending.indexOf(record);\n    if (i !== -1) pending.splice(i, 1);\n    clearTimeout(record.timer);\n    if (record.xhr && record.listeners) {\n      for (var l = 0; l < record.listeners.length; l++) {\n        try { record.xhr.removeEventListener(record.listeners[l][0], record.listeners[l][1]); } catch (e) {  }\n      }\n    }\n    record.fields = null; record.form = null; record.key = null; record.xhr = null; record.listeners = null;\n  }\n  function clear() {\n    while (pending.length) discard(pending[0]);\n  }\n  function current(record) {\n    var key = identity(record.form);\n    return key && key.id === record.key.id && key.instance === record.key.instance &&\n      key.wrapper === record.key.wrapper && key.script === record.key.script && key.endpoint === record.key.endpoint;\n  }\n  function arm(event) {\n    if (!event || event.type !== 'submit' || event.isTrusted !== true) return null;\n    if (dispatches.has(event)) return dispatches.get(event);\n\n    dispatches.set(event, null);\n    if (!installed || suspended || stopped || !allowed()) { clear(); return null; }\n    var form = event.target, key = identity(form);\n\n    if (!key || recordFor(form) || form.hasAttribute('data-converly-recipe-processing')) return null;\n    var record = { form: form, key: key, fields: snapshot(form), pageUrl: window.location.pathname,\n      bound: false, dead: false, listeners: [] };\n    if (!record.fields || !allowed()) { clear(); return null; }\n    pending.push(record); dispatches.set(event, record);\n\n    record.timer = setTimeout(function() { if (!record.bound) discard(record); }, 0);\n    return record;\n  }\n  function handleSubmit(event) {\n    if (!event || event.type !== 'submit' || event.isTrusted !== true || stopped || suspended) return;\n    try {\n      if (!installed) checkInstall();\n      arm(event);\n    } catch (e) { clear(); warn(); }\n  }\n  function success(xhr) {\n    var type = xhr.responseType, value;\n    if (type === '' || type === 'text') {\n      var text = xhr.responseText;\n      if (typeof text !== 'string' || !text || text.length > 65536) return false;\n      value = JSON.parse(text);\n    } else if (type === 'json') value = xhr.response;\n    else return false;\n    if (!value || typeof value !== 'object' || Array.isArray(value)) return false;\n    var proto = Object.getPrototypeOf(value);\n    if (proto !== Object.prototype && proto !== null) return false;\n    var descriptor = Object.getOwnPropertyDescriptor(value, 'status');\n    return !!(descriptor && descriptor.value === 'ok');\n  }\n  function complete(xhr, generation, record) {\n    if (record.dead || requests.get(xhr) !== generation) return;\n    try {\n      if (!allowed() || suspended || stopped || Date.now() >= record.expires ||\n          (!record.bound && !current(record))) { discard(record); return; }\n      if (xhr.readyState !== 4) return;\n      if (xhr.status !== 200 ||\n          requestUrl(xhr.responseURL) !== record.key.endpoint || !success(xhr)) {\n        discard(record); return;\n      }\n      var form = record.form, payload = release(record);\n      payload.trigger = 'freshsales';\n      payload.pageUrl = record.pageUrl;\n      payload.submissionContext = { form_id: record.key.id };\n      discard(record);\n      if (!allowed()) return;\n      form.setAttribute('data-converly-recipe-processing', 'true');\n      try {\n        var push = { event: 'freshsales_form_submitted', form_id: payload.submissionContext.form_id };\n        (window.dataLayer = window.dataLayer || []).push(push);\n      }\n      finally { form.removeAttribute('data-converly-recipe-processing'); }\n    } catch (e) { discard(record); warn(); }\n  }\n  function prepare(xhr) {\n    var generation = requests.get(xhr);\n    if (!generation || !generation.eligible || generation.sent || suspended || stopped) return;\n    generation.sent = true;\n    if (!allowed()) { clear(); return; }\n\n    var record = supportsWindowEvent ? arm(window.event) : null;\n    if (!record || record.dead || record.bound) return;\n    if (!current(record) || generation.url !== record.key.endpoint) { discard(record); return; }\n    record.bound = true; record.xhr = xhr; record.expires = Date.now() + 180000;\n    record.binding = 'event';\n    generation.record = record;\n    clearTimeout(record.timer);\n    record.timer = setTimeout(function() { discard(record); }, 180000);\n    var finished = function() { complete(xhr, generation, record); };\n    var failed = function() { discard(record); };\n    record.listeners = [['readystatechange', finished], ['load', finished],\n      ['abort', failed], ['error', failed], ['timeout', failed], ['loadend', failed]];\n    for (var i = 0; i < record.listeners.length; i++) xhr.addEventListener(record.listeners[i][0], record.listeners[i][1]);\n  }\n  function restore() {\n    try { if (prototype.open === wrappedOpen) prototype.open = previousOpen; } catch (e) {  }\n    try { if (prototype.send === wrappedSend) prototype.send = previousSend; } catch (e) {  }\n  }\n  function install() {\n    prototype = window.XMLHttpRequest.prototype;\n    previousOpen = prototype.open; previousSend = prototype.send;\n    wrappedOpen = function() {\n      var generation = null;\n      try {\n        var old = requests.get(this);\n        if (old) discard(old.record);\n        requests.delete(this);\n        if (installed && !suspended && !stopped) {\n          generation = { eligible: typeof arguments[0] === 'string' && arguments[0].toUpperCase() === 'POST' &&\n            !!requestUrl(arguments[1]) && (arguments.length < 3 || arguments[2] === undefined || !!arguments[2]),\n            url: requestUrl(arguments[1]), sent: false };\n          if (generation.eligible) requests.set(this, generation);\n        }\n      } catch (e) { warn(); }\n      try { return previousOpen.apply(this, arguments); }\n      catch (error) { try { requests.delete(this); if (generation) discard(generation.record); } catch (e) {  } throw error; }\n    };\n    wrappedSend = function() {\n      try { if (installed && !suspended && !stopped) prepare(this); }\n      catch (e) { var broken = requests.get(this); if (broken) discard(broken.record); warn(); }\n\n      try { return previousSend.apply(this, arguments); }\n      catch (error) { try { var failed = requests.get(this); if (failed) discard(failed.record); } catch (e) {  } throw error; }\n    };\n    try {\n      if (typeof previousOpen !== 'function' || typeof previousSend !== 'function') throw new Error();\n      prototype.open = wrappedOpen;\n      prototype.send = wrappedSend;\n      if (prototype.open !== wrappedOpen || prototype.send !== wrappedSend) throw new Error();\n      observer = new MutationObserver(function() {\n        for (var i = pending.length - 1; i >= 0; i--) {\n          var record = pending[i];\n\n          if (record.bound) continue;\n          try { if (!current(record)) discard(record); }\n          catch (e) { discard(record); }\n        }\n      });\n      observer.observe(document.documentElement, { childList: true, subtree: true, attributes: true,\n        attributeFilter: ['id', 'class', 'src', 'action', 'method', 'name', 'type', 'disabled', 'form'] });\n      installed = true; controller.state = 'installed';\n    } catch (e) {\n      installed = false; installationFailed = true; controller.state = 'failed';\n      if (observer) observer.disconnect();\n      restore(); clear(); warn();\n    }\n  }\n  function checkInstall() {\n    if (installed || stopped || suspended || installationFailed) return;\n    try {\n      if (!supportsWindowEvent || window.top !== window || window.location.protocol !== 'https:') return;\n      var forms = document.querySelectorAll('.fs-webform-container form');\n      for (var i = 0; i < forms.length; i++) if (identity(forms[i])) { install(); return; }\n    } catch (e) { warn(); }\n  }\n  function hide() { suspended = true; controller.state = 'suspended'; clear(); }\n  function show() {\n    if (stopped) return;\n    suspended = false;\n    controller.state = installed ? 'installed' : installationFailed ? 'failed' : 'waiting';\n    checkInstall();\n  }\n  function teardown() {\n    stopped = true; clear();\n    if (observer) observer.disconnect();\n    window.removeEventListener('submit', handleSubmit, true);\n    document.removeEventListener('DOMContentLoaded', checkInstall);\n    window.removeEventListener('load', checkInstall);\n    window.removeEventListener('pagehide', hide);\n    window.removeEventListener('pageshow', show);\n    if (prototype) restore();\n    controller.state = 'stopped';\n  }\n\n  window.addEventListener('submit', handleSubmit, true);\n  document.addEventListener('DOMContentLoaded', checkInstall);\n  window.addEventListener('load', checkInstall);\n  window.addEventListener('pagehide', hide);\n  window.addEventListener('pageshow', show);\n  checkInstall();\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Freshsales Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "freshsales_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - Freshsales Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

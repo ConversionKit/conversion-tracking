@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-25 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Formsite",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Formsite Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Formsite Form Listener by Converly. Pushes only event and form metadata. */\n(function() {\n  'use strict';\n\n  window.dataLayer = window.dataLayer || [];\n  var sink = {\n    siteKey: 'gtm-pack-formsite-event-only',\n    advertisingAllowed: function () { return true; },\n    onSubmission: function (payload) {\n      var context = payload.submissionContext || {};\n      var push = { event: 'formsite_form_submitted', form_name: context.form_id || null };\n      window.dataLayer.push(push);\n    }\n  };\n\n  var CONTACT_KEYS = {\n    fs_email: 'email', fs_first: 'firstName', fs_last: 'lastName',\n    fs_name: 'name', fs_phone: 'phone'\n  };\n\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function decode(value) {\n    try { return decodeURIComponent(value.replace(/\\+/g, ' ')); }\n    catch (e) { return null; }\n  }\n\n  function consentAllows() {\n    try {\n\n      var c = sink;\n      return !(c && typeof c.advertisingAllowed === 'function' && c.advertisingAllowed() === false);\n    } catch (e) { return true; }\n  }\n\n  function formKey() {\n    var parts = window.location.search.slice(1).split('&');\n    var count = 0;\n    var key = null;\n    for (var i = 0; i < parts.length; i++) {\n      var equals = parts[i].indexOf('=');\n      if (decode(equals < 0 ? parts[i] : parts[i].slice(0, equals)) !== 'formsite_form') continue;\n      count++;\n      key = equals < 0 ? null : decode(parts[i].slice(equals + 1));\n    }\n    return count === 1 && key && /^[a-z][a-z0-9_-]{0,63}$/.test(key) &&\n      key !== 'null' && !isSensitiveName(key) ? key : null;\n  }\n\n  function validArrival(afterLoad) {\n    try {\n      if (window.top !== window.self) return false;\n      var referrer = document.referrer;\n      if (!/^https:\\/\\/fs[0-9]+\\.formsite\\.com\\//.test(referrer)) return false;\n      var parsed = new URL(referrer);\n      if (parsed.protocol !== 'https:' || !/^fs[0-9]+\\.formsite\\.com$/.test(parsed.hostname) ||\n          parsed.username || parsed.password || parsed.port) return false;\n      var navigation = window.performance.getEntriesByType('navigation');\n      if (!(navigation && navigation[0]) && !afterLoad && document.readyState !== 'complete') return null;\n      return !!(navigation && navigation[0] && navigation[0].type === 'navigate');\n    } catch (e) { return false; }\n  }\n\n  function cleanFragment(capture) {\n    var parts = window.location.hash.slice(1).split('&');\n    var kept = [];\n    var selected = {};\n    var seen = {};\n    var changed = false;\n    for (var i = 0; i < parts.length; i++) {\n      var equals = parts[i].indexOf('=');\n      var key = decode(equals < 0 ? parts[i] : parts[i].slice(0, equals));\n      if (!Object.prototype.hasOwnProperty.call(CONTACT_KEYS, key)) {\n        kept.push(parts[i]);\n        continue;\n      }\n      changed = true;\n      if (!capture || isSensitiveName(key)) continue;\n      if (seen[key]) {\n        delete selected[key];\n      } else if (equals >= 0) {\n        selected[key] = parts[i].slice(equals + 1);\n      }\n      seen[key] = true;\n    }\n    if (changed) {\n      window.history.replaceState(window.history.state, '',\n        window.location.pathname + window.location.search + (kept.length ? '#' + kept.join('&') : ''));\n    }\n    return selected;\n  }\n\n  function contactValue(key, raw) {\n    var max = key === 'fs_email' ? 254 : key === 'fs_phone' ? 64 : 200;\n    if (raw.length > max * 12) return null;\n    var value = decode(raw);\n    if (!value || /[\\x00-\\x1f\\x7f-\\x9f]/.test(value) || /\\[pipe:/i.test(value)) return null;\n    value = value.replace(/^\\s+|\\s+$/g, '');\n    if (!value || value.length > max) return null;\n    if (key === 'fs_email' && !/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value)) return null;\n    if (key === 'fs_phone') {\n      var digits = value.replace(/\\D/g, '');\n      if (!/^\\+?[0-9\\s().-]+$/.test(value) || digits.length < 7 || digits.length > 15) return null;\n    }\n    return value;\n  }\n\n  function submitSelected(c, key, selected) {\n    if (!consentAllows()) return;\n    var userData = {};\n    var fields = [];\n    var fullName = null;\n    for (var name in selected) {\n      if (!Object.prototype.hasOwnProperty.call(selected, name)) continue;\n      var value = contactValue(name, selected[name]);\n      if (!value) continue;\n      if (name === 'fs_name') fullName = value;\n      else userData[CONTACT_KEYS[name]] = value;\n      fields.push({ name: name, type: name === 'fs_email' ? 'email' : name === 'fs_phone' ? 'tel' : 'text' });\n    }\n    if (fullName && !userData.firstName && !userData.lastName) {\n      var names = fullName.split(/\\s+/);\n      userData.firstName = names.shift();\n      if (names.length) userData.lastName = names.join(' ');\n    }\n    if (!consentAllows()) return;\n    try {\n      c.onSubmission({ trigger: 'formsite', pageUrl: window.location.pathname,\n        userData: userData, formFieldsSeen: fields, submissionContext: { form_id: key } });\n    } catch (e) {  }\n  }\n\n  function waitForArrival(c, key, selected) {\n    function cancel() {\n      selected = null;\n      window.clearInterval(sweep);\n      window.removeEventListener('load', onLoad);\n      window.removeEventListener('pagehide', cancel, true);\n    }\n    function onLoad() {\n      var values = selected;\n      cancel(); // Consume before validation or handoff, including failed checks.\n      if (!values || !consentAllows() || formKey() !== key || validArrival(true) !== true) return;\n      submitSelected(c, key, values);\n    }\n    var sweep = window.setInterval(function() {\n      if (!consentAllows()) cancel();\n    }, 250);\n    window.addEventListener('load', onLoad);\n    window.addEventListener('pagehide', cancel, true);\n  }\n\n  function init() {\n    var already = window.__converlyRecipeFormsite;\n    window.__converlyRecipeFormsite = true;\n    var c = sink;\n    var key = null;\n    var arrival = false;\n    var capture = false;\n    try {\n      key = formKey();\n      capture = !already && !!(c && typeof c.onSubmission === 'function') &&\n        !!key && (arrival = validArrival()) !== false && consentAllows();\n    } catch (e) { capture = false; }\n\n    var selected;\n    try { selected = cleanFragment(false); }\n    catch (e) { return; } // Never send while contact pipes remain in the address.\n    if (!capture) return;\n    if (arrival === null) {\n      if (consentAllows()) waitForArrival(c, key, selected);\n      return;\n    }\n    submitSelected(c, key, selected);\n  }\n\n  init();\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Formsite Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "formsite_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - Formsite Form Name",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_name"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

@@ -6,6 +6,11 @@ planned, and the four install shapes.
 
 ## Adding a detector
 
+Most detectors here are copied from Converly's live-tested GTM packs and refreshed from
+them, so a hand edit to one would be overwritten. If one of those is wrong, open an issue
+with what you saw and we fix it at the source. A detector for a tool not covered yet is
+exactly what this section is for.
+
 A detector is two files plus one entry.
 
 1. **`snippets/<slug>.js`** — the listener.
