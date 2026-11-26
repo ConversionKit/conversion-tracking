@@ -1,0 +1,30 @@
+<!--! Acuity Scheduling booking relay - ConversionKit
+     https://github.com/ConversionKit/conversion-tracking | https://converly.io
+     Part 2 of 2 for acuity-scheduling: paste into Acuity, Integrations, Custom Conversion Tracking.
+     Put your website address in SITES first, exactly as the browser shows it on the page carrying the scheduler (www matters). snippets/acuity-scheduling.js (or its GTM recipe) receives the message on your page.
+     Keep this notice when sharing or installing this snippet. -->
+<span hidden id="gtm-acuity-type">%appointmentType%</span>
+<script>
+(function () {
+  // Your website's address: https:// and the domain, nothing after it.
+  // Embedded on more than one site? Add each one: ['https://a.com', 'https://b.com']
+  var SITES = ['https://www.example.com'];
+  var id = '%id%', kind = '%type%', price = '%price%', el = document.getElementById('gtm-acuity-type');
+  function clean(v) {
+    v = String(v || '').replace(/^\s+|\s+$/g, '');
+    return v && !/^%[A-Za-z]+%$/.test(v) ? v : '';
+  }
+  id = clean(id);
+  if (!/^[A-Za-z0-9_-]{1,64}$/.test(id)) return;
+  var msg = { source: 'gtm-acuity-booking', version: 1, appointment_id: id };
+  kind = clean(kind);
+  if (/^[A-Za-z_-]{1,32}$/.test(kind)) msg.kind = kind;
+  var type = clean(el && el.textContent);
+  if (type) msg.appointment_type = type.slice(0, 200);
+  price = clean(price);
+  if (price) msg.price = price.slice(0, 32);
+  for (var i = 0; i < SITES.length; i++) {
+    try { window.top.postMessage(msg, SITES[i]); } catch (e) {}
+  }
+})();
+</script>

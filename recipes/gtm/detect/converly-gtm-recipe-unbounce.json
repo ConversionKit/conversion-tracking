@@ -1,0 +1,141 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-25 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Unbounce",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Unbounce Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Unbounce Form Listener by Converly. Pushes only event and form metadata. */\n(function() {\n  'use strict';\n\n  window.dataLayer = window.dataLayer || [];\n  var sink = {\n    siteKey: 'gtm-pack-unbounce-event-only',\n    advertisingAllowed: function () { return true; },\n    onSubmission: function (payload) {\n      var context = payload.submissionContext || {};\n      var push = { event: 'unbounce_form_submitted', page_id: context.page_id, page_variant: context.page_variant, form_id: context.form_id };\n      window.dataLayer.push(push);\n    }\n  };\n\n  if (window.__converlyRecipeUnbounce) return;\n  window.__converlyRecipeUnbounce = true;\n\n  var active = false;\n  var contexts = [];\n  var frames = [];\n  var discoveryTimer = null;\n  var identityTimer = null;\n  var observer = null;\n  var waiting = false;\n  var mainDiscoveryUntil = 0;\n  var UUID = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/i;\n  var TOKEN = /^[a-zA-Z0-9_-]{1,32}$/;\n\n  function warn() { ; }\n  function consentAllows() {\n    try {\n      var c = sink;\n      return !(c && typeof c.advertisingAllowed === 'function' && c.advertisingAllowed() === false);\n    } catch (e) { return true; }\n  }\n  function ready() {\n    return sink && typeof sink.onSubmission === 'function';\n  }\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n    var tokens = autocomplete.split(/\\s+/);\n    for (var t = 0; t < tokens.length; t++) {\n      if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true || tokens[t].indexOf('cc-') === 0) return true;\n    }\n    return isSensitiveName(name);\n  }\n\n  function labelTextFor(el, form) {\n    var document = el.ownerDocument;\n    var text = '';\n    var wrap = el.closest ? el.closest('label') : null;\n    if (wrap) text += ' ' + wrap.textContent;\n    var labels = document.getElementsByTagName('label');\n    for (var i = 0; i < labels.length; i++) {\n      var owner = labels[i].closest ? labels[i].closest('form') : null;\n      if (el.id && labels[i].getAttribute('for') === el.id && (!owner || owner === form)) {\n        text += ' ' + labels[i].textContent;\n      }\n    }\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    for (var j = 0; j < ids.length; j++) {\n      if (!ids[j]) continue;\n      var nodes = form.querySelectorAll('[id]');\n      var found = false;\n      for (var k = 0; k < nodes.length; k++) {\n        if (nodes[k].id === ids[j]) { text += ' ' + nodes[k].textContent; found = true; }\n      }\n      if (!found) {\n        var node = document.getElementById(ids[j]);\n        var nodeForm = node && node.closest ? node.closest('form') : null;\n        if (node && (!nodeForm || nodeForm === form)) text += ' ' + node.textContent;\n      }\n    }\n    return text;\n  }\n\n  function safeControl(el, form) {\n    var type = (el.type || 'text').toLowerCase();\n    return !isSensitiveField(type, (el.getAttribute('autocomplete') || '').toLowerCase(), el.name) &&\n      !isSensitiveName(el.id) && !isSensitiveName(el.getAttribute('aria-label')) &&\n      !isSensitiveName(el.getAttribute('placeholder')) && !isSensitiveName(labelTextFor(el, form));\n  }\n\n  function visible(el) {\n    for (var node = el; node && node.nodeType === 1; node = node.parentElement) {\n      var style = el.ownerDocument.defaultView.getComputedStyle(node);\n      if (node.hidden || style.display === 'none' || style.visibility === 'hidden') return false;\n    }\n    return true;\n  }\n\n  function bounded(value) {\n    if (typeof value !== 'string') return '';\n    value = value.trim();\n    return value.length <= 200 ? value : '';\n  }\n\n  function emailValue(value) {\n    value = bounded(value);\n    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value) ? value : '';\n  }\n\n  function phoneValue(value) {\n    value = bounded(value);\n    return /^[+\\d\\s().-]{6,30}$/.test(value) ? value : '';\n  }\n\n  function fieldMeta(el, form) {\n    var type = (el.getAttribute('type') || el.type || 'text').toLowerCase();\n    var name = el.getAttribute('name') || '';\n    if (!/^(INPUT|SELECT|TEXTAREA)$/.test(el.tagName) || el.form !== form || el.disabled ||\n        /^(hidden|password|file|submit|button|reset|image)$/.test(type) ||\n        !visible(el) || !safeControl(el, form)) return null;\n    var norm = name.toLowerCase().replace(/[^a-z0-9]/g, '');\n\n    if (/^(pageid|pagevariant|honeypot|bottrap|captcha|recaptcha|g-recaptcha-response)$/.test(norm)) return null;\n    var key = '', priority = 0;\n    if (el.tagName === 'INPUT') {\n      if (type === 'email') { key = 'email'; priority = 2; }\n      else if (type === 'tel') { key = 'phone'; priority = 2; }\n      else if (type === 'text') {\n        priority = 1;\n        if (/^(email|emailaddress|workemail)$/.test(norm)) key = 'email';\n        else if (/^(phone|phonenumber|telephone|mobile|mobilenumber|workphone)$/.test(norm)) key = 'phone';\n        else if (/^(firstname|first|fname|givenname)$/.test(norm)) key = 'firstName';\n        else if (/^(lastname|last|lname|surname|familyname)$/.test(norm)) key = 'lastName';\n        else if (/^(name|fullname|yourname)$/.test(norm)) key = 'fullName';\n      }\n    }\n    return { name: name, type: type, key: key, priority: priority };\n  }\n\n  function snapshot() { return []; }\n\n  function release(record) {\n    var seen = [], choices = {}, data = {};\n    for (var i = 0; i < record.fields.length; i++) {\n      var saved = record.fields[i], el = saved.el;\n      var meta = el.ownerDocument === record.ctx.doc && record.form.contains(el) ? fieldMeta(el, record.form) : null;\n      var safe = !!(meta && meta.name === saved.name && meta.type === saved.type && meta.key === saved.key);\n      if (safe && saved.name) seen.push({ name: saved.name, type: saved.type });\n      if (!saved.key || !saved.value) continue;\n\n      var choice = choices[saved.key];\n      if (!choice || saved.priority > choice.priority) {\n        choices[saved.key] = { value: saved.value, priority: saved.priority, conflict: false, safe: safe };\n      } else if (saved.priority === choice.priority) {\n        if (saved.value !== choice.value) choice.conflict = true;\n        if (!safe) choice.safe = false;\n      }\n    }\n    var keys = ['email', 'phone', 'firstName', 'lastName'];\n    for (var k = 0; k < keys.length; k++) {\n      var item = choices[keys[k]];\n      if (item && item.safe && !item.conflict) data[keys[k]] = item.value;\n    }\n    var full = choices.fullName;\n    if (!choices.firstName && !choices.lastName && full && full.safe && !full.conflict) {\n      var parts = full.value.split(/\\s+/);\n      data.firstName = parts.shift();\n      if (parts.length) data.lastName = parts.join(' ');\n    }\n    return { userData: data, formFieldsSeen: seen };\n  }\n\n  function mainPage() {\n    var page = window.ub && window.ub.page;\n    if (!page || page.isAiBuilderPage !== true || page.usedAs !== 'main' ||\n        typeof page.id !== 'string' || !UUID.test(page.id) ||\n        typeof page.variantId !== 'string' || !TOKEN.test(page.variantId) ||\n        /[\\r\\n]/.test(page.id + page.variantId) || window.location.protocol !== 'https:') return null;\n    return page;\n  }\n\n  function owned(win, frame) {\n    try {\n      var main = mainPage(), page = win.ub && win.ub.page;\n      if (!main || !page || page.isAiBuilderPage !== true) return false;\n      if (!frame) return win === window && page === main;\n      if (!window.document.documentElement.contains(frame) || frame.contentWindow !== win ||\n          win.parent !== window || win.location.origin !== window.location.origin ||\n          page.usedAs !== 'lightbox' || page.variantId !== main.variantId ||\n          typeof page.id !== 'string' || page.id.indexOf(main.id + ':') !== 0) return false;\n      var suffix = page.id.slice(main.id.length + 1);\n      if (!/^[a-zA-Z0-9_-]{1,64}$/.test(suffix) || /[\\r\\n]/.test(suffix)) return false;\n      var path = window.location.pathname;\n      var directory = path.slice(0, path.lastIndexOf('/') + 1);\n      return win.location.pathname === directory + main.variantId + '-' + suffix + '-lightbox.html';\n    } catch (e) { return false; }\n  }\n\n  function current(ctx) {\n    try {\n      return active && contexts.indexOf(ctx) !== -1 && owned(ctx.win, ctx.frame) &&\n        ctx.win.document === ctx.doc && ctx.win.ub === ctx.ub && window.ub === ctx.mainUb &&\n        ctx.ub.hooks && ctx.ub.hooks.afterFormSubmit === ctx.after &&\n        ctx.ub.hooks.onFormSubmitError === ctx.error;\n    } catch (e) { return false; }\n  }\n\n  function identity(ctx, form) {\n    if (!current(ctx) || !form || form.tagName !== 'FORM' || form.ownerDocument !== ctx.doc ||\n        !ctx.doc.documentElement.contains(form) || form.getAttribute('data-ub-type') !== 'ub-form-inline' ||\n        form.getAttribute('data-ub-bypass-lead-capture') === 'true') return null;\n    var action = form.getAttribute('action') || '';\n    if (!action || /[\\s\\\\]/.test(action)) return null;\n    var url = new URL(action, ctx.win.location.href), main = mainPage();\n    if (url.protocol !== 'https:' || url.origin !== window.location.origin || url.pathname !== '/fsg' ||\n        url.username || url.password || url.hash || url.searchParams.getAll('pageId').length !== 1 ||\n        url.searchParams.getAll('variant').length !== 1 || url.searchParams.get('pageId') !== main.id ||\n        url.searchParams.get('variant') !== main.variantId) return null;\n    return { id: url.searchParams.get('pageId'), variant: main.variantId,\n      childId: ctx.ub.page.id, action: action, pageUrl: window.location.pathname };\n  }\n\n  function discard(ctx, record) {\n    var index = ctx.pending.indexOf(record);\n    if (index !== -1) ctx.pending.splice(index, 1);\n    if (record) { record.fields = null; record.form = null; }\n  }\n  function clear(ctx) { while (ctx.pending.length) discard(ctx, ctx.pending[0]); }\n  function recordFor(ctx, form) {\n    for (var i = 0; i < ctx.pending.length; i++) if (ctx.pending[i].form === form) return ctx.pending[i];\n    return null;\n  }\n\n  function submit(ctx, event) {\n    if (event.isTrusted !== true) return;\n    var form = event.target, old = recordFor(ctx, form);\n    try {\n      var key = identity(ctx, form);\n      if (!key || !consentAllows() || !ready() ||\n          (event.submitter && event.submitter.hasAttribute('formaction'))) { discard(ctx, old); return; }\n      if (form.getAttribute('data-converly-recipe-processing') || form.getAttribute('data-ub-submitting') === '1') return;\n      discard(ctx, old);\n      ctx.pending.push({ ctx: ctx, form: form, key: key, fields: snapshot(form) });\n      schedule();\n    } catch (e) { discard(ctx, recordFor(ctx, form)); warn(); }\n  }\n\n  function complete(ctx, detail) {\n    var record = null, form = null;\n    try {\n      if (!current(ctx)) { clear(ctx); return; }\n      if (!consentAllows() || !ready()) { clear(ctx); return; }\n      if (!detail || typeof detail !== 'object' || Array.isArray(detail) || detail.isConversionGoal !== true) return;\n      form = detail.formElement;\n      record = recordFor(ctx, form);\n      if (!record) return;\n      var key = identity(ctx, form), saved = record.key;\n      if (!key || key.id !== saved.id || key.variant !== saved.variant || key.childId !== saved.childId ||\n          key.action !== saved.action || key.pageUrl !== saved.pageUrl || form.getAttribute('data-ub-submitting') !== '1') {\n        discard(ctx, record); return;\n      }\n      var payload = release(record);\n      payload.trigger = 'unbounce-forms';\n      payload.pageUrl = saved.pageUrl;\n      payload.submissionContext = { page_id: saved.id, page_variant: saved.variant, form_id: form.getAttribute('id') || null };\n      discard(ctx, record);\n      if (!consentAllows() || !ready()) return;\n      form.setAttribute('data-converly-recipe-processing', 'true');\n      try { sink.onSubmission(payload); }\n      finally { form.removeAttribute('data-converly-recipe-processing'); }\n    } catch (e) { discard(ctx, record); warn(); }\n    finally { schedule(); }\n  }\n\n  function detach(ctx) {\n    clear(ctx);\n    var index = contexts.indexOf(ctx);\n    if (index !== -1) contexts.splice(index, 1);\n\n    try {\n      ctx.win.removeEventListener('submit', ctx.submit, true);\n      ctx.win.removeEventListener('pagehide', ctx.hide);\n    } catch (e) {  }\n    if (ctx.observer) ctx.observer.disconnect();\n    [ctx.after, ctx.error].forEach(function(array, i) {\n      try {\n        var index = array.indexOf(i === 0 ? ctx.complete : ctx.fail);\n        if (index !== -1) array.splice(index, 1);\n      } catch (e) {  }\n    });\n  }\n\n  function attach(win, frame) {\n    if (!owned(win, frame)) return false;\n    var ub = win.ub, hooks = ub.hooks;\n    if (!hooks || !Array.isArray(hooks.afterFormSubmit) || !Array.isArray(hooks.onFormSubmitError)) return false;\n    for (var i = 0; i < contexts.length; i++) {\n      if (contexts[i].win === win && current(contexts[i])) return true;\n    }\n    var ctx = { win: win, frame: frame, doc: win.document, ub: ub, mainUb: window.ub,\n      after: hooks.afterFormSubmit, error: hooks.onFormSubmitError, pending: [] };\n    ctx.submit = function(event) {\n\n      discover();\n      for (var j = 0; j < contexts.length; j++) {\n        if (contexts[j].win === win) { submit(contexts[j], event); break; }\n      }\n    };\n    ctx.complete = function(detail) { complete(ctx, detail); };\n    ctx.fail = function(detail, form) { discard(ctx, recordFor(ctx, form)); schedule(); };\n    ctx.hide = function() { clear(ctx); detach(ctx); };\n    contexts.push(ctx);\n    ctx.after.push(ctx.complete);\n    ctx.error.push(ctx.fail);\n\n    if (frame) win.addEventListener('submit', ctx.submit, true);\n    if (frame) win.addEventListener('pagehide', ctx.hide);\n    if (frame && win.MutationObserver) {\n      ctx.observer = new win.MutationObserver(function() { discover(); });\n      ctx.observer.observe(ctx.doc.documentElement, { childList: true, subtree: true });\n    }\n    return true;\n  }\n\n  function schedule(needsDiscovery) {\n    if (typeof needsDiscovery === 'boolean') waiting = needsDiscovery;\n    needsDiscovery = waiting;\n    var pending = contexts.some(function(ctx) { return ctx.pending.length > 0; });\n    var lightbox = frames.some(function(item) { return item.lightbox; });\n    if (active && needsDiscovery && !discoveryTimer) discoveryTimer = setInterval(discover, 250);\n    if ((!active || !needsDiscovery) && discoveryTimer) { clearInterval(discoveryTimer); discoveryTimer = null; }\n    if (active && (pending || lightbox) && !identityTimer) identityTimer = setInterval(discover, 1000);\n    if ((!active || (!pending && !lightbox)) && identityTimer) { clearInterval(identityTimer); identityTimer = null; }\n  }\n\n  function discover() {\n    if (!active) return;\n    try {\n      for (var c = contexts.length - 1; c >= 0; c--) {\n        var ctx = contexts[c];\n        if (!current(ctx)) { detach(ctx); continue; }\n        for (var p = ctx.pending.length - 1; p >= 0; p--) {\n          if (!ctx.doc.documentElement.contains(ctx.pending[p].form)) discard(ctx, ctx.pending[p]);\n        }\n      }\n      var main = mainPage(), now = Date.now();\n      var needsDiscovery = (!window.ub || !window.ub.page) && now < mainDiscoveryUntil;\n      if (main && !attach(window, null) && now < mainDiscoveryUntil) needsDiscovery = true;\n      var nodes = main ? window.document.querySelectorAll('iframe') : [];\n      for (var f = frames.length - 1; f >= 0; f--) {\n        if (!main || !window.document.documentElement.contains(frames[f].el)) {\n          frames[f].el.removeEventListener('load', frameLoaded);\n          frames.splice(f, 1);\n        }\n      }\n      for (var n = 0; n < nodes.length; n++) {\n        var item = null;\n        for (var j = 0; j < frames.length; j++) if (frames[j].el === nodes[n]) item = frames[j];\n        if (!item) {\n          item = { el: nodes[n], lightbox: false, discoveryUntil: now + 5000 };\n          frames.push(item);\n          item.el.addEventListener('load', frameLoaded);\n        }\n        item.lightbox = false;\n        try {\n          var child = item.el.contentWindow;\n          if (child.location.origin !== window.location.origin && child.location.href !== 'about:blank') continue;\n          item.lightbox = owned(child, item.el);\n          if (item.lightbox) { if (!attach(child, item.el) && now < item.discoveryUntil) needsDiscovery = true; }\n          else if ((!child.ub || !child.ub.page) && now < item.discoveryUntil) needsDiscovery = true;\n        } catch (e) {  }\n      }\n      schedule(needsDiscovery);\n    } catch (e) { warn(); }\n  }\n\n  function frameLoaded(event) {\n    for (var i = 0; i < frames.length; i++) {\n      if (frames[i].el === event.currentTarget) frames[i].discoveryUntil = Date.now() + 5000;\n    }\n    discover();\n  }\n\n  function mutated(records) {\n    for (var r = 0; r < records.length; r++) {\n      if (records[r].type !== 'attributes') continue;\n      for (var i = 0; i < frames.length; i++) {\n        if (frames[i].el === records[r].target) frames[i].discoveryUntil = Date.now() + 5000;\n      }\n    }\n    discover();\n  }\n\n  function handleSubmit(event) {\n    discover();\n    for (var i = 0; i < contexts.length; i++) {\n      if (event.target && contexts[i].doc === event.target.ownerDocument) { submit(contexts[i], event); return; }\n    }\n  }\n  function stop() {\n    active = false;\n    waiting = false;\n    schedule(false);\n    while (contexts.length) detach(contexts[0]);\n    while (frames.length) frames.pop().el.removeEventListener('load', frameLoaded);\n    if (observer) { observer.disconnect(); observer = null; }\n    window.removeEventListener('submit', handleSubmit, true);\n    schedule();\n  }\n  function start() {\n    if (active) return;\n    active = true;\n    mainDiscoveryUntil = Date.now() + 10000;\n    window.addEventListener('submit', handleSubmit, true);\n    if (window.MutationObserver) {\n      observer = new window.MutationObserver(mutated);\n      observer.observe(window.document, { childList: true, subtree: true, attributes: true, attributeFilter: ['src'] });\n    }\n    discover();\n  }\n  window.addEventListener('pagehide', stop);\n  window.addEventListener('pageshow', start);\n  start();\n\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Unbounce Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "unbounce_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - Unbounce Page ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "page_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "11",
+        "name": "DLV - Unbounce Page Variant",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "page_variant"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      },
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "12",
+        "name": "DLV - Unbounce Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

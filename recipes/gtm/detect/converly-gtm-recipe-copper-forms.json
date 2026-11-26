@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-12 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Copper",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Copper Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Copper Form Listener by Converly. Sends only the event and public form ID. */\n(function() {\n  'use strict';\n\n  if (window.__converlyRecipeCopperForms) return;\n  var controller = { state: 'waiting' };\n  window.__converlyRecipeCopperForms = controller;\n  var portals = new WeakMap(), carriers = new WeakMap(), dispatches = new WeakMap(), pending = [];\n  var previousFetch, wrappedFetch, installed = false, stopped = false, suspended = false;\n\n  function allowed() { return true; }\n  function endpoint(raw) {\n    if (typeof raw !== 'string' || !/^https:\\/\\/forms\\.copper\\.com\\/f\\/[A-Za-z0-9]{1,128}$/.test(raw)) return null;\n    try {\n      var url = new URL(raw);\n      return url.origin === 'https://forms.copper.com' && !url.username && !url.password &&\n        !url.search && !url.hash ? { url: raw, id: url.pathname.slice(3) } : null;\n    } catch (e) { return null; }\n  }\n  function identity(form) {\n    if (window.top !== window || window.location.protocol !== 'https:' || !form ||\n        form.tagName !== 'FORM' || form.ownerDocument !== document ||\n        !document.documentElement.contains(form) || (form.getAttribute('method') || '').toLowerCase() !== 'post') return null;\n    var key = endpoint(form.getAttribute('action'));\n    var portal = form.closest('.fptl'), widget = form.closest('.cpfc'), root = form.closest('[id=\"cpfh\"]');\n    if (!key || !portal || !widget || !root || !root.contains(widget) || !widget.contains(portal) ||\n        portal.querySelectorAll('form').length !== 1 || portal.querySelector('form') !== form ||\n        !form.closest('.fwgt.show') || !visible(form)) return null;\n    key.portal = portal; key.widget = widget; key.root = root;\n    return key;\n  }\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n    var tokens = autocomplete.split(/\\s+/);\n    for (var t = 0; t < tokens.length; t++) {\n      if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true || tokens[t].indexOf('cc-') === 0) return true;\n    }\n    return isSensitiveName(name);\n  }\n\n  function labelTextFor(el, form) {\n    var document = el.ownerDocument;\n    var text = '';\n    var wrap = el.closest ? el.closest('label') : null;\n    if (wrap) text += ' ' + wrap.textContent;\n\n    var labels = Array.prototype.slice.call(form.getElementsByTagName('label'));\n    var liveLabels = document.getElementsByTagName('label');\n    for (var l = 0; l < liveLabels.length; l++) {\n      if (labels.indexOf(liveLabels[l]) === -1) labels.push(liveLabels[l]);\n    }\n    for (var i = 0; i < labels.length; i++) {\n      var owner = labels[i].closest ? labels[i].closest('form') : null;\n      if (el.id && labels[i].getAttribute('for') === el.id && (!owner || owner === form)) {\n        text += ' ' + labels[i].textContent;\n      }\n    }\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    for (var j = 0; j < ids.length; j++) {\n      if (!ids[j]) continue;\n      var nodes = form.querySelectorAll('[id]');\n      var found = false;\n      for (var k = 0; k < nodes.length; k++) {\n        if (nodes[k].id === ids[j]) { text += ' ' + nodes[k].textContent; found = true; }\n      }\n      if (!found) {\n        var node = document.getElementById(ids[j]);\n        var nodeForm = node && node.closest ? node.closest('form') : null;\n        if (node && (!nodeForm || nodeForm === form)) text += ' ' + node.textContent;\n      }\n    }\n    return text;\n  }\n\n  function safeControl(el, form) {\n    var type = (el.type || 'text').toLowerCase();\n    return !isSensitiveField(type, (el.getAttribute('autocomplete') || '').toLowerCase(), el.name) &&\n      !isSensitiveName(el.id) && !isSensitiveName(el.getAttribute('aria-label')) &&\n      !isSensitiveName(el.getAttribute('placeholder')) && !isSensitiveName(labelTextFor(el, form));\n  }\n\n  function visible(el) {\n    for (var node = el; node && node.nodeType === 1; node = node.parentElement) {\n      var style = el.ownerDocument.defaultView.getComputedStyle(node);\n      if (node.hidden || style.display === 'none' || style.visibility === 'hidden') return false;\n    }\n    return true;\n  }\n\n  function bounded(value) {\n    if (typeof value !== 'string') return '';\n    value = value.trim();\n    return value.length <= 200 ? value : '';\n  }\n\n  function emailValue(value) {\n    value = bounded(value);\n    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value) ? value : '';\n  }\n\n  function phoneValue(value) {\n    value = bounded(value);\n    return /^[+\\d\\s().-]{6,30}$/.test(value) ? value : '';\n  }\n\n  function fieldMeta(el, form) {\n    var type = (el.type || 'text').toLowerCase(), name = el.name || '';\n    if (el.form !== form || !/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) || el.disabled || el.matches(':disabled') ||\n        /^(hidden|password|file|submit|button|reset|image)$/.test(type) ||\n        /captcha|honeypot|bottrap/i.test(name) || !safeControl(el, form)) return null;\n    var key = '';\n    if (el.tagName === 'INPUT' && /^(text|email|tel)$/.test(type)) {\n      if (name === 'email') key = 'email';\n      if (name === 'name') key = 'fullName';\n      if (name === 'mobilePhone') key = 'phone';\n    }\n    return { name: name, type: type, key: key };\n  }\n  function snapshot(form) {\n    var fields = [], controls = form.querySelectorAll('input,select,textarea');\n    for (var i = 0; i < controls.length; i++) {\n      if (!allowed()) return null;\n      var el = controls[i], meta = fieldMeta(el, form);\n      if (!meta || !visible(el)) continue;\n      var value = '';\n      if (meta.key) {\n        if (!allowed()) return null;\n        value = meta.key === 'email' ? emailValue(el.value) :\n          meta.key === 'phone' ? phoneValue(el.value) : bounded(el.value);\n      }\n      fields.push({ el: el, name: meta.name, type: meta.type, key: meta.key, value: value });\n    }\n    return fields;\n  }\n  function release(record) {\n    var seen = [], data = {}, choices = {};\n    for (var i = 0; i < record.fields.length; i++) {\n      var saved = record.fields[i], meta = fieldMeta(saved.el, record.form);\n      var safe = meta && record.form.contains(saved.el) && meta.name === saved.name &&\n        meta.type === saved.type && meta.key === saved.key;\n      if (safe && saved.name) seen.push({ name: saved.name, type: saved.type });\n      if (!saved.key) continue;\n\n      if (Object.prototype.hasOwnProperty.call(choices, saved.key)) choices[saved.key] = null;\n      else choices[saved.key] = safe ? saved.value : null;\n    }\n    if (choices.email) data.email = choices.email;\n    if (choices.phone) data.phone = choices.phone;\n    if (choices.fullName) {\n      var parts = choices.fullName.split(/\\s+/);\n      data.firstName = parts.shift();\n      if (parts.length) data.lastName = parts.join(' ');\n    }\n    return { trigger: 'copper', pageUrl: record.path, userData: data,\n      formFieldsSeen: seen, submissionContext: { form_id: record.key.id } };\n  }\n  function sameSnapshot(first, next) {\n    if (!next || first.length !== next.length) return false;\n    for (var i = 0; i < first.length; i++) {\n      if (first[i].name !== next[i].name || first[i].type !== next[i].type ||\n          first[i].key !== next[i].key || first[i].value !== next[i].value) return false;\n    }\n    return true;\n  }\n  function addAttempt(record, event) {\n    var attempt = { record: record, event: event, bound: false, confirmed: false, reader: null };\n    record.attempts.push(attempt); dispatches.set(event, attempt);\n    return attempt;\n  }\n  function finish(record, poison) {\n    if (!record || record.dead) return;\n    record.dead = true;\n    if (poison) {\n      portals.set(record.key.portal, true); carriers.set(record.key.root, true);\n    } else {\n      if (portals.get(record.key.portal) === record) portals.delete(record.key.portal);\n      if (carriers.get(record.key.root) === record) carriers.delete(record.key.root);\n    }\n    clearTimeout(record.timer); clearInterval(record.poll);\n    if (record.observer) record.observer.disconnect();\n    for (var a = 0; a < record.attempts.length; a++) {\n      var attempt = record.attempts[a];\n      if (attempt.reader) {\n        try { attempt.reader.cancel().catch(function() {}); } catch (e) {  }\n      }\n      attempt.reader = null; attempt.event = null;\n    }\n    var index = pending.indexOf(record);\n    if (index !== -1) pending.splice(index, 1);\n    record.fields = null; record.form = null; record.attempts = null;\n    record.successNodes = null; record.errorNodes = null;\n    record.key = null; record.path = null; record.observer = null;\n  }\n  function current(record) {\n    var key = record.key, portal = key.portal;\n    if (!document.documentElement.contains(portal) || !key.root.contains(key.widget) ||\n        !key.widget.contains(portal) || !portal.closest('.fwgt.show') || !visible(portal) ||\n        window.location.pathname !== record.path ||\n        record.form.getAttribute('action') !== key.url ||\n        (record.form.getAttribute('method') || '').toLowerCase() !== 'post') return false;\n    var forms = portal.querySelectorAll('form');\n    return forms.length === 0 || (forms.length === 1 && forms[0] === record.form);\n  }\n  function inspect(record) {\n    if (record.dead) return;\n    try {\n      if (!allowed() || suspended || stopped || Date.now() >= record.expires || !current(record)) {\n        finish(record, true); return;\n      }\n      var errors = record.key.portal.querySelectorAll('.errmsg');\n      for (var e = 0; e < errors.length; e++) {\n        if (visible(errors[e]) && record.errorNodes.indexOf(errors[e]) === -1) {\n\n          finish(record, true); return;\n        }\n      }\n      for (var a = 0; a < record.attempts.length; a++) {\n        if (!record.attempts[a].confirmed || !record.attempts[a].event.defaultPrevented) return;\n      }\n      var successes = record.key.portal.querySelectorAll('.fscss');\n      for (var i = 0; i < successes.length; i++) {\n        var node = successes[i];\n        if (record.successNodes.indexOf(node) !== -1 || !visible(node) ||\n            !node.querySelector('.tyou') || !node.querySelector('.scssmsg')) continue;\n        var payload = release(record), form = record.form;\n        finish(record, record.attempts.length > 1);\n        if (!allowed()) return;\n        form.setAttribute('data-converly-processing', 'true');\n        try {\n          var push = { event: 'copper_form_submitted', form_id: payload.submissionContext.form_id };\n          (window.dataLayer = window.dataLayer || []).push(push);\n         }\n        finally { form.removeAttribute('data-converly-processing'); }\n        return;\n      }\n    } catch (e) { finish(record, true); }\n  }\n  function arm(event) {\n    if (!event || event.type !== 'submit' || event.isTrusted !== true || stopped || suspended) return null;\n    if (dispatches.has(event)) return dispatches.get(event);\n    dispatches.set(event, null);\n    var form = event.target, key = identity(form);\n    if (!key) return null;\n    var old = portals.get(key.portal) || carriers.get(key.root);\n    if (old) {\n      if (old === true) return null;\n      try {\n        if (old.key.portal === key.portal && old.key.id === key.id && old.form === form &&\n            Date.now() - old.started <= 2000 && allowed() && current(old) &&\n            sameSnapshot(old.fields, snapshot(form)) && allowed()) return addAttempt(old, event);\n      } catch (e) {  }\n      finish(old, true); return null;\n    }\n\n    if (!allowed() || !install()) { portals.set(key.portal, true); carriers.set(key.root, true); return null; }\n    var started = Date.now();\n    var record = { form: form, key: key, path: window.location.pathname,\n      started: started, expires: started + 60000, dead: false, attempts: [],\n      successNodes: Array.prototype.slice.call(key.portal.querySelectorAll('.fscss')),\n      errorNodes: Array.prototype.slice.call(key.portal.querySelectorAll('.errmsg')) };\n    portals.set(key.portal, record); carriers.set(key.root, record); pending.push(record);\n    var attempt = addAttempt(record, event);\n    try {\n      record.fields = snapshot(form);\n      if (!record.fields || !allowed()) { finish(record, true); return null; }\n      record.observer = new MutationObserver(function() { inspect(record); });\n      record.observer.observe(key.portal, { childList: true, subtree: true, attributes: true });\n      record.timer = setTimeout(function() { finish(record, true); }, 60000);\n      record.poll = setInterval(function() { inspect(record); }, 100);\n      return attempt;\n    } catch (e) { finish(record, true); return null; }\n  }\n  function handleSubmit(event) { try { arm(event); } catch (e) {  } }\n  function answer(attempt, response) {\n    var record = attempt.record;\n    if (record.dead) return;\n    if (!allowed() || !current(record)) { finish(record, true); return; }\n\n    if (!response || response.url !== record.key.url || response.redirected || response.type === 'opaque') {\n      finish(record, true); return;\n    }\n    if (response.status !== 200) { finish(record, record.attempts.length > 1); return; }\n\n    var clone = response.clone();\n    if (!clone.body) { attempt.confirmed = true; inspect(record); return; }\n    var reader = clone.body.getReader();\n    attempt.reader = reader;\n    reader.read().then(function(part) {\n      if (!part.done) {\n        try { reader.cancel().catch(function() {}); } catch (e) {  }\n      }\n      if (record.dead) return;\n      if (!allowed() || !part.done) { finish(record, true); return; }\n      attempt.confirmed = true; inspect(record);\n    }, function() { finish(record, true); });\n  }\n  function install() {\n    if (installed) return true;\n    if (stopped || suspended || typeof window.fetch !== 'function' || !('event' in window)) return false;\n    previousFetch = window.fetch;\n    wrappedFetch = function() {\n      var record = null, attempt = null;\n      try {\n        var url = endpoint(arguments[0]), options = arguments[1];\n\n        if (!stopped && !suspended && url && options && options.method === 'POST') {\n          attempt = arm(window.event);\n          record = attempt && attempt.record;\n          if (record && !record.dead && record.key.url === url.url && current(record)) {\n            if (attempt.bound) { finish(record, true); record = null; }\n            else attempt.bound = true;\n          } else record = null;\n        }\n      } catch (e) { if (record) finish(record, true); record = null; }\n      var result;\n      try { result = previousFetch.apply(this, arguments); }\n      catch (error) { if (record && !record.dead) finish(record, record.attempts.length > 1); throw error; }\n      if (record) {\n        try {\n          result.then(function(response) {\n            try { answer(attempt, response); } catch (e) { finish(record, true); }\n          }, function() { if (!record.dead) finish(record, record.attempts.length > 1); });\n        } catch (e) { finish(record, true); }\n      }\n      return result;\n    };\n    try {\n      window.fetch = wrappedFetch;\n      installed = window.fetch === wrappedFetch;\n    } catch (e) { installed = false; }\n    if (!installed) {\n      try { if (window.fetch === wrappedFetch) window.fetch = previousFetch; } catch (e) {  }\n    }\n    controller.state = installed ? 'installed' : 'unavailable';\n    return installed;\n  }\n  function checkInstall() {\n    if (stopped || suspended || !allowed()) return;\n    var forms = document.querySelectorAll('form');\n    for (var i = 0; i < forms.length; i++) if (identity(forms[i])) { install(); return; }\n  }\n  function hide() {\n    suspended = true;\n    while (pending.length) finish(pending[0], true);\n  }\n  function show() { suspended = false; checkInstall(); }\n  function teardown() {\n    stopped = true; hide();\n    window.removeEventListener('submit', handleSubmit, true);\n    window.removeEventListener('pagehide', hide);\n    window.removeEventListener('pageshow', show);\n    document.removeEventListener('DOMContentLoaded', checkInstall);\n    window.removeEventListener('load', checkInstall);\n    if (window.fetch === wrappedFetch) window.fetch = previousFetch;\n    controller.state = 'stopped';\n  }\n  window.addEventListener('submit', handleSubmit, true);\n  window.addEventListener('pagehide', hide);\n  window.addEventListener('pageshow', show);\n  document.addEventListener('DOMContentLoaded', checkInstall);\n  window.addEventListener('load', checkInstall);\n  checkInstall();\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Copper Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "copper_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - Copper Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

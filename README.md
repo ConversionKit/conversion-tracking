@@ -35,16 +35,16 @@ references/               Setup walkthroughs (Google Ads, GA4, Meta, others),
                           the tool coverage map, optional GTM API access,
                           the server-side vendor comparison, ecommerce
                           platforms, and 4 deep failure-mode catalogs.
-snippets/                 Paste-in detection scripts for 20 form and booking
-                          tools, plus 4 universal patterns (phone calls,
+snippets/                 Paste-in detection scripts for 49 form, booking and
+                          CRM tools, plus 4 universal patterns (phone calls,
                           thank-you pages, generic AJAX forms, downloads).
                           Each pushes a canonical dataLayer event.
 recipes/gtm/              Importable Google Tag Manager containers.
-                          detect/ = 24 per-tool listeners, send/ = conversion
+                          detect/ = 53 listeners (49 tools, 4 universal patterns), send/ = conversion
                           tags for Google Ads, GA4, Meta, LinkedIn, TikTok
                           and Microsoft, with placeholder IDs.
 scripts/build_recipe.py   Merges detect + send + your IDs into 1 file you
-                          import into GTM. 144 combinations.
+                          import into GTM. 318 combinations.
 ```
 
 The signature move: an agent collects your Google Ads conversion ID and label, runs

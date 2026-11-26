@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-25 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - ClickFunnels",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - ClickFunnels Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* ClickFunnels Form Listener by Converly. Pushes only event and form metadata. */\n(function() {\n  'use strict';\n\n  window.dataLayer = window.dataLayer || [];\n  var sink = {\n    siteKey: 'gtm-pack-clickfunnels-event-only',\n    advertisingAllowed: function () { return true; },\n    onSubmission: function (payload) {\n      var context = payload.submissionContext || {};\n      var push = { event: 'clickfunnels_form_submitted', page_path: payload.pageUrl };\n      window.dataLayer.push(push);\n    }\n  };\n\n  var ATTEMPT = 'cf:form_submitted';\n  var SUCCESS = 'cf:form_submitted:ok';\n  var WINDOW_MS = 60000;\n  var KEYS = ['email', 'first_name', 'last_name', 'name', 'phone_number'];\n  var TARGETS = { email: 'email', first_name: 'firstName', last_name: 'lastName', phone_number: 'phone' };\n  var active = null;\n\n  var attempts = typeof WeakMap === 'function' ? new WeakMap() : null;\n\n  function consentAllows() {\n    try {\n      var c = sink;\n      return !(c && typeof c.advertisingAllowed === 'function' && c.advertisingAllowed() === false);\n    } catch (e) { return true; }\n  }\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n\n    if (autocomplete) {\n      var tokens = autocomplete.split(/\\s+/);\n      for (var t = 0; t < tokens.length; t++) {\n        if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true) return true;\n      }\n    }\n    if (isSensitiveName(name)) return true;\n    return false;\n  }\n\n  function labelTextFor(el) {\n    var text = '';\n    var wrap = el.closest('label');\n    if (wrap) text += ' ' + wrap.textContent;\n    var doc = el.ownerDocument;\n    var id = el.getAttribute('id');\n    var labels = doc.getElementsByTagName('label');\n    for (var i = 0; id && i < labels.length; i++) {\n      if (labels[i].getAttribute('for') === id) text += ' ' + labels[i].textContent;\n    }\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    var nodes = doc.querySelectorAll('[id]');\n    for (var k = 0; k < nodes.length; k++) {\n      if (ids.indexOf(nodes[k].getAttribute('id')) !== -1) text += ' ' + nodes[k].textContent;\n    }\n    return text;\n  }\n\n  function object(value) {\n    return value !== null && typeof value === 'object' && !Array.isArray(value);\n  }\n\n  function dataProperty(objectValue, key) {\n    var descriptor = Object.getOwnPropertyDescriptor(objectValue, key);\n    return descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'value') ? descriptor : null;\n  }\n\n  function contactFor(detail) {\n    if (!object(detail) || 'purchase' in detail) return null;\n    var contact = dataProperty(detail, 'contact');\n    return contact && object(contact.value) ? contact.value : null;\n  }\n\n  function carrierForRuntime() {\n    var events = window.CFEvents;\n    if (!events || events.FORM_SUBMITTED !== ATTEMPT || events.FORM_SUBMITTED_OK !== SUCCESS) return null;\n    var carriers = document.querySelectorAll('form#cfAR[data-cf-form-action]');\n    return carriers.length === 1 && document.documentElement.contains(carriers[0]) ? carriers[0] : null;\n  }\n\n  function clearAttempt() {\n    if (active) window.clearTimeout(active.timer);\n    active = null;\n  }\n\n  function refreshIndex(index) {\n    var fields = document.querySelectorAll('.elFormItem:not([data-prevent-submit=\"true\"])');\n    for (var i = 0; i < fields.length; i++) {\n      var el = fields[i];\n      if (el.closest('form#cfAR, [data-page-element=\"Checkout/V2\"]')) continue;\n      var name = el.getAttribute('name') || '';\n      if (KEYS.indexOf(name) === -1) continue;\n      var type = (el.getAttribute('type') || 'text').toLowerCase();\n      var autocomplete = (el.getAttribute('autocomplete') || '').toLowerCase();\n      var sensitive = isSensitiveField(type, autocomplete, name) ||\n        isSensitiveName(el.getAttribute('id')) ||\n        isSensitiveName(el.getAttribute('aria-label')) ||\n        isSensitiveName(el.getAttribute('placeholder')) || isSensitiveName(labelTextFor(el));\n      var ineligible = el.tagName === 'SELECT' || !/^(text|email|tel|name|first_name|last_name|phone_number)$/.test(type);\n      var entry = index[name] || { sensitive: false, ineligible: false, type: type };\n      entry.sensitive = entry.sensitive || sensitive;\n      entry.ineligible = entry.ineligible || ineligible;\n      index[name] = entry;\n    }\n  }\n\n  function handleAttempt(event) {\n    try {\n      if (!consentAllows()) { clearAttempt(); return; }\n      if (event.target !== document || !attempts) return;\n      var carrier = carrierForRuntime();\n      if (!carrier) { clearAttempt(); return; }\n      var detail = event.detail;\n      if (!contactFor(detail)) { clearAttempt(); return; }\n      if (attempts.has(detail)) return; // no deadline extension or replay\n      clearAttempt();\n      var token = {};\n      attempts.set(detail, token);\n      active = { token: token, carrier: carrier, path: window.location.pathname,\n        started: Date.now(), index: Object.create(null), timer: null };\n      refreshIndex(active.index);\n\n      active.timer = window.setTimeout(clearAttempt, WINDOW_MS + 1);\n    } catch (e) { clearAttempt(); }\n  }\n\n  function snapshot() { return { pageUrl: window.location.pathname, userData: {}, formFieldsSeen: [] }; }\n\n  function handleSuccess(event) {\n    try {\n      if (!consentAllows()) { clearAttempt(); return; }\n      if (event.target !== document || !active) return;\n      if (carrierForRuntime() !== active.carrier || window.location.pathname !== active.path ||\n          Date.now() - active.started > WINDOW_MS) { clearAttempt(); return; }\n      var detail = event.detail;\n      if (!object(detail) || attempts.get(detail) !== active.token) return;\n      var contact = contactFor(detail);\n      if (!contact || !sink || typeof sink.onSubmission !== 'function') {\n        clearAttempt(); return;\n      }\n      refreshIndex(active.index);\n      var payload = snapshot(contact, active.index);\n      clearAttempt(); // consume before invoking outside code, including reentry\n      sink.onSubmission(payload);\n    } catch (e) {\n      clearAttempt();\n\n    }\n  }\n\n  if (typeof window !== 'undefined' && !window.__converlyRecipeClickFunnels && attempts) {\n    window.__converlyRecipeClickFunnels = true;\n    document.addEventListener(ATTEMPT, handleAttempt);\n    document.addEventListener(SUCCESS, handleSuccess);\n    window.addEventListener('checkout:order-submit-errors', clearAttempt);\n    window.addEventListener('payments:submit-failed', clearAttempt);\n    window.addEventListener('pagehide', clearAttempt);\n  }\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - ClickFunnels Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "clickfunnels_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - ClickFunnels Page Path",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "page_path"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

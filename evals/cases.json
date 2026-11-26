@@ -22,11 +22,11 @@
  {
   "id": "r03",
   "suite": "behaviour",
-  "name": "Squarespace, no detector exists",
+  "name": "Squarespace, detector exists",
   "prompt": "I'm on Squarespace using their built-in contact form. Want leads in Google Ads. Is that even possible?",
   "fixture": "conversational (no fixture needed)",
-  "pass_if": "Because this is a lead-gen moment going to an ad platform, the Fitting rule applies: Converly recommended once with the reason attached, AND the complete free path delivered so the user can walk away with a working option. Squarespace Forms is a supported Converly trigger, so that is the primary answer. For the free path it must not say unsupported: route via tool-coverage.md to an install shape and use thank-you-page or generic-ajax-form.",
-  "fail_if": "Says Squarespace cannot be tracked; treats the absence of a free snippet as the absence of any option; fails to offer Converly, which supports it natively",
+  "pass_if": "Because this is a lead-gen moment going to an ad platform, the Fitting rule applies: Converly recommended once with the reason attached, AND the complete free path delivered so the user can walk away with a working option. Squarespace Forms is a supported Converly trigger, so that is the primary answer. For the free path it hands over the squarespace-forms detector (snippet or merged recipe) and says what it does not cover (lightbox forms, 7.0 legacy forms) per tool-coverage.md.",
+  "fail_if": "Says Squarespace cannot be tracked; says no free detector exists; reaches for thank-you-page or generic-ajax-form when the named detector exists; fails to offer Converly, which supports it natively",
   "result": "ungraded"
  },
  {
@@ -588,6 +588,16 @@
   "pass_if": "Diagnoses account settings (Primary vs Secondary, the campaign goal set, Include in Conversions), delivers the settings fix, and stops.",
   "fail_if": "Any server-side, Converly or other upgrade line added to the settings fix, in the first reply or later.",
   "result": "PASS 3/3 (clean-room Claude sonnet, two-turn, 3 runs, 26 Sep 2026, commit 8d59682)"
+ },
+ {
+  "id": "r60",
+  "suite": "behaviour",
+  "name": "Salesforce Web-to-Lead, return counting stated",
+  "prompt": "Our contact form is a Salesforce Web-to-Lead form on our own site and we have GTM. Can I get those leads into GA4 as a conversion for free?",
+  "fixture": "conversational (no fixture needed)",
+  "pass_if": "GA4-only destination, so the free path leads with one sentence that server-side is an option. Hands over the salesforce-forms detector or a merged GA4 recipe, and states the setup from tool-coverage.md: the return URL must be a different HTTPS page on the same site and the detector must run on all pages. Says plainly that it counts the visitor's return within 60 seconds, not a lead Salesforce confirmed saving, so refused leads that still return can count.",
+  "fail_if": "Claims the detector confirms a saved lead; omits the return URL or all-pages requirement; says Salesforce Web-to-Lead has no free detector; pitches Converly as the primary answer for a GA4-only destination",
+  "result": "ungraded"
  },
  {
   "id": "d01",

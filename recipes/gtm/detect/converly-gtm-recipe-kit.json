@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-10-25 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - Kit",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - Kit Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* Kit Form Listener by Converly. Pushes only event and form metadata. */\n(function() {\n  'use strict';\n\n  window.dataLayer = window.dataLayer || [];\n  var sink = {\n    siteKey: 'gtm-pack-kit-event-only',\n    advertisingAllowed: function () { return true; },\n    onSubmission: function (payload) {\n      var context = payload.submissionContext || {};\n      var push = { event: 'kit_form_submitted', form_id: context.form_id || null };\n      window.dataLayer.push(push);\n    }\n  };\n\n  if (window.__converlyRecipeKit) return;\n  window.__converlyRecipeKit = true;\n\n  var pending = [];\n  var consumed = new WeakSet();\n  var PREFIX = '[Converly:kit-forms]';\n\n  function warn() { ; }\n\n  function consentAllows() {\n    try {\n      var c = sink;\n      return !(c && typeof c.advertisingAllowed === 'function' && c.advertisingAllowed() === false);\n    } catch (e) { return true; }\n  }\n\n  function ready() {\n    return sink && typeof sink.onSubmission === 'function';\n  }\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n    var tokens = autocomplete.split(/\\s+/);\n    for (var t = 0; t < tokens.length; t++) {\n      if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true) return true;\n    }\n    return isSensitiveName(name);\n  }\n\n  function labelTextFor(el, form) {\n    var text = '';\n    var wrap = el.closest ? el.closest('label') : null;\n    if (wrap) text += ' ' + wrap.textContent;\n    var labels = document.getElementsByTagName('label');\n    for (var i = 0; i < labels.length; i++) {\n      var owner = labels[i].closest ? labels[i].closest('form') : null;\n      if (el.id && labels[i].getAttribute('for') === el.id && (!owner || owner === form)) {\n        text += ' ' + labels[i].textContent;\n      }\n    }\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    for (var j = 0; j < ids.length; j++) {\n      if (!ids[j]) continue;\n      var nodes = form.querySelectorAll('[id]');\n      var found = false;\n      for (var k = 0; k < nodes.length; k++) {\n        if (nodes[k].id === ids[j]) { text += ' ' + nodes[k].textContent; found = true; }\n      }\n      if (!found) {\n        var node = document.getElementById(ids[j]);\n        var nodeForm = node && node.closest ? node.closest('form') : null;\n        if (node && (!nodeForm || nodeForm === form)) text += ' ' + node.textContent;\n      }\n    }\n    return text;\n  }\n\n  function safeControl(el, form) {\n    var type = (el.type || 'text').toLowerCase();\n    return !isSensitiveField(type, (el.getAttribute('autocomplete') || '').toLowerCase(), el.name) &&\n      !isSensitiveName(el.id) && !isSensitiveName(el.getAttribute('aria-label')) &&\n      !isSensitiveName(el.getAttribute('placeholder')) && !isSensitiveName(labelTextFor(el, form));\n  }\n\n  function visible(el) {\n    for (var node = el; node && node.nodeType === 1; node = node.parentElement) {\n      var style = window.getComputedStyle(node);\n      if (node.hidden || style.display === 'none' || style.visibility === 'hidden') return false;\n    }\n    return true;\n  }\n\n  function eligible(el, types) {\n    return el.tagName === 'INPUT' && types.indexOf((el.type || 'text').toLowerCase()) !== -1 && !el.disabled && visible(el);\n  }\n\n  function bounded(value) {\n    if (typeof value !== 'string') return '';\n    value = value.trim();\n    return value.length <= 200 ? value : '';\n  }\n\n  function emailValue(value) {\n    value = bounded(value);\n    return /^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(value) ? value : '';\n  }\n\n  function phoneValue(value) {\n    value = bounded(value);\n    return /^[+\\d\\s().-]{6,30}$/.test(value) ? value : '';\n  }\n\n  function sources(form, name) {\n    var result = [];\n    for (var i = 0; i < form.elements.length; i++) {\n      if (form.elements[i].name === name) result.push(form.elements[i]);\n    }\n    return result;\n  }\n\n  function snapshot(form) {\n    var data = {};\n    var seen = [];\n    var emailControls = sources(form, 'email_address');\n    var emailControl = emailControls.length === 1 ? emailControls[0] : null;\n    var emailSafe = !!(emailControl && eligible(emailControl, ['email', 'text']) && safeControl(emailControl, form));\n    var submittedEmail = emailSafe ? emailValue(emailControl.value) : '';\n    for (var i = 0; i < form.elements.length; i++) {\n      var el = form.elements[i];\n      var type = (el.type || 'text').toLowerCase();\n      if (!/^(INPUT|TEXTAREA|SELECT)$/.test(el.tagName) ||\n          /^(hidden|submit|button|reset|image|file)$/.test(type) || !visible(el) || !safeControl(el, form)) continue;\n      var name = el.name || el.id || '';\n      if (name) seen.push({ name: name, type: type });\n    }\n    var keys = ['fields[first_name]', 'fields[last_name]', 'fields[phone]', 'fields[phone_number]'];\n    return { userData: data, formFieldsSeen: seen, emailControl: emailControl,\n      emailSafe: emailSafe, submittedEmail: submittedEmail };\n  }\n\n  function identity(form) {\n    if (!form || form.tagName !== 'FORM' || form.ownerDocument !== document ||\n        !document.documentElement.contains(form)) return null;\n    var id = form.getAttribute('data-sv-form') || '';\n    var uid = form.getAttribute('data-uid') || '';\n    if (!id || id.length > 15 || /[^0-9]/.test(id) ||\n        !uid || uid.length > 64 || /[^a-zA-Z0-9]/.test(uid)) return null;\n    var action = form.getAttribute('action') || '';\n\n    if (action !== 'https://app.kit.com/forms/' + id + '/subscriptions' &&\n        action !== 'https://app.convertkit.com/forms/' + id + '/subscriptions') return null;\n    return { id: id, uid: uid, action: action };\n  }\n\n  function recordFor(form) {\n    for (var i = 0; i < pending.length; i++) if (pending[i].form === form) return pending[i];\n    return null;\n  }\n\n  function discard(record) {\n    if (!record) return;\n    var index = pending.indexOf(record);\n    if (index !== -1) pending.splice(index, 1);\n    record.snapshot = null;\n    record.form = null;\n  }\n\n  function clearPending() {\n    while (pending.length) discard(pending[0]);\n  }\n\n  function handleSubmit(event) {\n    var form = event.target;\n    var old = recordFor(form);\n    try {\n      if (event.isTrusted !== true) return;\n      var key = identity(form);\n      if (!key || !consentAllows() || !ready()) { discard(old); return; }\n      if (consumed.has(form) || form.getAttribute('data-converly-recipe-processing')) return;\n      if (old && Date.now() - old.armedAt < 500 && old.id === key.id &&\n          old.uid === key.uid && old.action === key.action) return;\n      discard(old);\n      pending.push({ form: form, id: key.id, uid: key.uid, action: key.action,\n        pageUrl: window.location.pathname, armedAt: Date.now(), snapshot: snapshot(form) });\n    } catch (e) { discard(old); warn(); }\n  }\n\n  function emailStillSafe(record) {\n    var snap = record.snapshot;\n    if (!snap.emailSafe) return false;\n    var current = sources(record.form, 'email_address');\n    if (current.length > 1 || (current.length === 1 && current[0] !== snap.emailControl)) return false;\n\n    if (document.documentElement.contains(snap.emailControl)) {\n      return current.length === 1 && eligible(snap.emailControl, ['email', 'text']) && safeControl(snap.emailControl, record.form);\n    }\n    return current.length === 0;\n  }\n\n  function handleComplete(event) {\n    var record = recordFor(event.target);\n    if (!record) return;\n    try {\n      if (!consentAllows() || !ready()) { discard(record); return; }\n      var key = identity(event.target);\n      if (!key || key.id !== record.id || key.uid !== record.uid || key.action !== record.action) {\n        discard(record); return;\n      }\n      var detail = event.detail;\n      if (!detail || typeof detail !== 'object' || Array.isArray(detail) ||\n          typeof detail.uid !== 'string' || detail.uid !== record.uid) return;\n      var snap = record.snapshot;\n      var email = emailStillSafe(record) ? emailValue(detail.email_address) : '';\n      if (email && snap.submittedEmail && email.toLowerCase() !== snap.submittedEmail.toLowerCase()) {\n        discard(record); return;\n      }\n      if (!consentAllows() || !ready()) { discard(record); return; }\n      if (email) snap.userData.email = email;\n      var form = record.form;\n      var payload = { trigger: 'kit-forms', pageUrl: record.pageUrl, userData: snap.userData,\n        formFieldsSeen: snap.formFieldsSeen, submissionContext: { form_id: record.id } };\n      consumed.add(form);\n      discard(record);\n      form.setAttribute('data-converly-recipe-processing', 'true');\n      setTimeout(function() { form.removeAttribute('data-converly-recipe-processing'); }, 2000);\n      sink.onSubmission(payload);\n    } catch (e) { discard(record); warn(); }\n  }\n\n  document.addEventListener('submit', handleSubmit, true);\n  document.addEventListener('ckjs:submission:complete', handleComplete, true);\n  window.addEventListener('pagehide', clearPending);\n  if (typeof MutationObserver !== 'undefined') {\n    new MutationObserver(function() {\n      for (var i = pending.length - 1; i >= 0; i--) {\n        if (!document.documentElement.contains(pending[i].form)) discard(pending[i]);\n      }\n    }).observe(document.documentElement, { childList: true, subtree: true });\n  }\n\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - Kit Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "kit_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "1",
+        "name": "DLV - Kit Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

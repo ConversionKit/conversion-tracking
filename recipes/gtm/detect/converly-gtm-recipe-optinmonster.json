@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-12 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - OptinMonster",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - OptinMonster Submission Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* OptinMonster Listener by Converly. Sends only the event and Campaign ID. */\n(function() {\n  'use strict';\n\n  if (window.__converlyRecipeOptinMonsterArmed || typeof WeakMap !== 'function') return;\n  var ATTEMPT = 'om.Optin.init.submit';\n  var SUCCESS = 'om.Optin.success';\n  var ERROR = 'om.Optin.error';\n  var WINDOW_MS = 60000;\n  var KEYS = ['email', 'name', 'first_name', 'fname', 'last_name', 'lname', 'phone'];\n  var seenEvents = new WeakMap();\n  var pending = [];\n  var sequence = 0;\n  var hiding = false;\n\n  function allowed() { return true; }\n\n  var SENSITIVE_AUTOCOMPLETE = {\n    'current-password': true, 'new-password': true, 'one-time-code': true,\n    'cc-number': true, 'cc-csc': true, 'cc-exp': true, 'cc-exp-month': true,\n    'cc-exp-year': true, 'cc-name': true, 'cc-given-name': true,\n    'cc-family-name': true, 'cc-additional-name': true, 'cc-type': true,\n  };\n\n  var SENSITIVE_NAME_SUBSTRINGS = [\n    'password', 'passwd', 'passcode', 'cardnum', 'ccnumber', 'creditcard',\n    'onetimecode', 'securitycode', 'socialsecurity',\n  ];\n  var SENSITIVE_NAME_TOKENS = {\n    otp: true, cvv: true, cvc: true, ssn: true, pwd: true, pin: true,\n  };\n\n  function isSensitiveName(name) {\n    if (!name) return false;\n    var lower = String(name).toLowerCase();\n    var norm = lower.replace(/[^a-z0-9]/g, '');\n    for (var i = 0; i < SENSITIVE_NAME_SUBSTRINGS.length; i++) {\n      if (norm.indexOf(SENSITIVE_NAME_SUBSTRINGS[i]) !== -1) return true;\n    }\n    var parts = lower.split(/[^a-z0-9]+/);\n    for (var p = 0; p < parts.length; p++) {\n      if (SENSITIVE_NAME_TOKENS[parts[p]] === true) return true;\n    }\n    return false;\n  }\n\n  function isSensitiveField(type, autocomplete, name) {\n    if (type === 'password') return true;\n\n    if (autocomplete) {\n      var tokens = autocomplete.split(/\\s+/);\n      for (var t = 0; t < tokens.length; t++) {\n        if (SENSITIVE_AUTOCOMPLETE[tokens[t]] === true || tokens[t].indexOf('cc-') === 0) return true;\n      }\n    }\n    if (isSensitiveName(name)) return true;\n    return false;\n  }\n\n  function labelTextFor(el) {\n    var text = '';\n    var wrap = el.closest('label');\n    if (wrap) text += ' ' + wrap.textContent;\n    var doc = el.ownerDocument;\n    var id = el.getAttribute('id');\n    var labels = doc.getElementsByTagName('label');\n    for (var i = 0; id && i < labels.length; i++) {\n      if (labels[i].getAttribute('for') === id) text += ' ' + labels[i].textContent;\n    }\n    var ids = (el.getAttribute('aria-labelledby') || '').split(/\\s+/);\n    var nodes = doc.querySelectorAll('[id]');\n    for (var k = 0; k < nodes.length; k++) {\n      if (ids.indexOf(nodes[k].getAttribute('id')) !== -1) text += ' ' + nodes[k].textContent;\n    }\n    return text;\n  }\n\n  function object(value) {\n    return value !== null && typeof value === 'object' && !Array.isArray(value);\n  }\n\n  function dataProperty(objectValue, key) {\n    var descriptor = Object.getOwnPropertyDescriptor(objectValue, key);\n    return descriptor && Object.prototype.hasOwnProperty.call(descriptor, 'value') ? descriptor : null;\n  }\n\n  function own(value, key) {\n    if (!object(value)) return null;\n    return dataProperty(value, key);\n  }\n\n  function ownObject(value, key) {\n    var property = own(value, key);\n    return property && object(property.value) ? property.value : null;\n  }\n\n  function owner(detail) {\n    var campaign = ownObject(detail, 'Campaign');\n    var id = own(campaign, 'id');\n    var view = own(campaign, 'viewDiv');\n    if (!id || typeof id.value !== 'string' || !/^[a-z0-9]{10,32}$/.test(id.value) ||\n        !view || !(view.value instanceof window.Element)) return null;\n    return { id: id.value, view: view.value };\n  }\n\n  function connected(key) {\n    return key.view.ownerDocument === document && document.documentElement.contains(key.view) &&\n      key.view.id === 'om-' + key.id + '-optin' && document.getElementById(key.view.id) === key.view;\n  }\n\n  function current(record) {\n    var age = Date.now() - record.lastEvent;\n    return age >= 0 && (record.ambiguous ? age < WINDOW_MS : age <= WINDOW_MS) &&\n      record.path === window.location.pathname && connected(record);\n  }\n\n  function erase(record) {\n    if (!record) return;\n    record.snapshot = null;\n    record.index = null;\n    record.view = null;\n  }\n\n  function remove(record) {\n    var index = pending.indexOf(record);\n    if (index !== -1) pending.splice(index, 1);\n    if (record) window.clearTimeout(record.timer);\n    if (!pending.length && hiding) {\n      window.removeEventListener('pagehide', clear, false);\n      hiding = false;\n    }\n  }\n\n  function discard(record) { remove(record); erase(record); }\n  function clear() { while (pending.length) discard(pending[0]); }\n  function prune() {\n    for (var i = pending.length - 1; i >= 0; i--) {\n      if (!current(pending[i])) discard(pending[i]);\n    }\n  }\n  function find(key) {\n    for (var i = 0; i < pending.length; i++) {\n      if (pending[i].id === key.id && pending[i].view === key.view) return pending[i];\n    }\n    return null;\n  }\n\n  function fresh(event) {\n    if (event.target !== document || seenEvents.has(event)) return false;\n    seenEvents.set(event, true);\n    return true;\n  }\n\n  function visible(el, view) {\n    for (var node = el; node && node.nodeType === 1; node = node.parentElement) {\n      var style = window.getComputedStyle(node);\n      if (node.hidden || style.display === 'none' || style.visibility === 'hidden') return false;\n    }\n    return view.contains(el);\n  }\n\n  function metadata(view) {\n    var index = Object.create(null);\n    var controls = view.querySelectorAll('input,select,textarea,button');\n    for (var i = 0; i < controls.length; i++) {\n      var el = controls[i];\n      var name = el.getAttribute('name') || '';\n      if (KEYS.indexOf(name) === -1) continue;\n      var type = (el.getAttribute('type') || el.type || 'text').toLowerCase();\n      var id = el.getAttribute('id') || '';\n      var sensitive = isSensitiveField(type, (el.getAttribute('autocomplete') || '').toLowerCase(), name) ||\n        isSensitiveName(id) || isSensitiveName(el.getAttribute('aria-label')) ||\n        isSensitiveName(el.getAttribute('placeholder')) || isSensitiveName(labelTextFor(el));\n      var eligible = !sensitive && el.tagName === 'INPUT' && /^(text|email|tel)$/.test(type) &&\n        !el.disabled && !el.matches(':disabled') && visible(el, view);\n      var entry = index[name] || { blocked: false, controls: [] };\n      entry.blocked = entry.blocked || !eligible;\n      if (eligible) entry.controls.push({ el: el, id: id, name: name, type: type });\n      index[name] = entry;\n    }\n    return index;\n  }\n\n  function sameControls(before, after) {\n    if (!before || !after || before.blocked || after.blocked ||\n        before.controls.length !== after.controls.length) return false;\n    for (var i = 0; i < before.controls.length; i++) {\n      var a = before.controls[i], b = after.controls[i];\n      if (a.el !== b.el || a.id !== b.id || a.name !== b.name || a.type !== b.type) return false;\n    }\n    return true;\n  }\n\n  function fieldsFor(detail) {\n    return ownObject(ownObject(ownObject(detail, 'Optin'), 'data'), 'fields');\n  }\n\n  function explicitNames(index) {\n\n    return !!(index.first_name || index.fname || index.last_name || index.lname);\n  }\n\n  function capture(index, fields) {\n    var snapshot = Object.create(null);\n    for (var i = 0; i < KEYS.length; i++) {\n      var key = KEYS[i], entry = index[key];\n      if (!entry || entry.blocked) continue;\n      if (!allowed()) return null;\n      var property = own(fields, key);\n      if (property && typeof property.value === 'string') snapshot[key] = property.value;\n    }\n    return snapshot;\n  }\n\n  function release(record, fields) {\n    var index = metadata(record.view), values = Object.create(null), seen = [];\n    if (!allowed()) return null;\n    for (var i = 0; i < KEYS.length; i++) {\n      var key = KEYS[i];\n      if (!Object.prototype.hasOwnProperty.call(record.snapshot, key) ||\n          !sameControls(record.index[key], index[key])) continue;\n      if (!allowed()) return null;\n      var property = own(fields, key);\n      if (!property || typeof property.value !== 'string' || property.value !== record.snapshot[key]) return null;\n      values[key] = record.snapshot[key].trim();\n      for (var j = 0; j < record.index[key].controls.length; j++) {\n        var control = record.index[key].controls[j];\n        seen.push({ name: control.name, type: control.type });\n      }\n    }\n    var userData = {};\n    if (values.email) userData.email = values.email;\n    if (values.phone) userData.phone = values.phone;\n    var first = alias(values, 'first_name', 'fname', record, index);\n    var last = alias(values, 'last_name', 'lname', record, index);\n    if (first) userData.firstName = first;\n    if (last) userData.lastName = last;\n    if (!record.explicitNames && !explicitNames(index) && values.name) {\n      var parts = values.name.split(/\\s+/);\n      userData.firstName = parts[0];\n      if (parts.length > 1) userData.lastName = parts.slice(1).join(' ');\n    }\n    return { trigger: 'optinmonster', pageUrl: record.path, userData: userData,\n      formFieldsSeen: seen, submissionContext: { form_id: record.id, form_name: '' } };\n  }\n\n  function alias(values, a, b, record, index) {\n\n    var keys = [a, b];\n    for (var i = 0; i < keys.length; i++) {\n      var key = keys[i];\n      if ((record.index[key] || index[key]) && !sameControls(record.index[key], index[key])) return '';\n    }\n    if (Object.prototype.hasOwnProperty.call(record.snapshot, a) &&\n        Object.prototype.hasOwnProperty.call(record.snapshot, b) &&\n        record.snapshot[a].trim() !== record.snapshot[b].trim()) return '';\n    if (Object.prototype.hasOwnProperty.call(values, a) && Object.prototype.hasOwnProperty.call(values, b) &&\n        values[a] !== values[b]) return '';\n    return values[a] || values[b] || '';\n  }\n\n  function scheduleExpiry(record) {\n\n    window.clearTimeout(record.timer);\n    var token = record.sequence = ++sequence;\n    record.timer = window.setTimeout(function() {\n      if (record.sequence === token && pending.indexOf(record) !== -1) discard(record);\n    }, WINDOW_MS + (record.ambiguous ? 0 : 1));\n  }\n\n  function attempt(event) {\n    var record = null;\n    try {\n      if (!fresh(event)) return;\n      prune();\n      var key = owner(event.detail);\n      if (!key || !connected(key)) return;\n      record = find(key);\n      var path = window.location.pathname, started = Date.now();\n      if (!allowed()) { discard(record); return; }\n      var fields = fieldsFor(event.detail);\n      if (!fields) return;\n      if (record) {\n        record.outstanding++;\n        record.ambiguous = true;\n        record.snapshot = null;\n        record.index = null;\n        record.lastEvent = started;\n        scheduleExpiry(record);\n        return;\n      }\n      var index = metadata(key.view);\n\n      if (!allowed()) return;\n      record = { id: key.id, view: key.view, path: path,\n        lastEvent: started, outstanding: 1, ambiguous: false, index: index,\n        explicitNames: explicitNames(index), snapshot: capture(index, fields), timer: null };\n      if (!record.snapshot || !allowed() || !current(record)) { erase(record); return; }\n      pending.push(record);\n      scheduleExpiry(record);\n      if (!hiding) { window.addEventListener('pagehide', clear, false); hiding = true; }\n    } catch (e) { discard(record); }\n  }\n\n  function terminal(event) {\n    var record = null;\n    try {\n      if (!fresh(event)) return;\n      prune();\n      var key = owner(event.detail);\n      if (!key) return;\n      record = find(key);\n      if (!record) return;\n      record.outstanding--;\n      if (record.ambiguous && record.outstanding > 0) {\n        record.lastEvent = Date.now();\n        scheduleExpiry(record);\n        record = null;\n        return;\n      }\n      remove(record);\n      if (record.ambiguous || event.type === ERROR || !current(record) || !allowed()) return;\n      var response = ownObject(event.detail, 'response');\n      var success = own(response, 'success');\n      if (!success || success.value !== true) return;\n      var optin = ownObject(event.detail, 'Optin');\n      var spam = own(optin, 'spam');\n      if (spam && spam.value === true) return;\n      var fields = fieldsFor(event.detail);\n      if (!fields || !allowed()) return;\n      var payload = release(record, fields);\n      if (!payload || !current(record) || !allowed()) return;\n      erase(record);\n      var push = { event: 'optinmonster_form_submitted', form_id: payload.submissionContext.form_id };\n      (window.dataLayer = window.dataLayer || []).push(push);\n    } catch (e) {\n\n    } finally { erase(record); }\n  }\n\n  window.__converlyRecipeOptinMonsterArmed = true;\n  document.addEventListener(ATTEMPT, attempt, true);\n  document.addEventListener(SUCCESS, terminal, true);\n  document.addEventListener(ERROR, terminal, true);\n  window.__converlyRecipeOptinMonsterReady = true;\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - OptinMonster Form Submitted",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "optinmonster_form_submitted"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "10",
+        "name": "DLV - OptinMonster Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

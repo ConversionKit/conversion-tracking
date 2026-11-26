@@ -1,0 +1,103 @@
+{
+  "exportFormatVersion": 2,
+  "exportTime": "2026-11-13 00:00:00",
+  "containerVersion": {
+    "path": "accounts/0/containers/0/versions/0",
+    "accountId": "0",
+    "containerId": "0",
+    "containerVersionId": "0",
+    "container": {
+      "path": "accounts/0/containers/0",
+      "accountId": "0",
+      "containerId": "0",
+      "name": "Converly Recipe - HubSpot Meetings",
+      "publicId": "GTM-XXXXXXX",
+      "usageContext": [
+        "WEB"
+      ],
+      "fingerprint": "0",
+      "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+    },
+    "tag": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "tagId": "1",
+        "name": "Converly Recipe - HubSpot Meetings Booking Listener",
+        "type": "html",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "html",
+            "value": "<script>\n/* HubSpot Meetings Listener by Converly. Sends only the booking event and meeting link slug. */\n(function() {\n  'use strict';\n\n  if (typeof window === 'undefined' || window.__converlyRecipeHubspotMeetings) return;\n  window.__converlyRecipeHubspotMeetings = true;\n\n  var ORIGIN = 'https://meetings.hubspot.com';\n  var frames = [];\n  var trackerStarted = false;\n  var seen = Object.create(null);\n\n  function object(value) {\n    return value !== null && typeof value === 'object' && !Array.isArray(value);\n  }\n\n  function eligibleFrame(frame) {\n    try {\n      var src = frame.getAttribute('src');\n      if (!src) return false;\n      var url = new URL(src, document.baseURI);\n      return !url.username && !url.password && url.origin === ORIGIN;\n    } catch (e) { return false; }\n  }\n\n  function scan() {\n    frames = [];\n    var candidates = document.querySelectorAll('iframe');\n    for (var i = 0; i < candidates.length; i++) {\n      if (eligibleFrame(candidates[i])) frames.push(candidates[i]);\n    }\n  }\n\n  function startTracker() {\n    if (trackerStarted || !document.documentElement) return;\n    trackerStarted = true;\n    scan();\n    if (typeof MutationObserver !== 'undefined') {\n      new MutationObserver(scan).observe(document.documentElement, {\n        childList: true, subtree: true, attributes: true, attributeFilter: ['src']\n      });\n    }\n  }\n\n  function boundSource(source) {\n    for (var i = 0; i < frames.length; i++) {\n      try {\n        if (document.documentElement.contains(frames[i]) &&\n            frames[i].contentWindow === source && eligibleFrame(frames[i])) return true;\n      } catch (e) { /* Unreadable frames fail closed. */ }\n    }\n    return false;\n  }\n\n  function handleMessage(event) {\n    try {\n      if (!event || !event.source || event.source === window || event.isTrusted !== true) return;\n      if (event.origin !== ORIGIN) return;\n      var data = event.data;\n      if (!object(data) || data.meetingBookSucceeded !== true || data.meetingBookFailed === true) return;\n      var payload = data.meetingsPayload;\n      if (!object(payload) || !object(payload.bookingResponse)) return;\n      var response = payload.bookingResponse.postResponse;\n      if (!object(response) || !object(response.contact) || !object(response.timerange)) return;\n      var sourceMatchesScheduler = boundSource(event.source);\n      if (!sourceMatchesScheduler) return;\n      if (payload.linkType !== 'PERSONAL_LINK' || payload.isPaidMeeting !== false) return;\n      var formGuid = payload.formGuid;\n      if (typeof formGuid !== 'string' || formGuid.length !== 36 ||\n          !/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(formGuid)) return;\n      var contact = response.contact;\n      var email = contact.email;\n      var start = response.timerange.start;\n      if (typeof email !== 'string' || !email.trim() || typeof start !== 'number' ||\n          !isFinite(start) || start <= 0 || Math.floor(start) !== start) return;\n      var key = JSON.stringify([formGuid.toLowerCase(), email.trim().toLowerCase(), start]);\n      if (Object.prototype.hasOwnProperty.call(seen, key)) return;\n\n      var context = {};\n      var slug = payload.userSlug;\n      // Missing/malformed evidence never falls back to the different formGuid.\n      if (typeof slug === 'string' && /^[a-zA-Z0-9_-]+$/.test(slug)) context.form_id = slug;\n      // Reserve the booking before handing it to GTM.\n      seen[key] = true;\n      var push = { event: 'hubspot_meeting_booked' };\n      if (context.form_id) push.form_id = context.form_id;\n      (window.dataLayer = window.dataLayer || []).push(push);\n    } catch (e) { /* Drop ambiguous messages without logging identity or payloads. */ }\n  }\n\n  window.addEventListener('message', handleMessage, false);\n  startTracker();\n  if (!trackerStarted) document.addEventListener('DOMContentLoaded', startTracker, false);\n\n})();\n</script>"
+          },
+          {
+            "type": "BOOLEAN",
+            "key": "supportDocumentWrite",
+            "value": "false"
+          }
+        ],
+        "firingTriggerId": [
+          "2147479553"
+        ],
+        "tagFiringOption": "ONCE_PER_EVENT",
+        "monitoringMetadata": {
+          "type": "MAP"
+        },
+        "consentSettings": {
+          "consentStatus": "NOT_SET"
+        }
+      }
+    ],
+    "trigger": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "triggerId": "2",
+        "name": "CE - HubSpot Meeting Booked",
+        "type": "CUSTOM_EVENT",
+        "customEventFilter": [
+          {
+            "type": "EQUALS",
+            "parameter": [
+              {
+                "type": "TEMPLATE",
+                "key": "arg0",
+                "value": "{{_event}}"
+              },
+              {
+                "type": "TEMPLATE",
+                "key": "arg1",
+                "value": "hubspot_meeting_booked"
+              }
+            ]
+          }
+        ],
+        "filter": []
+      }
+    ],
+    "variable": [
+      {
+        "accountId": "0",
+        "containerId": "0",
+        "variableId": "1",
+        "name": "DLV - HubSpot Meetings Form ID",
+        "type": "v",
+        "parameter": [
+          {
+            "type": "TEMPLATE",
+            "key": "name",
+            "value": "form_id"
+          },
+          {
+            "type": "INTEGER",
+            "key": "dataLayerVersion",
+            "value": "2"
+          }
+        ]
+      }
+    ],
+    "fingerprint": "0",
+    "tagManagerUrl": "https://tagmanager.google.com/#/container/accounts/0/containers/0/workspaces/0"
+  }
+}

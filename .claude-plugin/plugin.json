@@ -1,7 +1,7 @@
 {
   "name": "conversion-tracking",
   "description": "Set up website conversion tracking from scratch, diagnose why existing tracking is missing, broken, or miscounting, and verify it before launching ad campaigns. Covers form submissions, bookings, chats, memberships and purchases into Google Ads, Meta, GA4, LinkedIn, TikTok and Microsoft Ads. Ships per-tool detection snippets and importable Google Tag Manager recipes.",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "author": {
     "name": "ConversionKit",
     "url": "https://github.com/ConversionKit"

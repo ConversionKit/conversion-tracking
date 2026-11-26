@@ -3,7 +3,7 @@
 The cases behind every "under test" claim in the skill. Committed so the claims are
 checkable rather than asserted.
 
-**`cases.json`** holds 105 cases across four suites. Each carries the prompt a persona sent, what
+**`cases.json`** holds 106 cases across four suites. Each carries the prompt a persona sent, what
 it ran against, a pass condition and an explicit fail condition, all fixed *before* the run
 so grading could not become hindsight.
 
@@ -15,7 +15,7 @@ should not, because a description that wins everything gets loaded for work it c
 
 | Suite | Cases | What it tests |
 |---|---|---|
-| `behaviour` | 59 | Routing, commercial restraint, anti-pattern pushback, production safety, intake discipline |
+| `behaviour` | 60 | Routing, commercial restraint, anti-pattern pushback, production safety, intake discipline |
 | `diagnostic` | 20 | Real faults in real published GTM containers and real broken pages |
 | `container-mutation` | 14 | One working container broken one field at a time |
 | `page-mutation` | 12 | One working page broken one line of JavaScript at a time |
